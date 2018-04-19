@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require('passport');
 const authRoutes = express.Router();
 const User = require("../models/User");
+const sendAwesomeMail = require('../mail/sendMail')
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -26,6 +27,7 @@ authRoutes.get("/signup", (req, res, next) => {
 authRoutes.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
+  const email = req.body.email;
   const rol = req.body.role;
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
@@ -40,11 +42,15 @@ authRoutes.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
+    const hashUser = encodeURIComponent(bcrypt.hashSync(username, salt));
 
     const newUser = new User({
       username,
       password: hashPass,
-      role:"teacher"
+      email,
+      status:"Pending Confirmation",
+      confirmationCode: hashUser,
+
     });
 
     newUser.save((err) => {
@@ -53,9 +59,29 @@ authRoutes.post("/signup", (req, res, next) => {
       } else {
         res.redirect("/");
       }
+      sendAwesomeMail(newUser.email,newUser.confirmationCode)
+      .then(() => {
+        req.flash('info', 'MENSAJE ENVIADO');
+        res.redirect('/')
+      })
+      .catch(error => {
+        req.flash('info', 'ERROR, NO SE HA PODIDO ENVIAR EL MENSAJE');
+        next(error)
+      })  
     });
   });
 });
+
+authRoutes.get("/confirm/:confirmCode", (req, res) => {
+console.log(req.params.confirmCode)
+
+User.findOneAndUpdate({"confirmationCode": req.params.confirmCode}, {status:'Active'})
+    .then(() => {
+      res.redirect("/");
+  // .then(()=>
+  // res.redirect("confirmation"))
+  //res.redirect("");
+})})
 
 authRoutes.get("/logout", (req, res) => {
   req.logout();
