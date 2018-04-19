@@ -6,7 +6,7 @@ const userSchema = new Schema({
   password: String,
   status: {
     type: String, 
-    enum: ["pending confirmation", "active"],
+    //enum: ["pending confirmation", "active"],
     default : "pending confirmation"
   },
   confirmationCode: String,
