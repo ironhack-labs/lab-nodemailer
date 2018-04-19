@@ -98,4 +98,13 @@ authRoutes.get("/confirm/:confirmCode", (req, res, next) => {
   .catch( () => res.redirect("/auth/signup"));
 })
 
+authRoutes.get("/profile/:id", (req, res, next) => {
+  let id = req.params.id;
+
+  User.findById(id)
+  .then( user => res.render("auth/profile", {user}))
+  .catch( () => res.redirect("/auth/signup") );
+  
+})
+
 module.exports = authRoutes;
