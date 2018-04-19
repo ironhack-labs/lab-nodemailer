@@ -93,16 +93,14 @@ authRoutes.post("/signup", (req, res, next) => {
 authRoutes.get(`/confirm/:confirmCode`, (req,res) => {
   User.findOne({ 'confirmationCode':`${req.params.confirmCode}`})
   .then(user => {
-    console.log(user)
+    user.status = "Active"
+    user.save()
     res.render("auth/confirmation", {user})
-  }) 
+  })
 })
 
 authRoutes.get("/confirmation", (req,res) => { 
-  User.findOne({ 'confirmationCode':`${req.params.confirmCode}`},'username', (err, user) => {
-    console.log(user)
     res.render("auth/confirmation", {user})
-  })
 })
 
 authRoutes.get("/profile", (req,res) => {
