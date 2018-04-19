@@ -1,0 +1,22 @@
+<form style="display:none" action="send-email" method="post">
+    <div class="form-group">
+        <label for="" >Email</label>
+        <input type="text" name="email" class="form-control" value="{{newUser.email}}">
+    </div>
+    <div class="form-group">
+
+        <label for="">Subject</label>
+        <input type="text" name="subject" class="form-control" value="Confirm your email">
+    </div>
+    <div class="form-group">
+
+        <label for="">Message</label>
+        <textarea type="text" name="message" class="form-control" value="http://localhost:3000/auth/confirm/{{newUser.confirmationCode}}"></textarea>
+    </div>
+
+    <button id="send" type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script>
+  document.getElementById("send").click();
+</script>
