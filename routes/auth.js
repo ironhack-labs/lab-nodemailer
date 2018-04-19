@@ -44,7 +44,9 @@ authRoutes.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
-    const hashPassCode = bcrypt.hashSync(username, salt);
+    let hashPassCode = bcrypt.hashSync(username, salt);
+
+    hashPassCode = hashPassCode.replace(/\//g,'');
 
     const newUser = new User({
       username,
@@ -52,7 +54,7 @@ authRoutes.post("/signup", (req, res, next) => {
       email,
       confirmationCode: hashPassCode
     });
-    console.log(newUser);
+
     newUser.save((err) => {
       if (err) {
         res.render("auth/signup", { message: "Something went wrong" });
@@ -74,12 +76,41 @@ authRoutes.post("/signup", (req, res, next) => {
 
 authRoutes.get("/confirm/:confirmCode", (req, res, next) => {
   
-  res.render("auth/confirmation");
-});
+  let code = req.params.confirmCode;
+
+  User.findOneAndUpdate({ 'confirmationCode':code },{ 'status': "Active" }).then( user => {
+
+      if (user === null) {
+        res.redirect("/auth/signup");
+      } else {
+        res.render("auth/confirmation", user)
+      }
+    }
+  );
+ });
+
+
 
 authRoutes.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+
+authRoutes.get("/:id/profile", (req, res, next) => {
+  
+  let id = req.params.id;
+
+  User.findById(id).then( user => {
+      if (user === null) {
+        res.redirect("/auth/signup");
+      } else {
+        console.log(user)
+        res.render(`auth/profile`, user)
+      }
+    }
+  );
+ });
+
 
 module.exports = authRoutes;
