@@ -8,13 +8,20 @@ const sendAwesomeMail = require('../mail/sendMail')
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
+authRoutes.get("/confirmation", (req, res, next) => {
+  res.render("auth/confirmation", { "message": req.flash("error") });
+});
+
+authRoutes.get("/profile", (req, res, next) => {
+  res.render("auth/profile", { "message": req.flash("error") });
+});
 
 authRoutes.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
 });
 
 authRoutes.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
+  successRedirect: "profile",
   failureRedirect: "/auth/login",
   failureFlash: true,
   passReqToCallback: true
@@ -43,13 +50,14 @@ authRoutes.post("/signup", (req, res, next) => {
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
     const hashUser = encodeURIComponent(bcrypt.hashSync(username, salt));
-
+    const hashUserTrue = hashUser.replace(/[/.$%]/g, "")
+    console.log(hashUserTrue)
     const newUser = new User({
       username,
       password: hashPass,
       email,
       status:"Pending Confirmation",
-      confirmationCode: hashUser,
+      confirmationCode: hashUserTrue,
 
     });
 
@@ -59,7 +67,7 @@ authRoutes.post("/signup", (req, res, next) => {
       } else {
         res.redirect("/");
       }
-      sendAwesomeMail(newUser.email,newUser.confirmationCode)
+      sendAwesomeMail(newUser.email, newUser.confirmationCode)
       .then(() => {
         req.flash('info', 'MENSAJE ENVIADO');
         res.redirect('/')
@@ -77,7 +85,7 @@ console.log(req.params.confirmCode)
 
 User.findOneAndUpdate({"confirmationCode": req.params.confirmCode}, {status:'Active'})
     .then(() => {
-      res.redirect("/");
+      res.redirect("/auth/confirmation");
   // .then(()=>
   // res.redirect("confirmation"))
   //res.redirect("");
