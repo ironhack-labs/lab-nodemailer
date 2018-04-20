@@ -1,5 +1,6 @@
 const express = require("express");
 const passport = require('passport');
+const nodemailer = require('nodemailer');
 const authRoutes = express.Router();
 const User = require("../models/User");
 
@@ -7,6 +8,13 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
+const transport = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: process.env.gmail_user,
+    pass: process.env.gmail_pass
+  }
+})
 
 authRoutes.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
@@ -26,7 +34,9 @@ authRoutes.get("/signup", (req, res, next) => {
 authRoutes.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
+  const email = req.body.email;
   const rol = req.body.role;
+  const status = req.body.status;
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
@@ -40,20 +50,30 @@ authRoutes.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
+    const hashCode = bcrypt.hashSync(username, salt);
 
-    const newUser = new User({
-      username,
-      password: hashPass,
-      role:"teacher"
-    });
 
-    newUser.save((err) => {
-      if (err) {
-        res.render("auth/signup", { message: "Something went wrong" });
-      } else {
-        res.redirect("/");
-      }
+      
+    User.create({username, password: hashPass, email, confirmationCode: hashCode, status})
+    .then((user)=>{
+      transport.sendMail({
+        from: "Your website",
+        to: user.email,
+        subject: "It's Britney, bi*ch!",
+        text: `http://localhost:3000/auth/confirm/${encodeURIComponent(user.confirmationCode)}`,
+        html: `http://localhost:3000/auth/confirm/${encodeURIComponent(user.confirmationCode)}`
+      })
+      .then(()=>{
+        res.redirect('/');
+      })
+      .catch((err)=>{
+        next(err);
+      })
+    })
+    .catch((err)=>{
+      next(err);
     });
+    
   });
 });
 
@@ -61,5 +81,31 @@ authRoutes.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+authRoutes.get('/confirm/:confirmationCode', (req, res, next)=>{
+const {confirmationCode} = req.params;
+
+  User.findOneAndUpdate({confirmationCode},
+  {status: "Active"})
+  .then((userDetails)=>{
+    res.locals.theUser = userDetails;
+    res.render('auth/confirmation');
+  })
+  .catch((err)=>{
+    next(err);
+  })
+});
+
+authRoutes.get('/profile-view/:profileId', (req, res, next)=>{
+  User.findById(req.params.profileId)
+  .then((userDetails)=>{
+    res.locals.theUser = userDetails;
+    res.render('auth/profile');
+  })
+  .catch((err)=>{
+    next(err);
+  })
+
+})
 
 module.exports = authRoutes;
