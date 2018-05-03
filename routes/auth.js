@@ -1,12 +1,27 @@
-const express = require("express");
-const passport = require('passport');
-const authRoutes = express.Router();
-const User = require("../models/User");
+const express     = require("express");
+const passport    = require('passport');
+const authRoutes  = express.Router();
+const User        = require("../models/User");
+const nodemailer  = require("nodemailer");
+
+let transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth:{
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD
+  }
+})
 
 // Bcrypt to encrypt passwords
-const bcrypt = require("bcrypt");
-const bcryptSalt = 10;
+const bcrypt      = require("bcrypt");
+const bcryptSalt  = 10;
 
+
+authRoutes.get("/confirm/:confirmCode", (req, res, next) => {
+  User.findOneAndUpdate({confirmationCode: req.params.confirmCode}, { $set: {status: "Active"}})
+  .then(()=> res.redirect("/profile"))
+  .catch(e=>console.log(e))
+});
 
 authRoutes.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
@@ -24,9 +39,10 @@ authRoutes.get("/signup", (req, res, next) => {
 });
 
 authRoutes.post("/signup", (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  const rol = req.body.role;
+  const username    = req.body.username;
+  const password    = req.body.password;
+  const email       = req.body.email;
+  const rol         = req.body.role;
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
@@ -38,13 +54,17 @@ authRoutes.post("/signup", (req, res, next) => {
       return;
     }
 
-    const salt = bcrypt.genSaltSync(bcryptSalt);
-    const hashPass = bcrypt.hashSync(password, salt);
+    const salt              = bcrypt.genSaltSync(bcryptSalt);
+    const hashPass          = bcrypt.hashSync(password, salt);
+    const confirmationCode  = bcrypt.hashSync(username, salt);
+    
 
     const newUser = new User({
       username,
+      email,
       password: hashPass,
-      role:"teacher"
+      role:"teacher",
+      confirmationCode
     });
 
     newUser.save((err) => {
@@ -52,9 +72,16 @@ authRoutes.post("/signup", (req, res, next) => {
         res.render("auth/signup", { message: "Something went wrong" });
       } else {
         res.redirect("/");
+        let message  = { from:"otnielgs94@gmail.com", 
+                         to: email,             
+                         subject: "Papilord OTNI", 
+                         html: `<a href="http://localhost:3000/auth/confirm/${confirmationCode}">Confirma</a>`
+                         }
+        transporter.sendMail(message)
       }
     });
   });
+ 
 });
 
 authRoutes.get("/logout", (req, res) => {
