@@ -3,7 +3,14 @@ const Schema   = mongoose.Schema;
 
 const userSchema = new Schema({
   username: String,
-  password: String
+  password: String,
+  status:{type:String,
+  enum:["Pending confirmation", "Active"],
+  default:"Pending confirmation"
+},
+confirmationCode: String,
+email:String,
+role:String
 }, {
   timestamps: {
     createdAt: 'created_at',
