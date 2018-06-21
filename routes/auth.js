@@ -1,3 +1,4 @@
+//#region setup
 const express = require("express");
 const passport = require("passport");
 const authRoutes = express.Router();
@@ -18,6 +19,24 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+//#endregion
+
+//#region utility functions
+function getHashedWord(word) {
+  const salt = bcrypt.genSaltSync(bcryptSalt);
+  return bcrypt.hashSync(word, salt);
+}
+
+function deleteSlashFromString(string) {
+  return string
+    .split("")
+    .filter(elem => elem !== "/")
+    .join("");
+}
+//#endregion
+
+//#region POST /login GET /login
+
 authRoutes.get("/login", (req, res, next) => {
   res.render("auth/login", { message: req.flash("error") });
 });
@@ -32,21 +51,16 @@ authRoutes.post(
   })
 );
 
+//#endregion
+
+//#region GET /signup POST /signup
 authRoutes.get("/signup", (req, res, next) => {
   res.render("auth/signup");
 });
 
-function getHashedWord(word) {
-  const salt = bcrypt.genSaltSync(bcryptSalt);
-  return bcrypt.hashSync(word, salt);
-}
-
 authRoutes.post("/signup", (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  const email = req.body.email;
-  console.log("SIGNUP POST EMAIL", email);
-  const rol = req.body.role;
+  const { username, password, email } = req.body;
+
   if (username === "" || password === "" || email === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
@@ -59,11 +73,7 @@ authRoutes.post("/signup", (req, res, next) => {
     }
 
     const hashPass = getHashedWord(password);
-    let hashName = getHashedWord(username);
-    hashName = hashName
-      .split("")
-      .filter(elem => elem !== "/")
-      .join("");
+    let hashName = deleteSlashFromString(getHashedWord(username));
 
     const newUser = new User({
       username,
@@ -72,8 +82,6 @@ authRoutes.post("/signup", (req, res, next) => {
       confirmationCode: hashName,
       status: "Pending Confirmation"
     });
-
-    // function sendMail() {}
 
     newUser.save(err => {
       if (err) {
@@ -95,6 +103,9 @@ authRoutes.post("/signup", (req, res, next) => {
   });
 });
 
+//#endregion
+
+//#region confirmation
 authRoutes.get("/confirm/:hashName", (req, res, next) => {
   User.findOne({ confirmationCode: req.params.hashName })
     .then(user => {
@@ -107,10 +118,14 @@ authRoutes.get("/confirm/:hashName", (req, res, next) => {
       res.redirect("/");
     });
 });
+//#endregion
 
+//#region GET /logout
 authRoutes.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+//#endregion
 
 module.exports = authRoutes;
