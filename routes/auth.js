@@ -79,16 +79,16 @@ authRoutes.post("/signup", (req, res, next) => {
       if (err) {
         res.render("auth/signup", { message: "Something went wrong" });
       } else {
-        // transporter
-        //   .sendMail({
-        //     from: '"My Awesome Project 👻" <myawesome@project.com>',
-        //     to: email,
-        //     subject: subject,
-        //     text: message,
-        //     html: `<b>${message} <a href="http://localhost:3000/auth/confirm/${hashName}">Link</a></b>`
-        //   })
-        //   .then(info => res.render("message", { email, subject, message, info }))
-        //   .catch(error => console.log(error));
+        transporter
+          .sendMail({
+            from: `"My Awesome Project 👻" <${process.env.EMAIL}>`,
+            to: email,
+            subject: "Confirm your account at myawesomeproject.com",
+            text: message,
+            html: `<b>${message} <a href="http://localhost:3000/auth/confirm/${hashName}">Link</a></b>`
+          })
+          .then(info => res.render("message", { email, subject, message, info }))
+          .catch(error => console.log(error));
         res.redirect("/");
       }
     });
