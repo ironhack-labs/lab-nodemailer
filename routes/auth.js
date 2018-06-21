@@ -25,7 +25,7 @@ authRoutes.get("/login", (req, res, next) => {
 authRoutes.post(
   "/login",
   passport.authenticate("local", {
-    successRedirect: "/",
+    successRedirect: "/profile",
     failureRedirect: "/auth/login",
     failureFlash: true,
     passReqToCallback: true
@@ -96,13 +96,10 @@ authRoutes.post("/signup", (req, res, next) => {
 });
 
 authRoutes.get("/confirm/:hashName", (req, res, next) => {
-  console.log("CONFIRM: ", req.params.hashName);
   User.findOne({ confirmationCode: req.params.hashName })
     .then(user => {
-      console.log("USER: ", user);
       User.findByIdAndUpdate(user._id, { status: "Active" }).then(updatedUser => {
-        console.log("UPDATED USER", updatedUser);
-        res.redirect("/auth/login");
+        res.render("auth/confirmation");
       });
     })
     .catch(err => {
