@@ -1,0 +1,21 @@
+
+<h2>Confirmation</h2>
+
+<form action="/auth/login" method="POST" id="form-container">
+  <label for="email">Please insert your email-adress</label>
+  <input id="email" type="text" name="email" placeholder="JonSnow">
+
+  <br><br>
+
+  <label for="confirmationCode">Please enter the Confirmation Code of the email</label>
+  <input id="confirmationCode" type="confirmationCode" name="confirmationCode" placeholder="Your confirmationCode">
+  <br>
+  {{#if message }}
+    <div class="error-message">{{ message }}</div>
+  {{/if}}
+
+  <br><br>
+
+  <button>Confirm</button>
+
+</form>
