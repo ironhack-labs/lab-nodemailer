@@ -3,3 +3,7 @@
 <a href="/auth/signup"><input type="button" value="Sign Up"</a>
 <a href="/auth/login"><input type="button" value="Log In"></a>
 <a href="/auth/logout"><input type="button" value="Logout"></a>
+
+{{#if req.session.passport.user}}
+<a href="/profile/{{req.session.passport.user}}"><input type="button" value="Profile"></a>
+{{/if}}

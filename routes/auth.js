@@ -99,17 +99,6 @@ authRoutes.get('/confirm', (req, res, next) => {
     });
 });
 
-authRoutes.get('/profile/:id', (req, res, next) => {
-  User.findOne({_id: req.params.id})
-    .then(user => {
-      res.render('profile', {user});
-      console.log(user);
-    })
-    .catch(err => {
-      console.log('Profile unwanted to be shown: ', err);
-      next();
-    });
-})
 
 authRoutes.get("/logout", (req, res) => {
   req.logout();

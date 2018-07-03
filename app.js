@@ -18,9 +18,9 @@ mongoose.Promise = Promise;
 mongoose
   .connect('mongodb://localhost/lab-nodemailer', {useMongoClient: true})
   .then(() => {
-    console.log('Connected to Mongo!')
+    console.log('Connected to Mongo!');
   }).catch(err => {
-    console.error('Error connecting to mongo', err)
+    console.error('Error connecting to mongo', err);
   });
 
 const app_name = require('./package.json').name;
@@ -70,7 +70,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   store: new MongoStore( { mongooseConnection: mongoose.connection })
-}))
+}));
 app.use(flash());
 require('./passport')(app);
     
