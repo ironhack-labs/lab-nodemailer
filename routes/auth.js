@@ -68,6 +68,7 @@ authRoutes.post("/signup", (req, res, next) => {
       res.redirect("/");
 
       const data = {
+        username: user.username,
         url: `http://localhost:3000/auth/confirm/${user.confirmationCode}`
       };
 
