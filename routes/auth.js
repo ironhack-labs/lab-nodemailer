@@ -36,7 +36,7 @@ authRoutes.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
-  const rol = req.body.role;
+  const status = req.body.status;
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
@@ -57,7 +57,7 @@ authRoutes.post("/signup", (req, res, next) => {
       password: hashPass,
       email,
       confirmationCode: hashConfirm,
-      role:"teacher"
+      status,
     });
 
     newUser.save((err) => {
@@ -67,11 +67,13 @@ authRoutes.post("/signup", (req, res, next) => {
         transporter.sendMail({
           //from: '"My Awesome Project 👻" <myawesome@project.com>', ya lo estoy usando con los datos de arriba en let transporter
           to: email, 
-          subject: subject, 
-          text: message,
-          html: `http://localhost:3000/auth/confirm/THE-CONFIRMATION-CODE-OF-THE-USER`
+          subject: "Confirm your email", 
+          html: `
+          <h2>Please confirm your email address</h2>
+          <a href="http://localhost:3000/auth/confirm/THE-CONFIRMATION-CODE-OF-THE-USER">Activa tu cuenta</a>
+          `
         })
-        .then(info => res.render('message', {email, subject, message, info}))
+        .then(res.redirect("/"))
         .catch(error => console.log(error));
       }
     });
