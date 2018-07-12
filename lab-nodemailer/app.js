@@ -59,11 +59,6 @@ hbs.registerHelper('ifUndefined', (value, options) => {
   }
 });
   
-
-// default value for title local
-app.locals.title = 'Express - Generated with IronGenerator';
-
-
 // Enable authentication using session + passport
 app.use(session({
   secret: 'irongenerator',
@@ -74,6 +69,14 @@ app.use(session({
 app.use(flash());
 require('./passport')(app);
     
+// default value for title local
+app.use((req,res,next) => {
+  // default value for title local
+  app.locals.title = 'Sign up Confirmation Email';
+  res.locals.user = req.user;
+  console.log(req.user);
+  next();
+})
 
 const index = require('./routes/index');
 app.use('/', index);
