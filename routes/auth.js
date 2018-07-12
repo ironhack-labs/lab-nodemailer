@@ -2,11 +2,20 @@ const express = require("express");
 const passport = require('passport');
 const authRoutes = express.Router();
 const User = require("../models/User");
+const sendWelcomeMail = require('../helpers/mailer').sendWelcomeMail;
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
+authRoutes.get("/confirm/:confirmCode",(req,res,next)=>{
+    const confirmCode = req.params.confirmCode;
+    User.findOneAndUpdate({confirmationCode: confirmCode}, {$set:{status:"ACTIVE"}}, {new: true})
+    .then(update=>{
+      res.render('confirmation', update);
+    })
+    .catch(e=>next(e));
+})
 
 authRoutes.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
@@ -26,11 +35,15 @@ authRoutes.get("/signup", (req, res, next) => {
 authRoutes.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
-  const rol = req.body.role;
+  const email= req.body.email;
+  
+  
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
+    
     return;
   }
+  
 
   User.findOne({ username }, "username", (err, user) => {
     if (user !== null) {
@@ -40,18 +53,26 @@ authRoutes.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
+    let confirmationCode = bcrypt.hashSync(username, salt);
+    let confirmationCodeArr = confirmationCode.split("/");
+    confirmationCode = confirmationCodeArr.join('');
 
     const newUser = new User({
       username,
       password: hashPass,
-      role:"teacher"
+      email,
+      confirmationCode,
+      // role:"teacher"
     });
 
     newUser.save((err) => {
+      
       if (err) {
         res.render("auth/signup", { message: "Something went wrong" });
       } else {
-        res.redirect("/");
+        sendWelcomeMail(newUser)
+        res.redirect("/auth/login");
+        
       }
     });
   });
