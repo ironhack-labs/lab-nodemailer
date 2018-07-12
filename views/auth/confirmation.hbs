@@ -1,0 +1,6 @@
+{{#if errorMessage}}
+  <div class="errorMessage">{{errorMessage}}</div>
+{{else}}
+  <p>Thanks {{user.username}}! Your account is now active!</p>
+  <a href="/auth/profile">Go to my profile</a>
+{{/if}}

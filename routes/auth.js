@@ -6,7 +6,7 @@ const express = require("express");
 const passport = require('passport');
 const authRoutes = express.Router();
 const User = require("../models/User");
-const { transporter } = require("../mailing/transporter");
+const { sendMail } = require("../mailing/sendMail");
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -34,6 +34,8 @@ authRoutes.post("/signup", (req, res, next) => {
   var fieldsPromise = new Promise((resolve, reject) => {
     if (username === "" || password === "" || email === "") {
       reject(new Error("Indicate a username, email and password to sign up"));
+    } else if (!validateEmail(email)) {
+      reject(new Error("You should write a valid email"));
     } else {
       resolve();
     }
@@ -64,17 +66,13 @@ authRoutes.post("/signup", (req, res, next) => {
     .then(user => {
       res.redirect("/");
 
-      const message = `http://localhost:3000/auth/confirm/${user.confirmationCode}`;
+      const data = {
+        url: `http://localhost:3000/auth/confirm/${user.confirmationCode}`
+      };
 
-      transporter.sendMail({
-        from: process.env.GMAIL_USER,
-        to: user.email, 
-        subject: "Sign up confirmation", 
-        text: message,
-        html: `<b><a href="${message}">Confirm your account</a></b>`
-      })
-      .then(info => console.log(info))
-      .catch(error => console.log(error));
+      sendMail(user.email, "Sign up confirmation", data).then(() => {
+        console.log("Email sended");
+      });
     })
     .catch(err => {
       res.render("auth/signup", {
@@ -83,9 +81,40 @@ authRoutes.post("/signup", (req, res, next) => {
     });
 });
 
+authRoutes.get("/confirm/:confirmCode", (req, res) => {
+  const confirmCode = encodeURIComponent(req.params.confirmCode);
+
+  User.findOne({ confirmationCode: confirmCode })
+    .then(user => {
+      if (!user) {
+        throw new Error("The confirmation code is incorrect");
+      }
+
+      if (user.status === "Active") {
+        throw new Error("Your account has already been activated.");
+      }
+
+      return User.findOneAndUpdate(user._id, { status: "Active" });
+    })
+    .then(user => {
+      req.session.currentUser = user;
+
+      res.render("auth/confirmation", { user });
+    })
+    .catch(err => {
+      res.render("auth/confirmation", { errorMessage: err.message });
+    })
+});
+
 authRoutes.get("/logout", (req, res) => {
-  req.logout();
+  req.session.currentUser = null;
+
   res.redirect("/");
 });
+
+const validateEmail = email => {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
 
 module.exports = authRoutes;
