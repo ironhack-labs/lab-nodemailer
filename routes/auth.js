@@ -8,18 +8,6 @@ const mySendMailFunction = require("../mailing/sendMail.js");
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
-
-authRoutes.get("/login", (req, res, next) => {
-  res.render("auth/login", { "message": req.flash("error") });
-});
-
-authRoutes.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/auth/login",
-  failureFlash: true,
-  passReqToCallback: true
-}));
-
 authRoutes.get("/signup", (req, res, next) => {
   res.render("auth/signup");
 });
@@ -56,7 +44,6 @@ authRoutes.post("/signup", (req, res, next) => {
       if (err) {
         res.render("auth/signup", { message: "Something went wrong" });
       } else {
-        console.log(email, hashConf)
         const urlConf = `http://localhost:3000/auth/confirm/${hashConf}`;
         mySendMailFunction(email, urlConf);
         res.redirect("/");
@@ -79,6 +66,24 @@ authRoutes.get("/confirm/:hashConf", (req, res) => {
     }  
   })
 })
+
+authRoutes.get("/login", (req, res, next) => {
+  res.render("auth/login", { "message": req.flash("error") });
+});
+
+authRoutes.post("/login", passport.authenticate("local", {
+  successRedirect: "/auth/profile",
+  failureRedirect: "auth/login",
+  failureFlash: true,
+  passReqToCallback: true
+}));
+
+authRoutes.get("/profile", (req, res, next) => {
+  User.findOne({_id : req.session.passport.user})
+  .then((user) => {
+    res.render("auth/profile", {user});
+  })
+});
 
 authRoutes.get("/logout", (req, res) => {
   req.logout();
