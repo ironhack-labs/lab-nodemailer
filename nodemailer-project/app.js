@@ -1,4 +1,5 @@
-require("dotenv").config();
+const dotenv = require("dotenv");
+dotenv.config({path: './.env.private'});
 
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -10,10 +11,8 @@ const logger = require("morgan");
 const path = require("path");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
-// const bcrypt = require("bcrypt");
-// const passport = require("passport");
-// const ensureLogin = require("connect-ensure-login");
 const flash = require("connect-flash");
+
 
 mongoose.Promise = Promise;
 mongoose

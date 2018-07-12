@@ -8,6 +8,9 @@ const passport = require("passport");
 const nodemailer = require("nodemailer");
 const templates = require("../templates/template");
 
+const {GMAIL_USER, GMAIL_PASSWORD } = process.env;
+
+
 router.get("/signup", (req, res, next) => {
   res.render("passport/signup");
 });
@@ -40,8 +43,8 @@ router.post("/signup", (req, res, next) => {
         let transporter = nodemailer.createTransport({
           service: "Gmail",
           auth: {
-            user: "",
-            pass: ""
+            user: GMAIL_USER,
+            pass: GMAIL_PASSWORD
           }
         });
 
