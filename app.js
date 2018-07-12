@@ -1,4 +1,6 @@
-require('dotenv').config();
+const env = require('dotenv');
+env.config();
+env.config({path: './.env.private'});
 
 const bodyParser   = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -12,11 +14,11 @@ const path         = require('path');
 const session    = require("express-session");
 const MongoStore = require('connect-mongo')(session);
 const flash      = require("connect-flash");
-    
+
 
 mongoose.Promise = Promise;
 mongoose
-  .connect('mongodb://localhost/lab-nodemailer', {useMongoClient: true})
+  .connect(process.env.DBURL, {useMongoClient: true})
   .then(() => {
     console.log('Connected to Mongo!')
   }).catch(err => {
