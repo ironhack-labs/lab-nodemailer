@@ -1,0 +1,10 @@
+<h1>{{title}}</h1>
+<p>Welcome to {{title}}</p>
+{{#if user}}
+  <p>You should be <b>{{user.username}}</b>, if you <b>are not</b> please <a href="/auth/logout">log out</a> and <u>we won't tell anybody</u>...
+
+  <a href="/privatePage">Private Page</a>
+{{/if}}
+</p> 
+
+<a href="/auth/login">Log in!</a> or <a href="/auth/signup">sign up</a> at our amazing service!!!!
