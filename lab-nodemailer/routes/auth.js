@@ -3,6 +3,7 @@ const passport = require("passport");
 const authRoutes = express.Router();
 const User = require("../models/User");
 const transport = require("../mailing/transport");
+const template = require("../mailing/template")
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -64,7 +65,8 @@ authRoutes.post("/signup", (req, res, next) => {
             to: email,
             subject: "subject",
             text: "Hola",
-            html: `<b>http://localhost:3000/auth/confirm/${hashCode}</b>`
+            // html: ` <b>http://localhost:3000/auth/confirm/${hashCode}</b>`
+            html: template(username, `http://localhost:3000/auth/confirm/${hashCode}`)
           })
           .then(() => console.log("Send email"))
           .catch(error => console.log(error));
