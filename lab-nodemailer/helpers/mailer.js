@@ -17,9 +17,8 @@ exports.sendTemplate = (user) => {
     const data = {
         from: 'Kiubo? 👻 <beth.shook@gmail.com>',
         to: user.email, 
-        subject: 'Probando esta', 
+        subject: 'Bienvenido', 
         text: `Hola ${user.username}! Bienvenido a nuestra ironApp. Confirma aquí: http://localhost:3000/auth/confirm/${user.confirmationCode}`
-        // html: welcomeCompile(user)
       }
     transporter.sendMail(data)
       .then(info => console.log(info))

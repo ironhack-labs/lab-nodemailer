@@ -78,9 +78,8 @@ authRoutes.get('/confirmation', (req,res) => {
 authRoutes.get("/confirm/:confirmationCode", (req, res, next) => {
   const confirmationCode = req.params.confirmationCode;
   User.findOneAndUpdate({confirmationCode: confirmationCode}, {$set:{status:"Active"}}, {new:true})
-  .then(update=>{
-    // res.redirect('/auth/confirmation');
-    res.send('You have been confirmed')
+  .then(confirmedUser=>{
+    res.render('auth/confirmation', confirmedUser);
   })
   .catch(e=>(e))
   
