@@ -1,0 +1,18 @@
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column></mj-column>
+    </mj-section>
+    <mj-section background-color="#f3f3f3">
+      <mj-column>
+        <mj-image width="170px" src="https://www.ironhack.com/assets/shared/logo.svg"></mj-image>
+      </mj-column>
+      <mj-column>
+        <mj-text font-weight="bold" align="justify" font-size="24px" color="#000" font-family="helvetica">Confirmation email</mj-text>
+        <mj-text font-weight="bold" align="justify" font-size="18px" color="#000" font-family="helvetica">Hello {{username}}!</mj-text>
+        <mj-text align="justify" font-size="15px" color="#000" font-family="helvetica">Thanks to join our community! Please confirm your account clicking on the following link:</mj-text>
+        <mj-button align="justify" background-color="#8ccaca" border-radius="40px" font-family="helvetica" font-size="12px"><a href={{url}} style="color: white; text-decoration: none;">CONFIRM</a></mj-button>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

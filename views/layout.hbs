@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{title}}</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+
+    <div>
+      <a href="/">Home</a> |
+      {{#if user}}
+      <a href="/auth/profile">Profile</a> |
+      <a href="/auth/logout">Logout</a>
+      {{else}}
+      <a href="/auth/login">Login</a> |
+      <a href="/auth/signup">Sign up</a>
+      {{/if}}
+    </div>
+    
+
+    {{{body}}}
+
+    <script src='/javascripts/script.js' />
+  </body>
+</html>
