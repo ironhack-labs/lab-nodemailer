@@ -26,6 +26,7 @@ authRoutes.get("/signup", (req, res, next) => {
 authRoutes.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
+  const email = req.body.email;
   const rol = req.body.role;
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
@@ -40,10 +41,12 @@ authRoutes.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
+    
 
     const newUser = new User({
       username,
       password: hashPass,
+      confirmationCode: hashPass,
       role:"teacher"
     });
 
