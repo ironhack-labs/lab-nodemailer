@@ -50,7 +50,7 @@ authRoutes.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
-    const hashConfirm = encodeURI(bcrypt.hashSync(username, salt)); // se mete el encodeuri para que no salgan 	; , / ? : @ & = + $ al generarse la encriptacion
+    const hashConfirm = encodeURIComponent(bcrypt.hashSync(username, salt)); // se mete el encodeuri para que no salgan 	; , / ? : @ & = + $ al generarse la encriptacion
 
     const newUser = new User({
       username,
@@ -64,13 +64,13 @@ authRoutes.post("/signup", (req, res, next) => {
       if (err) {
         res.render("auth/signup", { message: "Something went wrong" });
       } else {
-        transporter.sendMail({
+        transporter.sendMail({  // esto envía el email cuando hay un nuevo sign up
           //from: '"My Awesome Project 👻" <myawesome@project.com>', ya lo estoy usando con los datos de arriba en let transporter
           to: email, 
           subject: "Confirm your email", 
           html: `
-          <h2>Please confirm your email address</h2>
-          <a href="http://localhost:3000/auth/confirm/THE-CONFIRMATION-CODE-OF-THE-USER">Activa tu cuenta</a>
+          <h2>Please confirm your email address.</h2>
+          <a href="http://localhost:3000/auth/confirm/${hashConfirm}">Activa tu cuenta</a>
           `
         })
         .then(res.redirect("/"))
@@ -79,6 +79,29 @@ authRoutes.post("/signup", (req, res, next) => {
     });
   });
 });
+
+authRoutes.get("/confirm/:confirmCode", (req, res, next) => {  //cuando recibes el correo confirmar con el link
+  let confirmationCode = encodeURIComponent(req.params.confirmCode);
+  User.findOne({confirmationCode})
+  .then(user => {
+    console.log("aaaa");
+    console.log(user);
+    if(user) {
+      User.findByIdAndUpdate(user._id, {status: "Active"})
+      .then(() => {
+        res.render("confirmation");
+      })
+      .catch(err => {
+        next(err);
+      });
+    }
+  })
+  .catch(err => {
+    console.log("aaaa")
+    next(err);
+  })
+});
+
 
 authRoutes.get("/logout", (req, res) => {
   req.logout();
