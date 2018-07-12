@@ -7,6 +7,7 @@ const passport = require('passport');
 const authRoutes = express.Router();
 const User = require("../models/User");
 const { sendMail } = require("../mailing/sendMail");
+const { ensureLoggedIn } = require("../middleware/ensureLogin");
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -18,7 +19,7 @@ authRoutes.get("/login", (req, res, next) => {
 });
 
 authRoutes.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
+  successRedirect: "/auth/profile",
   failureRedirect: "/auth/login",
   failureFlash: true,
   passReqToCallback: true
@@ -97,8 +98,6 @@ authRoutes.get("/confirm/:confirmCode", (req, res) => {
       return User.findOneAndUpdate(user._id, { status: "Active" });
     })
     .then(user => {
-      req.session.currentUser = user;
-
       res.render("auth/confirmation", { user });
     })
     .catch(err => {
@@ -106,8 +105,12 @@ authRoutes.get("/confirm/:confirmCode", (req, res) => {
     })
 });
 
+authRoutes.get("/profile", ensureLoggedIn("/auth/login"), (req, res) => {
+  res.render("auth/profile");
+});
+
 authRoutes.get("/logout", (req, res) => {
-  req.session.currentUser = null;
+  req.logout();
 
   res.redirect("/");
 });
