@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-family: Helvetica, sans-serif;
+            line-height: 2;
+        }
+        .container{background-color: #eee}
+        .container>p{padding: 2em; text-align: center; color: #333333}
+
+        .card{
+            background-color: #fafafa;
+            padding: 1.5em;
+            border-radius: 2px;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            margin: auto;
+        }
+        
+        .img-container{
+            margin: auto;
+        }
+        .img-container>img{width: 120px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p>IronHack - NodeMailer</p>
+        <div class="card">
+            <div class="img-container">
+                <img src="https://cdn-images-1.medium.com/max/1920/1*e35LkwPQGqxRoB4dCWCh4g.png" alt="">
+            </div>
+            <h2>Nodemailer Confirmation Email</h2>
+            <h4>Hello, {{user.username}}!</h4>
+            <p>Plese click in the following link for confirm your account :)</p>
+            <a href="http://localhost:3000/auth/confirm/{{user.confirmationCode}}">Confirm Account</a>
+            <h3>Thaaanks! 💙</h3>
+        </div>
+        <p>Made by MonkeyAndres :D</p>
+    </div>
+</body>
+</html>
