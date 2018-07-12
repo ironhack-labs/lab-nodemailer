@@ -1,0 +1,13 @@
+<h1>{{title}}</h1>
+
+{{#unless user}}
+<a href="/auth/login">Login</a> <br><br>
+<a href="/auth/signup">Sign Up</a>
+{{/unless}}
+
+{{#if user}}
+<p>Welcome to {{user.username}}</p>
+<p>Status: <b>{{user.status}}</b></p>
+<a href="/auth/logout">Logout</a>
+{{/if}}
+
