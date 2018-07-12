@@ -51,7 +51,7 @@ authRoutes.post("/signup", (req, res, next) => {
         console.log(err);
         res.render("auth/signup", { message: "Something went wrong" });
       } else {
-        sendEmail(newUser.email, encodeURIComponent(newUser.confirmationCode));
+        sendEmail(newUser.username, newUser.email, encodeURIComponent(newUser.confirmationCode));
         res.redirect("/");
       }
     });

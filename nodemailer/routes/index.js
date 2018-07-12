@@ -3,12 +3,10 @@ const router  = express.Router();
 
 /* GET home page */
 router.get('/', (req, res, next) => {
-  console.log(req.user)
   res.render('index', {user: req.user});
 });
 
 router.get('/profile', (req, res, next) => {
-  console.log(req.user);
   res.render('profile', {user: req.user});
 });
 

@@ -1,0 +1,28 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all padding="0px"></mj-all>
+      <mj-class name="preheader" color="#000000" font-size="11px" font-family="Ubuntu, Helvetica, Arial, sans-serif" padding="0px"></mj-class>
+    </mj-attributes>
+    <mj-style inline="inline">a { text-decoration: none; color: inherit; }</mj-style>
+  </mj-head>
+  <mj-body background-color="#e0f2ff">
+
+    <mj-section background-color="#ffffff" padding-top="20px">
+      <mj-column width="100%">
+        <mj-image src="https://cdn-images-1.medium.com/max/1920/1*e35LkwPQGqxRoB4dCWCh4g.png" alt="tickets" width="192px" padding="10px 25px"></mj-image>
+        <mj-text align="center" color="#555555" font-size="25px" font-family="Lato, Helvetica, Arial, sans-serif" padding="10px 25px"><strong>Ironhack Confirmation Email
+            <br />
+            <br />
+            Hello {{username}}
+            </strong></mj-text>
+        <mj-text align="center" color="#575757" font-size="18px" font-family="Lato, Helvetica, Arial, sans-serif" padding="10px 30px">Thanks for joining our community! Please confirm your account by clicking on the following link:
+          <br/>
+          <mj-link href="http://localhost:3000/auth/confirm/{{{confirmation}}}">http://localhost:3000/auth/confirm/{{{confirmation}}}</mj-link>
+        </mj-text>
+        <mj-text align="center" color="#Black" font-size="20px" font-family="Lato, Helvetica, Arial, sans-serif" font-weight="bold" padding="10px 25px"><strong>
+          Great to see you creating awesome webpages you with us! 
+            </strong></mj-text>
+      </mj-column>
+  </mj-body>
+</mjml>
