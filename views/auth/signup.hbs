@@ -7,11 +7,16 @@
 
   <br><br>
 
+  <label for="email">Email</label>
+  <input id="email" type="email" name="email" placeholder="Email">
+
+  <br><br>
+
   <label for="password">Password</label>
   <input id="password" type="password" name="password" placeholder="Your password">
   <br>
-  {{#if message }}
-    <div class="error-message">{{ message }}</div>
+  {{#if errorMessage}}
+    <div class="errorMessage">{{errorMessage}}</div>
   {{/if}}
 
   <br><br>
