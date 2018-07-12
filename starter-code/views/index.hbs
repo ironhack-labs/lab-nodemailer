@@ -1,0 +1,11 @@
+<h1>Welcome {{title}}</h1>
+{{#if user}}
+<p>Status: {{status}}</p>
+
+<a href="/auth/logout">Log out</a>
+{{/if}}
+{{#unless user}}
+<a href="/auth/signup">Sign up!</a>
+<a href="/auth/login">Log in!</a>
+
+{{/unless}}
