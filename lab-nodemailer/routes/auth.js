@@ -91,9 +91,8 @@ authRoutes.post("/signup", (req, res, next) => {
 
   authRoutes.get("/confirm/:confirmCode", (req, res, next) => {
     let confirmCode = req.params.confirmCode;
-    User.findOneAndUpdate({confirmationCode:confirmCode}, {$set:{status:"Active"}})
+    User.findOneAndUpdate({confirmationCode:confirmCode}, {$set:{status:"Active"}},{new:true})
     .then( user => {
-      console.log({user});
       res.render('profile', { user })
     }) 
     .catch(error => console.log(error));

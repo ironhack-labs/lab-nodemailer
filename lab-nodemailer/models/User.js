@@ -6,7 +6,8 @@ const userSchema = new Schema({
   password: String,
   status: {
     "type": "string",
-    "enum": ["Pending Confirmation", "Active"]
+    "enum": ["Pending Confirmation", "Active"],
+    default: 'Pending Confirmation'
 },
   confirmationCode: String,
   email: String,
