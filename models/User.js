@@ -4,9 +4,9 @@ const Schema   = mongoose.Schema;
 const userSchema = new Schema({
   username: String,
   password: String,
-  status: {type: String, enum:['Pending Confirmation', 'Active'], default: 'PenPending Confirmation'},
+  email: {type:String},
   confirmationCode: String,
-  email: String
+  status: {type: String, enum:['Pending Confirmation', 'Active'], default: 'Pending Confirmation'}
 }, {
   timestamps: {
     createdAt: 'created_at',
@@ -15,4 +15,5 @@ const userSchema = new Schema({
 });
 
 const User = mongoose.model('User', userSchema);
+
 module.exports = User;

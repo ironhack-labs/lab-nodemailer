@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require('passport');
 const authRoutes = express.Router();
 const User = require("../models/User");
+const mySendMailFunction = require("../mailing/sendMail.js");
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -24,11 +25,13 @@ authRoutes.get("/signup", (req, res, next) => {
 });
 
 authRoutes.post("/signup", (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  const rol = req.body.role;
+  const {username, password, email} = req.body;
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
+    return;
+  }
+  if (!email.includes('@')) {
+    res.render("auth/signup", { message: "You have to indicate a valid email" });
     return;
   }
 
@@ -40,22 +43,42 @@ authRoutes.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
+    const hashConf = encodeURIComponent(bcrypt.hashSync(username, salt));
 
     const newUser = new User({
       username,
       password: hashPass,
-      role:"teacher"
+      email,
+      confirmationCode: hashConf,
     });
 
     newUser.save((err) => {
       if (err) {
         res.render("auth/signup", { message: "Something went wrong" });
       } else {
+        console.log(email, hashConf)
+        const urlConf = `http://localhost:3000/auth/confirm/${hashConf}`;
+        mySendMailFunction(email, urlConf);
         res.redirect("/");
       }
     });
   });
 });
+
+authRoutes.get("/confirm/:hashConf", (req, res) => {
+  const code = encodeURIComponent(req.params.hashConf);
+  User.findOneAndUpdate({confirmationCode: code}, {status: 'Active'}, (err) =>{
+    if (err) {
+      console.log("update falló ohhhhh!")
+    }
+    else {
+      User.findOne({confirmationCode : code})
+      .then((user) => {
+      res.render("auth/confirmation", {username: user.username});
+      })
+    }  
+  })
+})
 
 authRoutes.get("/logout", (req, res) => {
   req.logout();
