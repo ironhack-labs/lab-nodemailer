@@ -67,11 +67,12 @@ router.post("/signup", (req, res, next) => {
 
 router.get("/confirm/:id", (req, res, next) => {
   console.log(req.params);
-  User.findOneAndUpdate({ confirmationCode: req.params.id },{new:true}).then(user => {
-    console.log(user[0].username);
-    console.log(user[0].status);
-    user[0].status = "Active";
-    res.render("passport/confirm", user[0]);
+  User.findOneAndUpdate(
+    { confirmationCode: req.params.id },
+    { status: "Active" },
+    { new: true }
+  ).then(user => {
+    res.render("passport/confirm", user);
   });
 });
 
