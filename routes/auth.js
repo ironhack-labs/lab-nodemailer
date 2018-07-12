@@ -1,8 +1,14 @@
+const env = require('dotenv');
+env.config();
+env.config({path: './.env.private'});
+
 const express = require("express");
 const passport = require('passport');
 const authRoutes = express.Router();
 const User = require("../models/User");
 const nodemailer = require("nodemailer");
+const {ensureLoggedIn} = require("../middleware/ensureLogin");
+
 
 let transporter = nodemailer.createTransport({
   service: 'Gmail',
@@ -22,7 +28,7 @@ authRoutes.get("/login", (req, res, next) => {
 });
 
 authRoutes.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
+  successRedirect: "/auth/profile",
   failureRedirect: "/auth/login",
   failureFlash: true,
   passReqToCallback: true
@@ -84,7 +90,6 @@ authRoutes.get("/confirm/:confirmCode", (req, res, next) => {  //cuando recibes 
   let confirmationCode = encodeURIComponent(req.params.confirmCode);
   User.findOne({confirmationCode})
   .then(user => {
-    console.log("aaaa");
     console.log(user);
     if(user) {
       User.findByIdAndUpdate(user._id, {status: "Active"})
@@ -97,11 +102,13 @@ authRoutes.get("/confirm/:confirmCode", (req, res, next) => {  //cuando recibes 
     }
   })
   .catch(err => {
-    console.log("aaaa")
     next(err);
   })
 });
 
+authRoutes.get("/profile", ensureLoggedIn("/auth/login"), (req, res) => {
+  res.render("auth/profile");
+});
 
 authRoutes.get("/logout", (req, res) => {
   req.logout();

@@ -9,6 +9,7 @@ const userSchema = new Schema({
   status: [{
     type: String,
     enum : ['Pending Confirmation', 'Active'],
+    default:'Pending Confirmation'
   }]
 }, {
   timestamps: {
