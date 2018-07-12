@@ -1,0 +1,25 @@
+<!-- views/auth/signup.hbs -->
+<h2>Signup</h2>
+
+<form validate action="/signup" method="POST" id="form-container">
+  <label for="username">Username (Your Email)</label>
+  <input id="username" type="email" name="username" placeholder="JonSnow@example.com" required>
+
+  <br><br>
+
+  <label for="password">Password</label>
+  <input id="password" type="password" name="password" placeholder="Your password" required>
+  <br>
+  {{#if message }}
+    <div class="error-message">{{ message }}</div>
+  {{/if}}
+
+  <br><br>
+
+  <button>Create account</button>
+
+  <p class="account-message">
+    Do you already have an account?
+    <a href="/login">Login</a>
+  </p>
+</form>
