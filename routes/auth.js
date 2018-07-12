@@ -54,7 +54,8 @@ authRoutes.post("/signup", (req, res, next) => {
       res.render("auth/signup", { message: "The username already exists" });
       return;
     }
-
+    else
+    {
     const newUser = new User({
       username,
       password: hashPass,
@@ -69,34 +70,35 @@ authRoutes.post("/signup", (req, res, next) => {
         res.redirect("/");
       }
     });
-  });
 
-  let transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-      user: 'pepe04444@gmail.com',
-      pass: 'm20684-m20684'
-    }
+    let transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: 'pepe04444@gmail.com',
+        pass: 'm20684-m20684'
+      }
+    });
+  
+    transporter.sendMail({
+      to: email,
+      subject: 'Minyu Confirmation Email',
+      html: compiledHTML
+    })
+      .then(info => console.log(info))
+      .catch(error => console.log(error))
+  }
   });
-
-  transporter.sendMail({
-    to: email,
-    subject: 'Minyu Confirmation Email',
-    html: compiledHTML
-    //`<a href='http://localhost:3000/auth/confirm/${hashUser}'>click link to confirm</a>`
-  })
-    .then(info => console.log(info))
-    .catch(error => console.log(error))
 });
 
 authRoutes.get('/confirm/:confirmCode', (req, res, next) => {
-  var code = req.params.confirmCode;
+  var code = encodeURIComponent(req.params.confirmCode);
   User.findOneAndUpdate({ confirmationCode: code }, { status: 'Active' }, (err) => {
     if (err) {
       console.log("Something wrong when updating status!");
     } else {
-      User.findOne({ confirmationCode: code }, "username")
+      User.findOne({ confirmationCode: code })
       .then((result)=>{
+        req.session.currentUser = result;
         res.render("auth/confirmation",{name: result.username})
       })
       .catch(()=>{

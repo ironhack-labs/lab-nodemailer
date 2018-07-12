@@ -63,14 +63,6 @@ hbs.registerHelper('ifUndefined', (value, options) => {
 // default value for title local
 app.locals.title = 'Express - Generated with IronGenerator';
 
-// Enable authentication using session + passport
-/* app.use(session({
-  secret: 'irongenerator',
-  resave: true,
-  saveUninitialized: true,
-  store: new MongoStore( { mongooseConnection: mongoose.connection })
-})) */
-
 app.use(session({
   secret: "irongenerator",
   cookie: { maxAge: 60000 },
@@ -85,8 +77,8 @@ app.use(flash());
 require('./passport')(app);
 
 app.use((req,res,next)=>{
-  console.log(req)
-  app.locals.wow = req.user;
+  console.log(req.session.currentUser);
+  app.locals.wow = req.session.currentUser;
   next();
 })
 //app.locals.user = req.user || null;
