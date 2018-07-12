@@ -1,16 +1,14 @@
-const isActive = (req, res, next) => {
-    if (req.user.status == "Active") {
-        next();
-    } else {
-        req.flash('error', 'You are not active');
-        res.redirect(redirectTo);
-    }
-}
+
 
 const ensureLoggedIn = (redirectTo) => {
     return (req, res, next) => {
         if(req.user){
-            next();
+            if (req.user.status == "Active"){
+                next();
+            } else {
+                req.flash("error", "your account is not active");
+                res.render("auth/informs");
+            }
         }else{
             req.flash('error','You have to login first');
             res.redirect(redirectTo);
@@ -29,4 +27,5 @@ const ensureLoggedOut = (redirectTo) => {
         }
     }
 }
-module.exports = {ensureLoggedIn, isActive, ensureLoggedOut};
+
+module.exports = {ensureLoggedIn, ensureLoggedOut}
