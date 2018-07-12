@@ -2,6 +2,15 @@ const express = require("express");
 const passport = require('passport');
 const authRoutes = express.Router();
 const User = require("../models/User");
+const nodemailer = require("nodemailer");
+
+let transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: 'pepe04444@gmail.com',
+    pass: 'm20684-m20684'
+  }
+});
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -41,12 +50,13 @@ authRoutes.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
-    
+    const hashConfirm = encodeURI(bcrypt.hashSync(username, salt)); // se mete el encodeuri para que no salgan 	; , / ? : @ & = + $ al generarse la encriptacion
 
     const newUser = new User({
       username,
       password: hashPass,
-      confirmationCode: hashPass,
+      email,
+      confirmationCode: hashConfirm,
       role:"teacher"
     });
 
@@ -54,7 +64,15 @@ authRoutes.post("/signup", (req, res, next) => {
       if (err) {
         res.render("auth/signup", { message: "Something went wrong" });
       } else {
-        res.redirect("/");
+        transporter.sendMail({
+          //from: '"My Awesome Project 👻" <myawesome@project.com>', ya lo estoy usando con los datos de arriba en let transporter
+          to: email, 
+          subject: subject, 
+          text: message,
+          html: `http://localhost:3000/auth/confirm/THE-CONFIRMATION-CODE-OF-THE-USER`
+        })
+        .then(info => res.render('message', {email, subject, message, info}))
+        .catch(error => console.log(error));
       }
     });
   });
