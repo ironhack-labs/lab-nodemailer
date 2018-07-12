@@ -60,9 +60,12 @@ hbs.registerHelper('ifUndefined', (value, options) => {
 });
   
 
-// default value for title local
-app.locals.title = 'Express - Generated with IronGenerator';
-
+app.use((req,res,next) => {
+  // default value for title local
+  res.locals.title = 'Nodemailer - Ironhack registry';
+  res.locals.user = req.user;
+  next();
+}) 
 
 // Enable authentication using session + passport
 app.use(session({
@@ -74,6 +77,7 @@ app.use(session({
 app.use(flash());
 require('./passport')(app);
     
+
 
 const index = require('./routes/index');
 app.use('/', index);
