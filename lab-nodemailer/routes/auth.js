@@ -62,7 +62,7 @@ authRoutes.post("/signup", (req, res, next) => {
         const transporter = nodemailer.createTransport({
           service: "Gmail",
           auth: {
-            user: "pepe_04444",
+            user: "pepe04444@gmail.com",
             pass: "m20684-m20684"
           }
         });
@@ -73,10 +73,10 @@ authRoutes.post("/signup", (req, res, next) => {
             to: email,
             subject: "Awesome Subject",
             text: "Awesome Message",
-            html: `<b>http://localhost:3000/auth/confirm/${confirmationCode}</b>`
+            html: `<b>http://localhost:3000/auth/confirm/${encodeURIComponent(hashPassUsername)}</b>`
           })
           .then(info => console.log("aaaa"))
-          .catch(error => console.log("bbbbb"));
+          .catch(error => console.log(error));
         res.redirect("/");
       }
     });
