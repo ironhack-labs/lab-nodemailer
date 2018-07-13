@@ -1,7 +1,9 @@
+require('dotenv').config();
 const express = require("express");
 const passport = require('passport');
 const authRoutes = express.Router();
 const User = require("../models/User");
+const nodemailer = require("nodemailer")
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -20,13 +22,14 @@ authRoutes.post("/login", passport.authenticate("local", {
 }));
 
 authRoutes.get("/signup", (req, res, next) => {
+  console.log("Entra")
   res.render("auth/signup");
 });
 
 authRoutes.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
-  const rol = req.body.role;
+  const email = req.body.email;
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
@@ -40,22 +43,49 @@ authRoutes.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
+    const usernamehash = bcrypt.hashSync(username, salt).replace('/', '');
+
 
     const newUser = new User({
-      username,
+      username: username,
       password: hashPass,
-      role:"teacher"
+      email: email,
+      status: "Pending Confirmation",
+      confirmationCode: encodeURI(usernamehash)
     });
 
     newUser.save((err) => {
       if (err) {
+        console.log(err);
         res.render("auth/signup", { message: "Something went wrong" });
       } else {
-        res.redirect("/");
+        let transporter = nodemailer.createTransport({
+          service: 'Gmail',
+          auth: {
+            user: process.env.mail,
+            pass: process.env.password
+          }
+        });
+
+        transporter.sendMail({
+
+          to: process.env.mail,
+          subject: 'Awesome Subject',
+          html: `haz click en el enlace para confirmar : http:localhost:3000/auth/confirm/${usernamehash}`
+        })
+          .then(info => { console.log(info); res.redirect("/"); })
+          .catch(error => console.log(error))
+
       }
     });
   });
 });
+
+authRoutes.get('/confirm/:confirmCode', (req, res) => {
+  const code = req.params.confirmCode;
+
+  User.findOneAndUpdate({ confirmationCode: code }, { status: 'Active' }).then(user => res.render('confirmation', { user }))
+})
 
 authRoutes.get("/logout", (req, res) => {
   req.logout();
