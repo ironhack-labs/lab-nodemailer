@@ -1,0 +1,11 @@
+<h1>{{title}}</h1>
+<p>Welcome to {{title}}</p>
+<ul>
+<li><a href="/auth/signup">Sign up</a></li>
+<li><a href="/auth/login">Log in</a></li>
+</ul>
+{{#if user}}
+<a href="auth/confirmation">Private Page</a>
+{{/if}}
+
+
