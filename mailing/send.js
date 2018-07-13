@@ -1,12 +1,23 @@
-//templates
-const mjml=require('mjml');
-const hbs=require('handlbars')
-const fs=require('fs');
-const path=require('path');
-const {tranporter}=require('./tranporter');
+const dotenv=require('dotenv');
+dotenv.config();
+dotenv.config({path: './env.private'});
+const {transporter} =require('../mailing/transporter.js');
 
-//function for send email with templates
 
-const send =(to)=>{
 
+let sendMail = (to,message)=>{
+
+    return transporter.sendMail({
+        from: "Hola,te has registrado",
+        to:to,
+        subject: "Nuevo email de confirmación",
+        text : message,
+        html:`<b>${message}</b>`
+
+    })
+
+    .then(info =>console.log(info))
+    .catch(e => console.log(e));
 }
+
+module.exports=sendMail;
