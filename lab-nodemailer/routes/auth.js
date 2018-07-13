@@ -80,7 +80,7 @@ authRoutes.post("/signup", (req, res, next) => {
   
     transporter.sendMail({
       from: process.env.NODE_MAIL,
-      to: 'aecdigitaltransformer@gmail.com', 
+      to: process.env.NODE_MAIL, 
       subject: 'PruebaMail', 
       html: `<b>${message}</b>`
     })
