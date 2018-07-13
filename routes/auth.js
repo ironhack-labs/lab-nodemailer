@@ -87,7 +87,7 @@ authRoutes.post("/signup", (req, res, next) => {
 });
 
 authRoutes.get("/confirm/:confirmCode", (req, res, next) => {  //cuando recibes el correo confirmar con el link
-  let confirmationCode = encodeURIComponent(req.params.confirmCode);
+  let confirmationCode = encodeURIComponent(req.params.confirmCode);  // hay que ponerlo sino no funciona el link 
   User.findOne({confirmationCode})
   .then(user => {
     console.log(user);
@@ -107,7 +107,7 @@ authRoutes.get("/confirm/:confirmCode", (req, res, next) => {  //cuando recibes 
 });
 
 authRoutes.get("/profile", ensureLoggedIn("/auth/login"), (req, res) => {
-  res.render("auth/profile");
+  res.render("auth/profile", {user: req.user});
 });
 
 authRoutes.get("/logout", (req, res) => {
