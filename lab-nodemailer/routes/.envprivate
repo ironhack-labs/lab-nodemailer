@@ -1,0 +1,40 @@
+newUser.save((err) => {
++      if (err) {
++        res.render("auth/signup", { message: "Something went wrong" });
++      } else {
++        console.log("We should send email now")
++
++        let transporter = nodemailer.createTransport({
++          service: 'Gmail',
++          auth: {
++            user: process.env.GMAIL_EMAIL,
++            pass: process.env.GMAIL_PASSWORD
++          }
++        });
++      
++        let message = `Please click on <a href='http://localhost:3000/auth/confirm/${hashConf}'>this link</a>.`
++      
++        let subject = "Email confirmation"
++    
++        transporter.sendMail({
++          from: '"Signup Test Project" <process.env.GMAIL_EMAIL>',
++          to: email, 
++          subject: subject, 
++          // text: message,
++          html: `<b>${message}</b>`
++        })
++        .then(info => { 
++          res.render('message', {email, subject, message, info});
++          console.log("email sent!")
++          res.redirect("/");
++        })
++        .catch(error => console.log(error));
++      }
++    });
++  });
++  
++});
++
++
++authRoutes.get("/confirm/:confirmCode", (req, res, next) => {
++
