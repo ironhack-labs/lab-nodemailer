@@ -8,8 +8,9 @@ const hbs = require("hbs");
 const mongoose = require("mongoose");
 const logger = require("morgan");
 const path = require("path");
-
 const session = require("express-session");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
 const MongoStore = require("connect-mongo")(session);
 const flash = require("connect-flash");
 
@@ -37,7 +38,7 @@ const app = express();
 app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser('foo'));
 
 // Express View engine setup
 
@@ -49,11 +50,6 @@ app.use(
   })
 );
 
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "hbs");
-app.use(express.static(path.join(__dirname, "public")));
-app.use(favicon(path.join(__dirname, "public", "images", "favicon.ico")));
-
 hbs.registerHelper("ifUndefined", (value, options) => {
   if (arguments.length < 2)
     throw new Error("Handlebars Helper ifUndefined needs 1 parameter");
@@ -64,17 +60,10 @@ hbs.registerHelper("ifUndefined", (value, options) => {
   }
 });
 
-app.use((req, res, next) => {
-  // default value for title local
-  app.locals.title = "Express - Generated with IronGenerator";
-  app.locals.user = req.user;
-  next();
-});
-
 // Enable authentication using session + passport
 app.use(
   session({
-    secret: "irongenerator",
+    secret: 'foo',
     resave: true,
     saveUninitialized: true,
     store: new MongoStore({ mongooseConnection: mongoose.connection })
@@ -82,6 +71,20 @@ app.use(
 );
 app.use(flash());
 require("./passport")(app);
+
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "hbs");
+app.use(express.static(path.join(__dirname, "public")));
+app.use(favicon(path.join(__dirname, "public", "images", "favicon.ico")));
+
+
+app.use(function(req, res, next) {
+  // default value for title local
+  res.locals.title = "Express - Generated with IronGenerator";
+  res.locals.user = req.user;
+  console.log(req.user)
+  next();
+}); 
 
 const index = require("./routes/index");
 app.use("/", index);
