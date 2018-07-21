@@ -17,8 +17,26 @@ authRoutes.get("/confirm", (req,res,next) => {
 });
 
 authRoutes.get("/confirm/:confirmCode",(res, req, next) => {
-  
-})
+  const confirmCode = req.params.confirmcode;
+  User.findOne({"confirmationCode":confirmCode},(error, user) => {
+    if(error || !user){
+      console.log("el usuario no existe");
+      res.render("auth/login", {
+        errorMessage: "El usuario no existe"
+      });
+      return;
+    } else{
+      User.update({_id: user._id},{$set: {status:'active'}})
+      .then((response) => {
+        console.log({response});
+        res.render('auth/confirmation',{user});
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    }
+  })
+});
 
 authRoutes.post("/login", passport.authenticate("local", {
   successRedirect: "/",
@@ -78,7 +96,7 @@ authRoutes.post("/signup", (req, res, next) => {
     secure: true, // use SSL
     auth: {
       user: 'drakarzamael@gmail.com',
-      pass: 'xxxxxxxxx'
+      pass: 'elreymalo666'
     }
     
   });
@@ -86,9 +104,9 @@ authRoutes.post("/signup", (req, res, next) => {
     from: '"My Awesome Project 👻" <drakarzamael@gmail.com>',
     to: email, 
     subject: 'hola nuevo usuario', 
-    text: 'codigo de confirmacion sigue esta liga' + link,
+    text: 'codigo de confirmacion sigue esta liga',
  
-    html: '<b>this is sparta</b>'+ link
+    html:'<b><a href="http://localhost:3000/auth/confirm/'+hashUser+'">Clicka aqui para confirmar</></b>'
 })
 .then(info => console.log(info))
 .catch(error => console.log(error))
