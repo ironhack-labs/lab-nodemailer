@@ -3,6 +3,8 @@ const passport = require("passport");
 const router = express.Router();
 const User = require("../models/User");
 const sendMail = require("../mail/mail");
+const hbs = require("handlebars");
+const fs = require("fs");
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -52,11 +54,13 @@ router.post("/signup", (req, res, next) => {
       confirmationCode
     });
     let sub = "Confirmation Mail";
-    let msg = `<a href="http://localhost:3000/auth/confirmation/${encodeURIComponent(confirmationCode)}">Click to confirm Email<a> ${email}`;
+    const templateStr = fs.readFileSync("./mail/template/mail.hbs").toString();
+    const template = hbs.compile(templateStr);
+    const html = template({ confirmationCode, username });
     newUser
       .save()
       .then(() => {
-        return sendMail(email, sub, msg);
+        return sendMail(email, sub, html);
       })
       .then(() => {
         res.redirect("/");
@@ -73,15 +77,13 @@ router.get("/logout", (req, res) => {
 });
 
 router.get("/confirmation/:confirmCode", (req, res) => {
-  console.log(req.params.confirmCode)
+  console.log(req.params.confirmCode);
   const confirmCode = req.params.confirmCode;
-  User.findOneAndUpdate(
-    { confirmationCode: confirmCode },
-    { status: "Active" }
-  ).then(user => {
-    console.log(user)
-    res.render("auth/confirmation", { user })
-  })
-  .catch(e=>console.log(e));
-})
+  User.findOneAndUpdate({ confirmationCode: confirmCode }, { status: "Active" })
+    .then(user => {
+      console.log(user);
+      res.render("auth/confirmation", { user });
+    })
+    .catch(e => console.log(e));
+});
 module.exports = router;
