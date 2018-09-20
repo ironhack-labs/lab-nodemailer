@@ -66,7 +66,7 @@ router.post("/signup", (req, res, next) => {
 			.then(user => {
 				let subject = 'Account Confirmation';
 				let template = hbs.compile(fs.readFileSync('./views/auth/email.hbs').toString());
-				let html = template({code: user.confirmationCode});
+				let html = template({user:user});
 				return sendMail(user.email, subject, html);
 			})
 			.then(() => {
