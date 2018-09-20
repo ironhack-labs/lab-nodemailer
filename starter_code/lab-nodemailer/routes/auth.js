@@ -2,6 +2,8 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
+const sendMail = require('../mail/sendMail');
+
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -27,7 +29,7 @@ router.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
-  const confirmationCode = "1234";
+  const confirmationCode = "";
   const status = 'Pending Confirmation';
   if (username === "" || password === "" || email === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
@@ -42,7 +44,7 @@ router.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
-    const hashConfirm = bcrypt.hashSync(confirmationCode,salt);
+    const hashConfirm = bcrypt.hashSync(username,salt);
 
     const newUser = new User({
       username,
@@ -51,8 +53,13 @@ router.post("/signup", (req, res, next) => {
       confirmationCode: hashConfirm,
       status
     });
-
+    
     newUser.save()
+      .then(() => {
+        console.log('entra a correo');
+        const confURL= `http://localhost:3000/auth/confirm/${newUser.confirmationCode}`;
+        return sendMail('ironhack.pepe@gmail.com', confURL)  
+      })
     .then(() => {
       res.redirect("/");
     })
