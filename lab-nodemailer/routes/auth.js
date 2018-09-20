@@ -42,7 +42,8 @@ router.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
-    const hashPassConfirmation = bcrypt.hashSync(username, salt);
+    let firstHashPassConfirmation = bcrypt.hashSync(username, salt);
+    let hashPassConfirmation = encodeURI(firstHashPassConfirmation)
 
     const newUser = new User({
       username,
@@ -64,10 +65,7 @@ router.post("/signup", (req, res, next) => {
   });
 });
 
-router.get("/logout", (req, res) => {
-  req.logout();
-  res.redirect("/");
-});
+
 
 router.get("/confirm/:confirmCode", (req, res, next) => {
   let code = req.params.confirmCode;
@@ -77,6 +75,8 @@ router.get("/confirm/:confirmCode", (req, res, next) => {
   })
   .catch(e => console.log(e))
 })
+
+
 
 
 module.exports = router;
