@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Confirmation email</title>
+</head>
+<body>
+    <h1>Best Ironhacker's confirmation email</h1>
+    <h3>HEEELLOOOO {{user.username}}!!</h3>
+    <p>Thanks for loggin in. </p>
+    <p>Please confirm your account clicking on the following link:</p>
+    <hr>
+    <br>
+    <a href="http://localhost:3000/auth/confirm/${user.confirmationCode}">Click here!</a>
+
+    
+</body>
+</html>
