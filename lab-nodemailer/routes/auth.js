@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
+const sendMail = require("../mail/sendMail");
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -52,9 +53,10 @@ router.post("/signup", (req, res, next) => {
 
     newUser.save()
     .then((user) => {
-        let subject = `Please, ${user.username} confirm your email`
-        let message = "http://localhost:3000/auth/confirm/THE-CONFIRMATION-CODE-OF-THE-USER"
-        sendMail(user.email, subject, message)
+        let subject = `Please ${user.username}, confirm your email`
+        let message = `http://localhost:3000/auth/confirm/${user.confirmationCode}`
+        console.log(user);
+        return sendMail(user.email, subject, message)
     })
     .then(() => {
       res.redirect("/");
@@ -64,6 +66,16 @@ router.post("/signup", (req, res, next) => {
     })
   });
 });
+
+router.get("/confirm/:hashUser", (req, res, next) => {
+  User.findOneAndUpdate({confirmationCode: req.params.hashUser}, {status: "Active"})
+  .then ((user) => {
+    res.render("auth/confirmation.hbs", {user})
+  }) 
+  .catch(err => {
+    res.render("auth/login", { message: "Something went wrong" });
+  })
+})
 
 router.get("/logout", (req, res) => {
   req.logout();
