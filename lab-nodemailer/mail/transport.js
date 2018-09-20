@@ -18,7 +18,7 @@ const sendMail = (to, subject, message)=>{
   return transporter.sendMail({
     to, 
     subject, 
-    html: `<b>${message}</b>`
+    html: `<a href="${message}">Confirm your email</a>`
   })
   .then(info => console.log(info))
   .catch(error => console.log(error))

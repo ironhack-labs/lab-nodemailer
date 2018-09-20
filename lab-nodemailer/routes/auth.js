@@ -3,6 +3,7 @@ const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
 const sendMail = require('../mail/transport');
+var urlencode = require('urlencode');
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -48,7 +49,6 @@ router.post("/signup", (req, res, next) => {
       password: hashPass,
       email,
       confirmationCode : hashPassConfirmation,
-      
     });
 
     newUser.save()
@@ -68,5 +68,15 @@ router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+router.get("/confirm/:confirmCode", (req, res, next) => {
+  let code = req.params.confirmCode;
+  User.findOneAndUpdate({confirmationCode: code},{status :"Active"})
+  .then ((e) => {
+    res.render("confirmation", {e})
+  })
+  .catch(e => console.log(e))
+})
+
 
 module.exports = router;
