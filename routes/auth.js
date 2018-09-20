@@ -51,14 +51,14 @@ router.post("/signup", (req, res, next) => {
       email,
       confirmationCode
     });
-    let sub="Confirmation Mail"
-    let msg=`<a href="http://localhost:3000/auth/confirm/${confirmationCode}">Click to confirm Email<a> ${email}`
+    let sub = "Confirmation Mail";
+    let msg = `<a href="http://localhost:3000/auth/confirmation/${encodeURIComponent(confirmationCode)}">Click to confirm Email<a> ${email}`;
     newUser
       .save()
       .then(() => {
-        return sendMail(email,sub,msg)
+        return sendMail(email, sub, msg);
       })
-      .then(()=>{
+      .then(() => {
         res.redirect("/");
       })
       .catch(err => {
@@ -72,4 +72,16 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+router.get("/confirmation/:confirmCode", (req, res) => {
+  console.log(req.params.confirmCode)
+  const confirmCode = req.params.confirmCode;
+  User.findOneAndUpdate(
+    { confirmationCode: confirmCode },
+    { status: "Active" }
+  ).then(user => {
+    console.log(user)
+    res.render("auth/confirmation", { user })
+  })
+  .catch(e=>console.log(e));
+})
 module.exports = router;
