@@ -3,6 +3,7 @@ const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
 const sendMail = require("../mail/sendMail");
+const ensureLogin = require("connect-ensure-login")
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -52,29 +53,33 @@ router.post("/signup", (req, res, next) => {
     });
 
     newUser.save()
-    .then((user) => {
+      .then((user) => {
         let subject = `Please ${user.username}, confirm your email`
         let message = `http://localhost:3000/auth/confirm/${user.confirmationCode}`
         console.log(user);
         return sendMail(user.email, subject, message)
-    })
-    .then(() => {
-      res.redirect("/");
-    })
-    .catch(err => {
-      res.render("auth/signup", { message: "Something went wrong" });
-    })
+      })
+      .then(() => {
+        res.redirect("/");
+      })
+      .catch(err => {
+        res.render("auth/signup", { message: "Something went wrong" });
+      })
   });
 });
 
 router.get("/confirm/:hashUser", (req, res, next) => {
-  User.findOneAndUpdate({confirmationCode: req.params.hashUser}, {status: "Active"})
-  .then ((user) => {
-    res.render("auth/confirmation.hbs", {user})
-  }) 
-  .catch(err => {
-    res.render("auth/login", { message: "Something went wrong" });
-  })
+  User.findOneAndUpdate({ confirmationCode: req.params.hashUser }, { status: "Active" })
+    .then((user) => {
+      res.render("auth/confirmation.hbs", { user })
+    })
+    .catch(err => {
+      res.render("auth/login", { message: "Something went wrong" });
+    })
+})
+
+router.get("/profile", ensureLogin.ensureLoggedIn(), (req, res) => {
+  res.render("auth/profile", {user: req.user})
 })
 
 router.get("/logout", (req, res) => {
