@@ -13,11 +13,11 @@ let transporter = nodemailer.createTransport({
 	}
 });
 
-const sendMail = (to, subject, confirmationCode) => {
+const sendMail = (to, subject, html) => {
 	return transporter.sendMail({
 	  to, 
 	  subject, 
-	  text: `http://localhost:3000/auth/confirm/${confirmationCode}`
+	  html
 	})
 	.then(info => console.log(info))
 	.catch(error => console.log(error))

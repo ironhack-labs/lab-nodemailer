@@ -4,6 +4,8 @@ const ensureLogin = require('connect-ensure-login');
 const router = express.Router();
 const User = require("../models/User");
 const sendMail = require('../mail/sendMail');
+const fs = require('fs');
+const hbs = require('hbs');
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -51,7 +53,7 @@ router.post("/signup", (req, res, next) => {
 
 		const salt = bcrypt.genSaltSync(bcryptSalt);
 		const hashPass = bcrypt.hashSync(password, salt);
-		const hashUsername = bcrypt.hashSync(username, salt);
+		const hashUsername = encodeURI(bcrypt.hashSync(username, salt)).replace("/", "");
 
 		const newUser = new User({
 			username,
@@ -63,7 +65,9 @@ router.post("/signup", (req, res, next) => {
 		newUser.save()
 			.then(user => {
 				let subject = 'Account Confirmation';
-				return sendMail(user.email, subject, user.confirmationCode)
+				let template = hbs.compile(fs.readFileSync('./views/auth/email.hbs').toString());
+				let html = template({code: user.confirmationCode});
+				return sendMail(user.email, subject, html);
 			})
 			.then(() => {
 				res.redirect("/");
