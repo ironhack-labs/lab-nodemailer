@@ -61,7 +61,8 @@ router.post("/signup", (req, res, next) => {
         <p>Please confirm your account clicking on the following link:</p>
         <hr>
         <br>
-        <a href="http://localhost:3000/auth/confirm/${user.confirmationCode}">Click here!</a>`
+        <a href="http://localhost:3000/auth/confirm/${user.confirmationCode}">Click here!</a>
+        <img src="https://media.giphy.com/media/awRutawdcWLJe/giphy.gif" alt="Epic gif">`
         console.log(user);
         return sendMail(user.email, subject, message)
       })
