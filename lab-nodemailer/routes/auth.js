@@ -1,5 +1,6 @@
 const express = require("express");
 const passport = require('passport');
+const ensureLogin = require('connect-ensure-login');
 const router = express.Router();
 const User = require("../models/User");
 const sendMail = require('../mail/sendMail');
@@ -16,7 +17,7 @@ router.get("/login", (req, res, next) => {
 });
 
 router.post("/login", passport.authenticate("local", {
-	successRedirect: "/",
+	successRedirect: "/auth/profile",
 	failureRedirect: "/auth/login",
 	failureFlash: true,
 	passReqToCallback: true
@@ -89,8 +90,9 @@ router.get('/confirm/:confirmCode', (req, res) => {
 	})
 })
 
-router.get('/user/:profile', () => {
-	
+router.get('/profile', ensureLogin.ensureLoggedIn('/auth/login'), (req, res, next) => {
+	const user = req.user;
+	res.render('auth/profile', {user});
 })
 
 module.exports = router;
