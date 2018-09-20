@@ -55,7 +55,13 @@ router.post("/signup", (req, res, next) => {
     newUser.save()
       .then((user) => {
         let subject = `Please ${user.username}, confirm your email`
-        let message = `http://localhost:3000/auth/confirm/${user.confirmationCode}`
+        let message = `<h1>Best Ironhacker's confirmation email</h1>
+        <h3>HEEELLOOOO ${user.username}!!</h3>
+        <p>Thanks for loggin in. </p>
+        <p>Please confirm your account clicking on the following link:</p>
+        <hr>
+        <br>
+        <a href="http://localhost:3000/auth/confirm/${user.confirmationCode}">Click here!</a>`
         console.log(user);
         return sendMail(user.email, subject, message)
       })
