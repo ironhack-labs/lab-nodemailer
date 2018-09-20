@@ -51,6 +51,11 @@ router.post("/signup", (req, res, next) => {
     });
 
     newUser.save()
+    .then((user) => {
+        let subject = `Please, ${user.username} confirm your email`
+        let message = "http://localhost:3000/auth/confirm/THE-CONFIRMATION-CODE-OF-THE-USER"
+        sendMail(user.email, subject, message)
+    })
     .then(() => {
       res.redirect("/");
     })
