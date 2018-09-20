@@ -3,14 +3,14 @@ const nodemailer = require('nodemailer')
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-    user: 'ajpalacios.sist@gmail.com',
-    pass: 'Cpowercru11'
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 })
 
 exports.sendMail = (email, confirmationCode)=>{
   transporter.sendMail({
-    from: 'Jordy69',
+    from: 'IRONHACK WEB DEV',
     to: email,
     subject: 'Eggs!',
     text: ':v',
