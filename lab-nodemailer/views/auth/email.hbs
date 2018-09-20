@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>{{title}}</title>
+	<style>
+		body {
+			padding: 50px;
+			font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+		}
+
+		a {
+			color: #00B7FF;
+		}
+
+		.email-wrap {
+			margin: 30px;
+			background-color: #ededed;
+			margin: 30px;
+		}
+
+		.email {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			flex-wrap: wrap;
+			text-align: center;
+			background-color: #fff;
+			color: #333;
+		}
+
+		.email-title {
+			padding-top: 20px;
+			padding-bottom: 20px;
+		}
+
+		.email-logo {
+			width: 50px;
+			height: 50px;
+		}
+
+		.logo img {
+			width: 100%;
+			height: auto;
+		}
+	</style>
+</head>
+
+<body>
+
+	<section class="email-wrap">
+		<div class="email">
+			<p class="email-title">Ironhack-Lab-Nodemailer</p>
+			<div class="email-logo">
+				<img src="/images/logo.svg" alt="">
+			</div>
+			<h2>Ironhack Confirmation Email</h2>
+			<h3>Hello {{user.username}}</h3>
+			<h4>Thanks to join our community! Please confirm your account clicking on the following link:</h4>
+			<h3><a href="http://localhost:3000/auth/confirm/{{user.confirmationCode}}">http://localhost:3000/auth/confirm/{{user.confirmationCode}}</a></h3>
+			<h2>Great to see you creating awesome webpages you with us! </h2>
+		</div>
+		<h3>You are doing awesome! </h3>
+	</section>
+
+</body>
+</html>
