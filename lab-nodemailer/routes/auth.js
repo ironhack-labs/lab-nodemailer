@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
+const mailer = require('../helpers/mailer');
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -24,10 +25,15 @@ router.get("/signup", (req, res, next) => {
 });
 
 router.post("/signup", (req, res, next) => {
+  const email = req.body.email;
   const username = req.body.username;
   const password = req.body.password;
-  if (username === "" || password === "") {
-    res.render("auth/signup", { message: "Indicate username and password" });
+
+  
+
+
+  if (username === "" || password === "" || email === "") {
+    res.render("auth/signup", { message: "Indicate email, username and password" });
     return;
   }
 
@@ -39,18 +45,41 @@ router.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
-
+    const hashUsername = bcrypt.hashSync(username, salt);
+    
+    
     const newUser = new User({
+      email,
       username,
-      password: hashPass
+      password: hashPass,
+      confirmationCode: hashUsername
     });
-
+    
     newUser.save()
     .then(() => {
-      res.redirect("/");
+
+      let options = {};
+      options.filename = 'verify';
+      options.email = email;
+      options.username = username;
+      options.subject = 'Please, verify your email';
+      options.confirmationCode = hashUsername;
+
+      console.log('=====>')
+      console.log('Options',options)
+
+      mailer.send(options)
+        .then(()=>{
+          res.status(200).send('Mail succesfully sended...')
+        })
+        .catch(err => {
+          console.log('Something went wrong MAIL', err);
+        });
+      //res.redirect("/");
     })
     .catch(err => {
-      res.render("auth/signup", { message: "Something went wrong" });
+      res.render("auth/signup", { message: "Something went wrong USER", err });
+      console.log(err);
     })
   });
 });
