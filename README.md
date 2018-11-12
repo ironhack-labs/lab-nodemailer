@@ -75,13 +75,13 @@ After creating the user, you should send the email to the address the user put o
 
 When the user clicks on the URL we included in the email; we should make a comparison of the `comparationCode` on the URL and the one on the database. You should create a route: `/confirm/:confirmCode` inside the `routes/auth.js` file.
 
-Inside the route, after comparing the confirmation code, you have to set to 'Active' the `status` field of the user, and then render a `confirmation.hbs` view, letting know to the user that everything goes perfect, or showing the error.
+Inside the route, after comparing the confirmation code, you have to set the `status` field of the user to 'Active'. Then render a `confirmation.hbs` view, letting the user know that everything went perfect, or showing the error.
 
 ![image](https://user-images.githubusercontent.com/23629340/37097564-1113a5d6-221c-11e8-955a-87fa11b85ac0.png)
 
 ### Iteration 4 - Profile View
 
-Finally, you have to create a `profile.hbs` view, where you have to render the `username` and the `status` of the user. 
+Finally, you have to create a `profile.hbs` view, where you have to render the `username` and the `status` of the user.
 
 <img src="https://user-images.githubusercontent.com/23629340/37097677-5e117c00-221c-11e8-9307-bb01aac96bb4.png" style="width:45%">
 
@@ -92,4 +92,3 @@ Finally, you have to create a `profile.hbs` view, where you have to render the `
 Sending the email, only with the URL is super boring! Feel free to give some sugar to the design, at the end is `HTML`.
 
 ![image](https://user-images.githubusercontent.com/23629340/37099024-ab0d7c9a-221f-11e8-9458-49f813437e2c.png)
-
