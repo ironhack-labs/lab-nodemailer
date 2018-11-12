@@ -1,25 +1,7 @@
-![Ironhack logo](https://i.imgur.com/1QgrNNw.png)
+![logo_ironhack_blue 7](https://user-images.githubusercontent.com/23629340/40541063-a07a0a8a-601a-11e8-91b5-2f13e4e6b441.png)
 
-# PP | Sign up Confirmation Email
+# Sign up Confirmation Email
 
-## Requirements
-
-- [Fork this repo](https://guides.github.com/activities/forking/).
-- Clone your fork into your `~/code/labs` folder.
-
-## Submission
-
-Upon completion, run the following commands:
-
-```bash
-$ git add .
-$ git commit -m"done"
-$ git push origin master
-```
-
-Navigate to your repo and create a Pull Request -from your master branch to the original repository master branch.
-
-In the Pull Request name, add your Campus, name, and last name separated by a dash "-".
 
 ## Introduction
 
@@ -27,11 +9,32 @@ In the Pull Request name, add your Campus, name, and last name separated by a da
 
 Almost every time we register on a web app, the platform asks us to confirm our account by clicking on a link they send to our email. This is a great way to avoid people who complete the registration with fake info. In this lab, we will create an application where a user can signup and then clicks on a link he will receive at our email. We will use **Nodemailer** for this!
 
+
+## Requirements
+
+- Fork this repo
+- Then clone this repo.
+
+
+## Submission
+
+- Upon completion, run the following commands
+```
+$ git add .
+$ git commit -m "done"
+$ git push origin master
+```
+- Create Pull Request so your TAs can check up your work.
+
+
+## Instructions
+
+
 ### Our gift 🎁 - Auth Flag
 
 The `ironhack_generator` is pretty awesome, and with this new feature, you will love it even more. When running the `irongenerate nameOfYourProject` command on the terminal you get a pretty cool express application ready to start working, but if you add the `--auth` flag, you will get the same application with PassportJS's `signup` and `login`  already set up.
 
-So inside the folder you just clone, go ahead and run the following command:
+So inside the folder you just cloned, go ahead and run the following command:
 
 ```bash
 $ irongenerate lab-nodemailer --auth
@@ -41,7 +44,6 @@ $ npm install
 
 Awesome huh? Let's start!
 
-## Deliverables
 
 ### Iteration 1 - User Model
 
@@ -92,3 +94,5 @@ Finally, you have to create a `profile.hbs` view, where you have to render the `
 Sending the email, only with the URL is super boring! Feel free to give some sugar to the design, at the end is `HTML`.
 
 ![image](https://user-images.githubusercontent.com/23629340/37099024-ab0d7c9a-221f-11e8-9458-49f813437e2c.png)
+
+Happy Coding! :heart:
