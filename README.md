@@ -92,9 +92,6 @@ Inside the route, after comparing the confirmation code, you have to set the `st
 
 Finally, you have to create a `profile.hbs` view, where you have to render the `username` and the `status` of the user.
 
-<img src="https://user-images.githubusercontent.com/23629340/37097677-5e117c00-221c-11e8-9307-bb01aac96bb4.png" style="width:45%">
-
-<img src="https://user-images.githubusercontent.com/23629340/37097698-6744d902-221c-11e8-90f1-b680f6dbdd76.png" style="width:45%">
 
 ### Bonus! Styling the Email
 
