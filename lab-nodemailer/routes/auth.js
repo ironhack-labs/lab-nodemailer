@@ -24,6 +24,9 @@ function codeGen() {
   return token;
 }
 
+const confirmationCode = '123';
+
+
 router.get("/login", (req, res, next) => {
   res.render("auth/login", { message: req.flash("error") });
 });
@@ -47,7 +50,6 @@ router.post("/signup", (req, res, next) => {
   const password = req.body.password;
   const email = req.body.password;
   const status = "Pending Confirmation";
-  const confirmationCode = codeGen();
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
@@ -107,8 +109,12 @@ router.post("/signup", (req, res, next) => {
   });
 });
 
-router.get("/auth/confirm/:confirmationCode", (req, res, next) => {
-  res.render("confirm");
+router.get("auth/confirm/:confirmationCode", (req, res, next) => {
+  let confirmCode =  confirmationCode;
+  User.findOneAndUpdate(confirmCode, {"status": "Active"})
+  .then(user => 
+    res.render("auth/confirm", {user}))
+  .catch(err => console.log(err))
 });
 
 /*
