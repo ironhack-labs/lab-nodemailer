@@ -3,6 +3,8 @@ const passport = require('passport');
 
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const transporter = require('../mail/transporter');
+
 const User = require('../models/User');
 
 // Bcrypt to encrypt passwords
@@ -25,8 +27,13 @@ router.get('/signup', (req, res, next) => {
 });
 
 router.post('/signup', (req, res, next) => {
-  const { username } = req.body;
-  const { password } = req.body;
+  const { username, email, password } = req.body;
+  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let token = '';
+  for (let i = 0; i < 25; i++) {
+    token += characters[Math.floor(Math.random() * characters.length)];
+  }
+
   if (username === '' || password === '') {
     res.render('auth/signup', { message: 'Indicate username and password' });
     return;
@@ -43,11 +50,20 @@ router.post('/signup', (req, res, next) => {
 
     const newUser = new User({
       username,
+      email,
       password: hashPass,
+      confirmationCode: token,
     });
 
     newUser.save()
       .then(() => {
+        transporter.sendMail({
+          from: 'My email',
+          to: `${newUser.email}`,
+          subject: 'itsame',
+          text: 'pepe',
+          html: `<a>http://localhost:3000/auth/confirm/${newUser.confirmationCode}</a>`,
+        });
         res.redirect('/');
       })
       .catch(() => {
@@ -59,6 +75,12 @@ router.post('/signup', (req, res, next) => {
 router.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
+});
+
+router.get('/confirm/:confirmationCode', (req, res, next) => {
+  User.findByIdAndUpdate(req.user.id, { status: 'Active' })
+    .then(() => res.redirect('/'))
+    .catch(err => next(err));
 });
 
 module.exports = router;
