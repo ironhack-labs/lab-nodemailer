@@ -4,11 +4,12 @@ const Schema   = mongoose.Schema;
 const userSchema = new Schema({
   username: String,
   password: String,
-  status: {
+  status: { 
+    type: String,
     enum: ['Pending Confirmation','Active'],
     default: 'Pending Confirmation'
   },
-  confirmationCode: String,
+  confirmationCode: {type: String, unique: true},
   email: String
 }, {
   timestamps: {
