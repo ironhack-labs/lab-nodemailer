@@ -93,4 +93,19 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+router.get("/confirm/:confirmCode", (req, res) => {
+  console.log(req.params.confirmCode)
+  User.findOneAndUpdate({confirmationCode:req.params.confirmCode},{$set:{status:"Active"}},{new: true})
+  .then(()=>{
+    console.log("Usuario Activo")
+  }).catch(()=>{
+    console.log("A ocurrido un error de activacion")
+  })
+    
+  
+    
+  
+  
+})
+
 module.exports = router;
