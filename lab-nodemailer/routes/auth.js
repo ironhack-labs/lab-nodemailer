@@ -3,34 +3,57 @@ const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
 const transporter = require('../mail/trasnporter');
-
+const { ensureLoggedIn, ensureLoggedOut } = require('connect-ensure-login');
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
-
-router.get("/login", (req, res, next) => {
+router.get("/login", ensureLoggedOut(),(req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
 });
 
-router.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
+router.get("/confirm/:confirmCode", (req, res, next) => {
+
+  if (!req.user) {
+    res.render("auth/confirmation", { message: 'User inactive. Please login.' });
+  } else if (req.user.confirmationCode === req.params.confirmCode) {
+    req.user.status = 'Active';
+    const status = req.user.status;
+    res.render("auth/confirmation", { message: 'User active.' });
+  }
+
+});
+
+router.get("/profile", ensureLoggedIn('/login'),(req, res, next) => {
+
+  User.findById(req.user._id)
+    .then(user => {
+      res.render('auth/profile', { user });
+    })
+    .catch(err => {
+      console.error(err);
+    })
+});
+
+router.post("/login", ensureLoggedOut(),passport.authenticate("local", {
+  successRedirect: "/auth/profile",
   failureRedirect: "/auth/login",
   failureFlash: true,
   passReqToCallback: true
 }));
 
-router.get("/signup", (req, res, next) => {
+router.get("/signup", ensureLoggedOut(),(req, res, next) => {
   res.render("auth/signup");
 });
 
-router.post("/signup", (req, res, next) => {
+router.post("/signup", ensureLoggedOut(),(req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
   const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let confirmationCode = '';
+
   for (let i = 0; i < 25; i++) {
     confirmationCode += characters[Math.floor(Math.random() * characters.length)];
   }
@@ -57,49 +80,27 @@ router.post("/signup", (req, res, next) => {
     });
 
     newUser.save()
-      .then(() => {
-        res.redirect("/");
+      .then(user => {
+        transporter.sendMail({
+          from: '"My Awesome Project 👻" <myawesome@project.com>',
+          to: 'jacinlotar@gmail.com',
+          subject: 'Prueba',
+          text: `http://localhost:3000/auth/confirm/${confirmationCode}`,
+        })
+          .then(() => res.render(`auth/profile`, { user }))
+          .catch(err => console.log(err));
+
       })
       .catch(err => {
         res.render("auth/signup", { message: "Something went wrong" });
       })
 
-    const mail = req.body.email;
-    transporter.sendMail({
-      from: '"My Awesome Project 👻" <myawesome@project.com>',
-      to: 'jacinlotar@gmail.com',
-      subject: 'Prueba',
-      text: 'http://localhost:3000/auth/confirm/THE-CONFIRMATION-CODE-OF-THE-USER',      
-    })
-      .then(() => res.render('message', { mail, subject, message }))
-      .catch(err => console.log(err));
-
   });
-
-
 });
 
-router.get("/logout", (req, res) => {
+router.get("/logout",ensureLoggedIn('/login'), (req, res) => {
   req.logout();
   res.redirect("/");
 });
-
-router.post('/send-email', (req, res, next) => {
-  const { email, subject, message } = req.body;
-  transporter.sendMail({
-    from: '"My Awesome Project 👻" <myawesome@project.com>',
-    to: 'iron0618test@gmail.com',
-    subject: 'Awesome Subject',
-    text: 'Awesome Message',
-    html: '<a href="https://www.youtube.com/embed/Wt88GMJmVk0">WEB TO WAPA<a>',
-  })
-    .then(() => res.render('message', { email, subject, message }))
-    .catch(err => console.log(err));
-});
-
-
-
-
-
 
 module.exports = router;
