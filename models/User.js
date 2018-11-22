@@ -5,8 +5,8 @@ const Schema   = mongoose.Schema;
 const userSchema = new Schema({
   username: String,
   password: String,
-  status: { type: String, enum:['active', 'pending'] },
-  confirmationCode: { type: String, unique:true },
+  status: { type: String, enum:['active', 'pending'], default:'pending' },
+  confirmationCode: { type: String },
   email: String,
 }, {
   timestamps: {
