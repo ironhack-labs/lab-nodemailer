@@ -1,5 +1,6 @@
 const express = require("express");
 const passport = require('passport');
+const { ensureLoggedIn, ensureLoggedOut } = require('connect-ensure-login');
 const transporter = require('../mail/transporter');
 const router = express.Router();
 const User = require("../models/User");
@@ -14,7 +15,7 @@ router.get("/login", (req, res, next) => {
 });
 
 router.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
+  successRedirect: "/auth/profile",
   failureRedirect: "/auth/login",
   failureFlash: true,
   passReqToCallback: true
@@ -30,7 +31,11 @@ router.get("/confirm/:confirmCode", (req, res, next) => {
       res.render("auth/confirmation", { user });
     })
     .catch(err => console.log(err));
+});
 
+router.get("/profile", ensureLoggedIn(), (req, res, next) => {
+  user = req.user
+  res.render("auth/profile", { user });
 });
 
 router.post("/signup", (req, res, next) => {
