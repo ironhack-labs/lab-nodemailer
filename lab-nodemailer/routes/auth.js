@@ -24,6 +24,15 @@ router.get("/signup", (req, res, next) => {
   res.render("auth/signup");
 });
 
+router.get("/confirm/:confirmCode", (req, res, next) => {
+  User.findOneAndUpdate({ confirmationCode: req.params.confirmCode }, { $set: { status: "Active" } }, { new: true })
+    .then((user) => {
+      res.render("auth/confirmation", { user });
+    })
+    .catch(err => console.log(err));
+
+});
+
 router.post("/signup", (req, res, next) => {
   const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let token = '';
