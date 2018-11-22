@@ -1,8 +1,43 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  
+  font-family: 'Bitter', serif;
 }
 
-a {
-  color: #00B7FF;
+
+.principal{
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: center;
+}
+
+.principal h1{
+  font-size: 3rem;
+  padding: 2rem; 
+  color: rgb(63, 88, 102);
+}
+
+.nav-div{
+  background-color: rgb(15, 54, 105);
+}
+
+.bar-navigation{
+  padding: 1.2rem;
+  width: 20%;
+  display: flex;
+  justify-content: space-evenly;
+  
+}
+
+.bar-navigation a{
+  text-decoration: none;
+ color: white;
+}
+
+.div-login {
+  background-color: rgb(189, 211, 222);
+}
+
+.div-login label{
+  font-size: 1.2rem;
 }

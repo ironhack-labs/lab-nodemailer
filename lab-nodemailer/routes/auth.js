@@ -103,13 +103,13 @@ router.get("/confirm/:confirmCode", (req, res, next) => {
 });
 
 router.get('/profile',(req,res,next)=>{
-  res.render('/auth/profile');
+  res.render('auth/profile');
 })
 
 router.get(
   "/check-profile",
   passport.authenticate("local", {
-    successRedirect: "/profile",
+    successRedirect: "/auth/profile",
     failureRedirect: "/auth/login",
     failureFlash: true,
     passReqToCallback: true
