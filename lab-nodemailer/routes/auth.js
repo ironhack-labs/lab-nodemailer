@@ -55,9 +55,16 @@ router.post("/signup", (req, res, next) => {
       confirmationCode
     });
 
+  let autoEmailer = {
+    senderEmail: "pferni@gmail.com",
+    subject: "account confirmation",
+    message: `This is a confirmation message from the nodemailer-lab, please use the following code to confirm: ${confirmationCode}`
+  }
+
     newUser.save()
       .then(() => {
-        res.redirect("/");
+        console.log(autoEmailer);
+        res.render("auth/message", autoEmailer);
       })
       .catch(err => {
         res.render("auth/signup", { message: "Something went wrong" });
