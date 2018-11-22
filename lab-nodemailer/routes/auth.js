@@ -72,12 +72,12 @@ router.post("/signup", (req, res, next) => {
       html: `<p>${autoEmailer.message}<p>
       `,
     })
-      .then(() => console.log('message' + "\n" + autoEmailer ))
+      .then(() => console.log('message' + "\n" + {autoEmailer} ))
       .catch(err => console.log(err));
 
     newUser.save()
       .then(() => {
-        console.log(autoEmailer);
+        console.log({autoEmailer});
         res.render("auth/message", autoEmailer);
       })
       .catch(err => {
@@ -90,5 +90,29 @@ router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+router.get("/confirm/:confirmCode", (req,res)=>{
+  User.find({confirmationCode: req.params.confirmCode})
+  .then((user1)=>{
+    if (user1!==null) {
+      // console.log(confirmationCode);
+      // console.log(req.params.confirmCode);
+      let status = "Active"
+      console.log({user1});
+      console.log(user1[0]._id);
+      User.findByIdAndUpdate(user1[0]._id, {status})
+      .then((user2)=>{
+        console.log("User Status Updated: " + user2 );
+        res.render('auth/confirm', user2)
+      })
+      .catch((err)=>{
+        return err
+      })
+      } 
+  })
+  .catch((err)=>{
+    return err
+  })
+})
 
 module.exports = router;
