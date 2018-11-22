@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
+const transporter = require('../mail/transporter');
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -9,55 +10,68 @@ const bcryptSalt = 10;
 
 
 router.get("/login", (req, res, next) => {
-  res.render("auth/login", { "message": req.flash("error") });
+    res.render("auth/login", { "message": req.flash("error") });
 });
 
 router.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/auth/login",
-  failureFlash: true,
-  passReqToCallback: true
+    successRedirect: "/",
+    failureRedirect: "/auth/login",
+    failureFlash: true,
+    passReqToCallback: true
 }));
 
 router.get("/signup", (req, res, next) => {
-  res.render("auth/signup");
+    res.render("auth/signup");
 });
 
 router.post("/signup", (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  if (username === "" || password === "") {
-    res.render("auth/signup", { message: "Indicate username and password" });
-    return;
-  }
 
-  User.findOne({ username }, "username", (err, user) => {
-    if (user !== null) {
-      res.render("auth/signup", { message: "The username already exists" });
-      return;
+    const { username, password, email } = req.body;
+
+    if (username === "" || password === "" || email === "") {
+        res.render("auth/signup", { message: "Indicate username,password and email" });
+        return;
     }
 
-    const salt = bcrypt.genSaltSync(bcryptSalt);
-    const hashPass = bcrypt.hashSync(password, salt);
+    User.findOne({ username }, "username", (err, user) => {
+        if (user !== null) {
+            res.render("auth/signup", { message: "The username already exists" });
+            return;
+        }
 
-    const newUser = new User({
-      username,
-      password: hashPass
+        const salt = bcrypt.genSaltSync(bcryptSalt);
+        const hashPass = bcrypt.hashSync(password, salt);
+
+        const code = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const hashCode = bcrypt.hashSync(code, salt);
+
+        const newUser = new User({
+            username,
+            password: hashPass,
+            email,
+            confirmationCode: hashCode
+        });
+
+        newUser.save()
+            .then(() => {
+                console.log(transporter)
+                transporter.sendMail({
+                    from: '"My Awesome Project 👻" <myawesome@project.com>',
+                    to: email,
+                    subject: 'Awesome Subject',
+                    text: 'Awesome Message',
+                    html: `<b>http://localhost:3000/auth/confirm/${newUser.confirmationCode}</b>`
+                })
+            })
+            .catch(err => {
+                res.render("auth/signup", { message: "Something went wrong" });
+            })
     });
-
-    newUser.save()
-    .then(() => {
-      res.redirect("/");
-    })
-    .catch(err => {
-      res.render("auth/signup", { message: "Something went wrong" });
-    })
-  });
 });
 
 router.get("/logout", (req, res) => {
-  req.logout();
-  res.redirect("/");
+    req.logout();
+    res.redirect("/");
 });
 
 module.exports = router;

@@ -5,7 +5,7 @@ const userSchema = new Schema({
     username: String,
     password: String,
     status: { type: String, enum: ['Confirmación pendiente', 'Activo'], default: 'Confirmación pendiente' },
-    confirmationCode: { type: String, unique },
+    confirmationCode: { type: String, unique: true },
     email: String
 }, {
     timestamps: {
