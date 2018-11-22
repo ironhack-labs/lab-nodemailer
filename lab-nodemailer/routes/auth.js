@@ -9,7 +9,7 @@ const { ensureLoggedIn, ensureLoggedOut } = require('connect-ensure-login');
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
-router.get("/login", ensureLoggedOut(),(req, res, next) => {
+router.get("/login", ensureLoggedOut(), (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
 });
 
@@ -18,14 +18,18 @@ router.get("/confirm/:confirmCode", (req, res, next) => {
   if (!req.user) {
     res.render("auth/confirmation", { message: 'User inactive. Please login.' });
   } else if (req.user.confirmationCode === req.params.confirmCode) {
-    req.user.status = 'Active';
-    const status = req.user.status;
-    res.render("auth/confirmation", { message: 'User active.' });
+    User.findOneAndUpdate({ confirmationCode: req.params.confirmCode }, { $set: { status: "Active" } }, { new: true })
+      .then(() => {
+        res.render("auth/confirmation", { message: 'User active.' });
+      }).catch(() => {
+        res.render("auth/confirmation", { message: 'Error activation.' });
+      })
+        
   }
 
 });
 
-router.get("/profile", ensureLoggedIn('/login'),(req, res, next) => {
+router.get("/profile", ensureLoggedIn('/login'), (req, res, next) => {
 
   User.findById(req.user._id)
     .then(user => {
@@ -36,18 +40,18 @@ router.get("/profile", ensureLoggedIn('/login'),(req, res, next) => {
     })
 });
 
-router.post("/login", ensureLoggedOut(),passport.authenticate("local", {
+router.post("/login", ensureLoggedOut(), passport.authenticate("local", {
   successRedirect: "/auth/profile",
   failureRedirect: "/auth/login",
   failureFlash: true,
   passReqToCallback: true
 }));
 
-router.get("/signup", ensureLoggedOut(),(req, res, next) => {
+router.get("/signup", ensureLoggedOut(), (req, res, next) => {
   res.render("auth/signup");
 });
 
-router.post("/signup", ensureLoggedOut(),(req, res, next) => {
+router.post("/signup", ensureLoggedOut(), (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
@@ -98,7 +102,7 @@ router.post("/signup", ensureLoggedOut(),(req, res, next) => {
   });
 });
 
-router.get("/logout",ensureLoggedIn('/login'), (req, res) => {
+router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
