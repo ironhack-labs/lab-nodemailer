@@ -17,7 +17,7 @@ const flash      = require('connect-flash');
 mongoose
   .connect('mongodb://localhost/lab-nodemailer', { useNewUrlParser: true })
   .then((x) => {
-    console.log('Connected to the mongo bitchhh');
+    console.log('Connected to DB.. Do Your Thing');
   })
   .catch((err) => {
     console.error('Error connecting to mongo', err);
@@ -50,7 +50,7 @@ app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
 
 hbs.registerHelper('ifUndefined', (value, options) => {
-  if (arguments.length < 2) {throw new Error("Handlebars Helper ifUndefined needs 1 parameter");}
+  if (arguments.length < 2) { throw new Error('Handlebars Helper ifUndefined needs 1 parameter'); }
   if (typeof value !== undefined) {
     return options.inverse(this);
   }

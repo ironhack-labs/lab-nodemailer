@@ -84,9 +84,20 @@ router.post('/signup', (req, res, next) => {
     text: 'Go to this link to confirm',
     html: `<b>http://localhost:3000/auth/confirm/${confirmationCode}</b>`,
   })
-    .then(info => console.log(`${info}YOU FUCKING DID IT!!!!!!`))
+    .then(info => console.log(`${info}YOU SENT AN EMAIL`))
     .catch(error => console.log(error));
 });
+
+router.get('/confirm/:confirmCode', (req, res) => {
+  const  { confirmCode } = req.params;
+  console.log(confirmCode);
+  User.findOneAndUpdate({ confirmationCode: confirmCode }, { status : 'Active' }, { new: true }).then((user) => {
+    console.log(user);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
 
 router.get('/logout', (req, res) => {
   req.logout();
