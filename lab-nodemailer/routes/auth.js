@@ -47,37 +47,55 @@ router.post("/signup", (req, res, next) => {
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
 
-    const hashCode = bcrypt.hashSync(username, salt)
-
+    // const hashCode = bcrypt.hashSync(username, salt)
+    const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let token = '';
+    for (let i = 0; i < 25; i++) {
+      token += characters[Math.floor(Math.random() * characters.length)];
+    }
 
     const newUser = new User({
       username,
       password: hashPass,
       email,
-      confirmationCode: hashCode
+      confirmationCode: token
     });
 
-    const sendMail = (from, to, subject, text) => {
+    const sendMail = () => {
       return transporter.sendMail({
-        from: 'Myself',
+        from: user,
         to: email,
         subject: 'Registration Confirmed',
-        text: `Confirm registration here: http://localhost:3000/auth/confirm/${hashCode}`
+        text: `Confirm registration here: http://localhost:3000/auth/confirm/${token}`
       })
-        .then(info => console.log(info))
-        .catch(error => console.log(error));
     }
-
     newUser.save()
       .then((user) => {
-        sendMail(user).then(() => {
-          console.log("mensaje enviado")
-          res.redirect("/");
-        })
+        sendMail(user)
+          .then(() => {
+            res.redirect("/");
+          })
           .catch(err => {
             res.render("auth/signup", { message: "Something went wrong" });
           })
       });
+  });
+
+  router.get("/confirm/:confirmCode", (req, res) => {
+    const confirmCode = req.params.confirmCode;
+    // const confirmCode = req.params.token;
+    // console.log(confirmationCode, confirmCode)
+    User.findOneAndUpdate(
+      { "confirmationCode": confirmCode },
+      {
+        $set: { status: "Active" }
+      },
+      {
+        new: true
+      })
+      .then((message) => {
+        res.render("auth/confirmation", { message })
+      })
   });
 
   router.get("/logout", (req, res) => {
