@@ -2,6 +2,8 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
+const transporter = require('../mail/trasnporter');
+
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -26,8 +28,15 @@ router.get("/signup", (req, res, next) => {
 router.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
-  if (username === "" || password === "") {
-    res.render("auth/signup", { message: "Indicate username and password" });
+  const email = req.body.email;
+  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let confirmationCode = '';
+  for (let i = 0; i < 25; i++) {
+    confirmationCode += characters[Math.floor(Math.random() * characters.length)];
+  }
+
+  if (username === "" || password === "" || email === "") {
+    res.render("auth/signup", { message: "Indicate username, password and email, NOW!!!" });
     return;
   }
 
@@ -42,22 +51,55 @@ router.post("/signup", (req, res, next) => {
 
     const newUser = new User({
       username,
-      password: hashPass
+      password: hashPass,
+      email,
+      confirmationCode
     });
 
     newUser.save()
-    .then(() => {
-      res.redirect("/");
+      .then(() => {
+        res.redirect("/");
+      })
+      .catch(err => {
+        res.render("auth/signup", { message: "Something went wrong" });
+      })
+
+    const mail = req.body.email;
+    transporter.sendMail({
+      from: '"My Awesome Project 👻" <myawesome@project.com>',
+      to: 'jacinlotar@gmail.com',
+      subject: 'Prueba',
+      text: 'http://localhost:3000/auth/confirm/THE-CONFIRMATION-CODE-OF-THE-USER',      
     })
-    .catch(err => {
-      res.render("auth/signup", { message: "Something went wrong" });
-    })
+      .then(() => res.render('message', { mail, subject, message }))
+      .catch(err => console.log(err));
+
   });
+
+
 });
 
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+router.post('/send-email', (req, res, next) => {
+  const { email, subject, message } = req.body;
+  transporter.sendMail({
+    from: '"My Awesome Project 👻" <myawesome@project.com>',
+    to: 'iron0618test@gmail.com',
+    subject: 'Awesome Subject',
+    text: 'Awesome Message',
+    html: '<a href="https://www.youtube.com/embed/Wt88GMJmVk0">WEB TO WAPA<a>',
+  })
+    .then(() => res.render('message', { email, subject, message }))
+    .catch(err => console.log(err));
+});
+
+
+
+
+
 
 module.exports = router;
