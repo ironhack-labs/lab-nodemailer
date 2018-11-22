@@ -74,4 +74,12 @@ router.get("/logout", (req, res) => {
     res.redirect("/");
 });
 
+router.get('/confirm/:confirmCode', (req, res, next) => {
+    let confirmCode = req.params.confirmCode
+    User.findByIdAndUpdate({ confirmationCode: confirmCode }, { status: 'Active' })
+        .then(user => res.render('confirmation', { user }))
+        .catch(error => next(error))
+})
+
+
 module.exports = router;
