@@ -26,6 +26,15 @@ router.get("/signup", (req, res, next) => {
 router.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
+  const email = req.body.email;
+  const confirmationCode = token;
+  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let token = '';
+  for (let i = 0; i < 25; i++) {
+      token += characters[Math.floor(Math.random() * characters.length )];
+  }
+
+
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
@@ -42,7 +51,9 @@ router.post("/signup", (req, res, next) => {
 
     const newUser = new User({
       username,
-      password: hashPass
+      password: hashPass,
+      email,
+      confirmationCode
     });
 
     newUser.save()
@@ -59,5 +70,20 @@ router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+router.post('/send-email', (req, res, next) => {
+  const { email, subject, message } = req.body;
+  transporter.sendMail({
+    from: '"My Awesome Project 👻" <myawesome@project.com>',
+    to: 'aterron84@gmail.com',
+    subject: 'Awesome Subject',
+    text: 'Awesome Message',
+    html: '<a href="https://www.youtube.com/embed/Wt88GMJmVk0">WEB TO WAPA<a>',
+  })
+    .then(() => res.render('message', { email, subject, message }))
+    .catch(err => console.log(err));
+});
+
+
 
 module.exports = router;
