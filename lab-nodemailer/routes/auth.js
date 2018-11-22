@@ -103,9 +103,11 @@ router.get("/confirm/:confirmCode", (req,res)=>{
       User.findByIdAndUpdate(user1[0]._id, {status})
       .then((user2)=>{
         console.log("User Status Updated: " + user2 );
-        res.render('auth/confirm', user2)
+        res.render('auth/confirm', {message: "Confirmation Successful"});
       })
       .catch((err)=>{
+        res.render('auth/confirm', {message: `Confirmation FAILED. Please check that everything is in order @ the nodemailer. 
+        Error: ${err}`});
         return err
       })
       } 

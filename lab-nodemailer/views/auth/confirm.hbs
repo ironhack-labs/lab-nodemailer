@@ -1,2 +1,6 @@
 <h2>Confirmation message</h2>
-<p>Your account has been successfully confirmed</p>
+{{!-- <p>Your account has been successfully confirmed</p> --}}
+
+ {{#if message }}
+    <div class="message">{{ message }}</div>
+  {{/if}}
