@@ -7,6 +7,9 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
+const transporter = require('../mail/transporter');
+
+require('dotenv').config();
 
 router.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
@@ -55,11 +58,22 @@ router.post("/signup", (req, res, next) => {
       confirmationCode
     });
 
-  let autoEmailer = {
-    senderEmail: "pferni@gmail.com",
-    subject: "account confirmation",
-    message: `This is a confirmation message from the nodemailer-lab, please use the following code to confirm: ${confirmationCode}`
-  }
+    let autoEmailer = {
+      senderEmail: `${process.env.EMAIL_USER}`,
+      subject: "Account Confirmation Message - Nodemailer Lab",
+      message: `Please visit the following link to confirm: <a href="http://localhost:3000/auth/confirm/${confirmationCode}"> Confirm <a>`
+    }
+
+    transporter.sendMail({
+      from: `"My Awesome Nodemailer-Lab 👻" <${process.env.EMAIL_USER}>`,
+      to: 'ferp@protonmail.ch',
+      subject: autoEmailer.subject,
+      text: autoEmailer.message,
+      html: `<p>${autoEmailer.message}<p>
+      `,
+    })
+      .then(() => console.log('message' + "\n" + autoEmailer ))
+      .catch(err => console.log(err));
 
     newUser.save()
       .then(() => {
