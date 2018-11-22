@@ -2,6 +2,8 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
+require("dotenv").config();
+const nodemailer = require('nodemailer');
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -24,15 +26,16 @@ router.get("/signup", (req, res, next) => {
 });
 
 router.post("/signup", (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  const email = req.body.email;
-  const confirmationCode = token;
-  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';  
   let token = '';
   for (let i = 0; i < 25; i++) {
       token += characters[Math.floor(Math.random() * characters.length )];
   }
+  const username = req.body.username;
+  const password = req.body.password;
+  const email = req.body.email;
+  const confirmationCode = token;
+  
 
 
   if (username === "" || password === "") {
@@ -72,16 +75,23 @@ router.get("/logout", (req, res) => {
 });
 
 router.post('/send-email', (req, res, next) => {
-  const { email, subject, message } = req.body;
+  let { email, subject, message } = req.body;
+  let transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: process.env.USER-EMAIL,
+      pass: process.env.USER-PASSWORD
+    }
+  });
   transporter.sendMail({
     from: '"My Awesome Project 👻" <myawesome@project.com>',
-    to: 'aterron84@gmail.com',
-    subject: 'Awesome Subject',
-    text: 'Awesome Message',
-    html: '<a href="https://www.youtube.com/embed/Wt88GMJmVk0">WEB TO WAPA<a>',
+    to: email, 
+    subject: subject, 
+    text: message,
+    html: `<b>${message}</b>`
   })
-    .then(() => res.render('message', { email, subject, message }))
-    .catch(err => console.log(err));
+  .then(info => res.render('message', {email, subject, message, info}))
+  .catch(error => console.log(error));
 });
 
 

@@ -9,7 +9,7 @@ const userSchema = new Schema({
     enum: ['Pending Confirmation', 'Active'], 
     default: 'Pending Confirmation'
 },
-confirmationCode:{type: Number, unique:true},
+confirmationCode:{type: String, unique:true},
 email:String
 }, {
   timestamps: {
