@@ -86,7 +86,7 @@ router.post('/signup', (req, res, next) => {
         sendConfirmationMail(email, confirmationCode);
         res.redirect('/');
       })
-      .catch((err) => {
+      .catch(() => {
         res.render('auth/signup', { message: 'Something went wrong' });
       });
   });
@@ -96,5 +96,25 @@ router.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
 });
+
+router.get('/confirm/:confirmationCode', (req, res, next) => {
+  User.findOneAndUpdate({ confirmationCode : req.params.confirmationCode }, { $set: { status: 'active' } })
+    .then(() => {
+      console.log('success');
+      res.redirect('/');
+    })
+    .catch(err => next(err));
+});
+
+// router.post('/confirm/:id', (req, res, next) => {
+//   User.findOne(req.params.id)
+//     .then((found) => {
+//       found.status = 'active';
+//       found.save()
+//         .then(() => redirect('/'))
+//         .catch(error => console.log(error));
+//     })
+//     .catch(err => next(err));
+// });
 
 module.exports = router;
