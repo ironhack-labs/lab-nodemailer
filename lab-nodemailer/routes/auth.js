@@ -30,7 +30,7 @@ router.get("/signup", (req, res, next) => {
 router.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
-  const email = req.body.mail;
+  const email = req.body.email;
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
@@ -49,8 +49,6 @@ router.post("/signup", (req, res, next) => {
     }
 
 
-  
-
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
 
@@ -62,9 +60,19 @@ router.post("/signup", (req, res, next) => {
 
     });
 
+    console.log(email)
+
     newUser.save()
     .then(() => {
-      
+      transporter.sendMail({
+        from: '"My Awesome Project 👻" <myawesome@project.com>',
+        to: email, 
+        subject: 'subject', 
+        text: 'message',
+        html: `<b>hola</b>`
+      })
+      .then(info => res.redirect('/'))
+      .catch(error => console.log(error));
       res.redirect("/");
 
     })
@@ -79,19 +87,6 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
-
-router.post('/send-email', (req, res, next) => {
-  const { email, subject, message } = req.body;
-  transporter.sendMail({
-    from: 'nfake6162@gmail.com',
-    to: 'nfake6162@gmail.com',
-    subject: 'Prueba',
-    text: 'Hola',
-    html: 'http://localhost:3000/auth/confirm/THE-CONFIRMATION-CODE-OF-THE-USER',
-  })
-    .then(() => res.render('message', { email, subject, message }))
-    .catch(err => console.log(err));
-});
 
 
 module.exports = router;
