@@ -1,6 +1,4 @@
-// require('dotenv').config();
 
-const nodemailer = require("nodemailer")
 
 const express = require("express");
 const passport = require('passport');
@@ -11,7 +9,6 @@ const transporter = require("../mail/transporter")
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
-
 
 router.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
@@ -66,7 +63,7 @@ router.post("/signup", (req, res, next) => {
         from: user,
         to: email,
         subject: 'Registration Confirmed',
-        text: `Confirm registration here: http://localhost:3000/auth/confirm/${token}`
+        text: `Confirm registration here: http://localhost:3000/auth/confirm/${token}.`
       })
     }
     newUser.save()
@@ -80,11 +77,8 @@ router.post("/signup", (req, res, next) => {
           })
       });
   });
-
   router.get("/confirm/:confirmCode", (req, res) => {
     const confirmCode = req.params.confirmCode;
-    // const confirmCode = req.params.token;
-    // console.log(confirmationCode, confirmCode)
     User.findOneAndUpdate(
       { "confirmationCode": confirmCode },
       {
@@ -103,5 +97,14 @@ router.post("/signup", (req, res, next) => {
     res.redirect("/");
   });
 });
+
+// router.get('/profile', (req, res, next) => {
+//   User.find()
+//     .then((profile) => {
+//       res.render('auth/profile', { profile });
+//     })
+
+// });
+
 
 module.exports = router;
