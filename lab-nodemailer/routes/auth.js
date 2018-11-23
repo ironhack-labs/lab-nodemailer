@@ -78,22 +78,22 @@ router.post("/signup", ensureLoggedOut(), (req, res, next) => {
       confirmationCode
     });
 
+    console.log(email);
+
     newUser.save()
       .then(user => {
         transporter.sendMail({
           from: '"My Awesome Project 👻" <myawesome@project.com>',
-          to: 'jacinlotar@gmail.com',
+          to: email,
           subject: 'Prueba',
           text: `http://localhost:3000/auth/confirm/${confirmationCode}`,
         })
           .then(() => res.render(`auth/profile`, { user }))
           .catch(err => console.log(err));
-
       })
       .catch(err => {
         res.render("auth/signup", { message: "Something went wrong" });
       })
-
   });
 });
 
