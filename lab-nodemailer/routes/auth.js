@@ -73,7 +73,7 @@ router.post("/signup", (req, res, next) => {
               to: email,
               subject:"Daily",
               text:"Daily",
-              html: `http://localhost:3000/auth/confirm/${confirmationCode}`
+              html: `http://localhost:3000/auth/confirm/${newUser.confirmationCode}`
             })
             .then(info =>
               res.render("message", { email, subject, message, info })
