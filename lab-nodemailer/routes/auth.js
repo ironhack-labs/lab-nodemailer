@@ -26,6 +26,12 @@ router.get("/signup", (req, res, next) => {
 
 router.post("/signup", (req, res, next) => {
 
+    const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let token = '';
+    for (let i = 0; i < 25; i++) {
+        token += characters[Math.floor(Math.random() * characters.length)];
+    }
+
     const { username, password, email } = req.body;
 
     if (username === "" || password === "" || email === "") {
@@ -42,14 +48,16 @@ router.post("/signup", (req, res, next) => {
         const salt = bcrypt.genSaltSync(bcryptSalt);
         const hashPass = bcrypt.hashSync(password, salt);
 
-        const code = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const hashCode = bcrypt.hashSync(code, salt);
+        // const code = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        // const hashCode = bcrypt.hashSync(code, salt);
+
+
 
         const newUser = new User({
             username,
             password: hashPass,
             email,
-            confirmationCode: hashCode
+            confirmationCode: token
         });
 
         newUser.save()
@@ -75,9 +83,9 @@ router.get("/logout", (req, res) => {
 });
 
 router.get('/confirm/:confirmCode', (req, res, next) => {
-    let confirmCode = req.params.confirmCode
-    User.findByIdAndUpdate({ confirmationCode: confirmCode }, { status: 'Active' })
-        .then(user => res.render('confirmation', { user }))
+    let confCode = req.params.confirmCode
+    User.findByIdAndUpdate({ confirmationCode: confCode }, { $set: { status: 'Active' } }, { new: true })
+        .then(user => { res.render('confirmation', { user }) })
         .catch(error => next(error))
 })
 
