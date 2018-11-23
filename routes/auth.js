@@ -99,9 +99,9 @@ router.get('/logout', (req, res) => {
 
 router.get('/confirm/:confirmationCode', (req, res, next) => {
   User.findOneAndUpdate({ confirmationCode : req.params.confirmationCode }, { $set: { status: 'active' } })
-    .then(() => {
+    .then((user) => {
       console.log('success');
-      res.redirect('/');
+      res.render('auth/confirmation', { user });
     })
     .catch(err => next(err));
 });
