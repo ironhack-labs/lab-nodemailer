@@ -2,6 +2,9 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
+const nodemailer = require('nodemailer');
+require('dotenv').config();
+
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -23,9 +26,22 @@ router.get("/signup", (req, res, next) => {
   res.render("auth/signup");
 });
 
+
+
+let transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS
+  }
+});
+
+
+
 router.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
+  const email = req.body.email;
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
@@ -40,14 +56,28 @@ router.post("/signup", (req, res, next) => {
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
 
+    const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXY';
+    let confirmationCode = '';
+    for (let i = 0; i < 25; i++) {
+        confirmationCode += characters[Math.floor(Math.random() * characters.length )];
+    }
+
     const newUser = new User({
       username,
-      password: hashPass
+      password: hashPass,
+      confirmationCode,
+      email
     });
 
     newUser.save()
     .then(() => {
-      res.redirect("/");
+        transporter.sendMail({
+          from: '"My Awesome Project 👻" <biiianca00@gmail.com>',
+          to: "bicastro123123@gmail.com", 
+          subject: "Test", 
+          text:  "Prueba",
+          html: `<p>http://localhost:3000/auth/confirm/${confirmationCode}</p>`
+      })
     })
     .catch(err => {
       res.render("auth/signup", { message: "Something went wrong" });
