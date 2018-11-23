@@ -1,5 +1,6 @@
 const express = require("express");
 const passport = require('passport');
+var nodeoutlook = require('nodejs-nodemailer-outlook');
 const router = express.Router();
 const User = require("../models/User");
 
@@ -26,8 +27,15 @@ router.get("/signup", (req, res, next) => {
 router.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
-  if (username === "" || password === "") {
-    res.render("auth/signup", { message: "Indicate username and password" });
+  const email    = req.body.email;
+
+  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let token = '';
+  for (let i = 0; i < 25; i++) {
+      token += characters[Math.floor(Math.random() * characters.length )];
+  }
+  if (username === "" || password === "" || email === "") {
+    res.render("auth/signup", { message: "All the field are mandatory" });
     return;
   }
 
@@ -42,11 +50,22 @@ router.post("/signup", (req, res, next) => {
 
     const newUser = new User({
       username,
-      password: hashPass
+      password: hashPass,
+      email,
+      confirmationCode: token
     });
 
     newUser.save()
     .then(() => {
+      nodeoutlook.sendEmail({
+        auth: {
+            user: email,
+            pass: 'kislota17'
+        }, from: email,
+        to: email,
+        subject: 'Hey you, awesome!',
+        html: '<a href="http://localhost:3000/auth/confirm/THE-CONFIRMATION-CODE-OF-THE-USER">Confirmation link</b>'
+    });
       res.redirect("/");
     })
     .catch(err => {
