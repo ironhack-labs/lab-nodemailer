@@ -13,19 +13,14 @@ router.get("/login", ensureLoggedOut(), (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
 });
 
-router.get("/confirm/:confirmCode", (req, res, next) => {
+router.get("/confirm/:confirmCode", (req, res, next) => {  
 
-  if (!req.user) {
-    res.render("auth/confirmation", { message: 'User inactive. Please login.' });
-  } else if (req.user.confirmationCode === req.params.confirmCode) {
-    User.findOneAndUpdate({ confirmationCode: req.params.confirmCode }, { $set: { status: "Active" } }, { new: true })
+  User.findOneAndUpdate({ confirmationCode: req.params.confirmCode }, { $set: { status: "Active" } }, { new: true })
       .then(() => {
-        res.render("auth/confirmation", { message: 'User active.' });
+        res.render("auth/confirmation", { message: 'User active' });
       }).catch(() => {
-        res.render("auth/confirmation", { message: 'Error activation.' });
+        res.render("auth/confirmation", { message: 'Error activation' });
       })
-        
-  }
 
 });
 
