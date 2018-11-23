@@ -1,9 +1,10 @@
 const express = require("express");
 const passport = require('passport');
+const transporter = ('../mail/transporter');
 const router = express.Router();
+const nodemailer = require('nodemailer');
 const User = require("../models/User");
 require("dotenv").config();
-const nodemailer = require('nodemailer');
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -35,7 +36,6 @@ router.post("/signup", (req, res, next) => {
   const password = req.body.password;
   const email = req.body.email;
   const confirmationCode = token;
-  
 
 
   if (username === "" || password === "") {
@@ -61,39 +61,31 @@ router.post("/signup", (req, res, next) => {
 
     newUser.save()
     .then(() => {
-      res.redirect("/");
-    })
-    .catch(err => {
-      res.render("auth/signup", { message: "Something went wrong" });
-    })
-  });
-});
-
-router.get("/logout", (req, res) => {
-  req.logout();
-  res.redirect("/");
-});
-
-router.post('/send-email', (req, res, next) => {
-  let { email, subject, message } = req.body;
-  let transporter = nodemailer.createTransport({
+    let transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-      user: process.env.USER-EMAIL,
-      pass: process.env.USER-PASSWORD
+      user: process.env.USER_EMAIL,
+      pass: process.env.USER_PASSWORD
     }
   });
   transporter.sendMail({
     from: '"My Awesome Project 👻" <myawesome@project.com>',
     to: email, 
-    subject: subject, 
-    text: message,
-    html: `<b>${message}</b>`
+    subject: "Confirmación de cuenta", 
+    text: "Haz click en el siguiente link para confirmar tu cuenta",
+    html: `http://localhost:3000/auth/confirm/${confirmationCode}</b>`
   })
-  .then(info => res.render('message', {email, subject, message, info}))
+  .then(info => res.render('message'))
   .catch(error => console.log(error));
 });
+    });
+  });
 
 
+
+router.get("/logout", (req, res) => {
+  req.logout();
+  res.redirect("/");
+});
 
 module.exports = router;
