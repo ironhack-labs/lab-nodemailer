@@ -62,7 +62,7 @@ router.post("/signup", (req, res, next) => {
     newUser
       .save()
       .then(() => {
-
+        transporter
           .sendMail({
             from: '"My Awesome Project 👻" <diegoesunperson@gmail.com>',
             to: email,
