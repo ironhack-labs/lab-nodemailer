@@ -14,12 +14,18 @@ router.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
 });
 
-router.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
+router.post("/login", [passport.authenticate("local", {
+  successRedirect: "/profile",
   failureRedirect: "/auth/login",
   failureFlash: true,
   passReqToCallback: true
-}));
+}), (req, res) => {
+  User.find()
+    .then((message) => {
+      res.render("auth/profile", { message })
+    }
+    )
+}]);
 
 router.get("/signup", (req, res, next) => {
   res.render("auth/signup");
