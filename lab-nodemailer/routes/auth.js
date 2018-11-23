@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
+const Transporter=require('transporter');
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
