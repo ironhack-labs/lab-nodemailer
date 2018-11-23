@@ -15,12 +15,12 @@ router.get("/login", (req, res, next) => {
 });
 
 router.post("/login", [passport.authenticate("local", {
-  successRedirect: "/profile",
+  successRedirect: "/auth/profile",
   failureRedirect: "/auth/login",
   failureFlash: true,
   passReqToCallback: true
 }), (req, res) => {
-  User.find()
+  User.findById(req.params.id)
     .then((message) => {
       res.render("auth/profile", { message })
     }
