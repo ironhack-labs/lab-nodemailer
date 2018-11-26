@@ -86,10 +86,7 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
-router.get("/send-email", (req, res, next) => {
-  //let { email, subject, message } = req.body;
-  //res.render('message', { email, subject, message })
-});
+
 
 router.get("/confirm/:confirmCode", (req, res, next) => {
   code = req.params.confirmCode;
