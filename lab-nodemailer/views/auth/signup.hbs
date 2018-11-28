@@ -1,0 +1,48 @@
+<h2>Signup</h2>
+
+<form action="/auth/signup" method="POST" id="form-container">
+  <label for="username">Username: </label>
+  <input id="username" type="text" name="username" placeholder="JonSnow">
+  <label for="email">Email: </label>
+  <input id="email" type="text" name="email" placeholder="JonSnow@gameofthrones.com">
+  <label for="password">Password</label>
+  <input id="password" type="password" name="password" placeholder="KingInTheNorth47">
+  <br>
+  {{#if message }}
+    <div class="error-message">{{ message }}</div>
+  {{/if}}
+
+  <br><br>
+
+  <button onclick="saveUser()">Create account</button>
+
+  <p class="account-message">
+    Do you already have an account?
+    <a href="/auth/login">Login</a>
+  </p>
+</form>
+<script src="../../routes/auth.js"></script>
+{{!-- 
+Adding the new fields
+On the auth/signup.hbs file you need to add an input tag for the email. 
+When the user clicks on the signup button, you should store the following values in the database:
+
+username - from the req.body;
+password - after hashing the value of the password field from the req.body;
+email - from the req.body;
+confirmationCode - for creating a confirmation code, you can use any methodology, 
+from installing the npm package for email verification to simplest Math.random() function on some string.
+Example:
+
+const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+let token = '';
+for (let i = 0; i < 25; i++) {
+    token += characters[Math.floor(Math.random() * characters.length )];
+}
+Now, you have to store the token in the confirmationCode field.
+
+Sending the email
+After creating the user, you should send the email to the address the user put on the email field. 
+Remember to use Nodemailer for this. You should include the following URL in the email:
+
+http://localhost:3000/auth/confirm/THE-CONFIRMATION-CODE-OF-THE-USER --}}
