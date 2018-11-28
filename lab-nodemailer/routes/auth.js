@@ -62,6 +62,7 @@ router.post("/signup", (req, res, next) => {
       username,
       email,
       confirmationCode,
+      status:'Pending Confirmation',
       password: hashPass
     });
 
@@ -75,6 +76,17 @@ router.post("/signup", (req, res, next) => {
       });
   });
 });
+
+router.get("/confirm/:confirmCode",(req,res)=>{
+  let confCodeURL=req.params.confirmCode;
+  console.log(confCodeURL)
+  User.findOneAndUpdate({confirmationCode:confCodeURL},{status:'Active'}).then(user =>{
+
+    res.render("auth/confirmation",user)
+  })
+  
+  
+})
 
 router.get("/logout", (req, res) => {
   req.logout();
