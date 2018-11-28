@@ -51,6 +51,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
+hbs.registerPartials(path.join(__dirname, 'views/partials'));
 
 
 hbs.registerHelper('ifUndefined', (value, options) => {
@@ -65,7 +66,7 @@ hbs.registerHelper('ifUndefined', (value, options) => {
 
 
 // default value for title local
-app.locals.title = 'Express - Generated with IronGenerator';
+app.locals.title = 'Nodemailer exercise';
 
 
 // Enable authentication using session + passport
@@ -76,9 +77,15 @@ app.use(session({
   store: new MongoStore({
     mongooseConnection: mongoose.connection
   })
-}))
+}));
+
 app.use(flash());
 require('./passport')(app);
+
+app.use((req,res,next)=>{
+  res.locals.user = req.user;
+  next();
+});
 
 
 const index = require('./routes/index');

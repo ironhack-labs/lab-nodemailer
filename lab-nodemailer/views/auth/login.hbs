@@ -5,18 +5,16 @@
   <label for="username">Username</label>
   <input id="username" type="text" name="username" placeholder="JonSnow">
 
-  <br><br>
-
   <label for="password">Password</label>
-  <input id="password" type="password" name="password" placeholder="Your password">
-  <br>
+  <input id="password" type="password" name="password" placeholder="Your password" readonly onfocus="if (this.hasAttribute('readonly')) {
+  this.removeAttribute('readonly');
+  this.blur(); this.focus();}"/>
+
   {{#if message }}
     <div class="error-message">{{ message }}</div>
   {{/if}}
 
-  <br><br>
-
-  <button>Login</button>
+  <button class="loginBut">Login</button>
 
   <p class="account-message">
     Don't have an account yet?

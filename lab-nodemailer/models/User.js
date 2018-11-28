@@ -8,10 +8,7 @@ const userSchema = new Schema({
   confirmationCode: {type: String, unique: true},
   email: {type: String, unique: true}
 }, {
-  timestamps: {
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
-  }
+  timestamps: true
 });
 
 const User = mongoose.model('User', userSchema);
