@@ -15,7 +15,7 @@ const flash = require("connect-flash");
 
 
 mongoose
-    .connect(process.env.DB, {
+    .connect('mongodb://localhost/lab-nodemailer', {
         useNewUrlParser: true
     })
     .then(x => {
@@ -74,8 +74,8 @@ app.use(session({
     resave: true,
     saveUninitialized: true,
     store: new MongoStore({
-            mongooseConnection: mongoose.connection,
-            ttl: 24 * 60 * 60
+        mongooseConnection: mongoose.connection,
+        ttl: 24 * 60 * 60
     })
 }))
 app.use(flash());
