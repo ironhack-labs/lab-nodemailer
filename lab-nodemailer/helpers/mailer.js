@@ -15,8 +15,8 @@ function welcomeMail(email, name,code){
     from:"smma1992@gmail.com",
     html:`
     <h1>Bienvenido ${name}!</h1>
+    <a href="http://localhost:3000/active/${code}"> Activa tu cuenta aquí </a>
     <p>Estamos felices de tenerte!</p>
-    <a href="http://localhost/3000/${code}"> Activa tu cuenta aquí </a>
     `
 
   })
