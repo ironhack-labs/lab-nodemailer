@@ -1,7 +1,6 @@
-const express = require("express");
-const passport = require('passport');
-const router = express.Router();
-const User = require("../models/User");
+const router = require("express").Router()
+const User = require("../models/User")
+const passport = require('passport')
 const {welcomeMail} = require('../helpers/mailer')
 
 // Bcrypt to encrypt passwords
@@ -30,12 +29,18 @@ router.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
 });
 
-router.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/auth/login",
-  failureFlash: true,
-  passReqToCallback: true
-}));
+// router.post("/login", passport.authenticate("local", {
+//   successRedirect: "/profile",
+//   failureRedirect: "/auth/login",
+//   failureFlash: true,
+//   passReqToCallback: true
+// }));
+
+router.post('/login', passport.authenticate("local"), (req, res, next)=>{
+  const email = req.user.email
+  req.app.locals.user = req.user
+  res.redirect('/profile')
+})
 
 router.get("/signup", (req, res, next) => {
   res.render("auth/signup");

@@ -12,6 +12,9 @@ const path         = require('path');
 const session    = require("express-session");
 const MongoStore = require('connect-mongo')(session);
 const flash      = require("connect-flash");
+
+const passport     = require("./helpers/passport")
+
     
 
 mongoose
@@ -59,6 +62,9 @@ hbs.registerHelper('ifUndefined', (value, options) => {
   }
 });
   
+//después de views ponemos passport
+app.use(passport.initialize())
+app.use(passport.session())
 
 // default value for title local
 app.locals.title = 'Ironlab - Nodemailer';
@@ -72,7 +78,7 @@ app.use(session({
   store: new MongoStore( { mongooseConnection: mongoose.connection })
 }))
 app.use(flash());
-require('./passport')(app);
+// require('./passport')(app);
     
 
 const index = require('./routes/index');
