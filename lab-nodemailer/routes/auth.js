@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
+const {welcomeMail} =require("../helpers/Nodemailer")
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -26,8 +27,9 @@ router.get("/signup", (req, res, next) => {
 router.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
-  if (username === "" || password === "") {
-    res.render("auth/signup", { message: "Indicate username and password" });
+  const email = req.body.email;
+  if (username === "" || password === "" || email === "") {
+    res.render("auth/signup", { message: "Indicate username, email and password" });
     return;
   }
 
@@ -39,14 +41,22 @@ router.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
+    const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let token = '';
+    for (let i = 0; i < 25; i++) {
+    token += characters[Math.floor(Math.random() * characters.length )];
+    }
 
     const newUser = new User({
       username,
-      password: hashPass
+      password: hashPass,
+      email,
+      confirmationCode: token
     });
 
     newUser.save()
     .then(() => {
+      welcomeMail (username, email, token)
       res.redirect("/");
     })
     .catch(err => {
@@ -59,5 +69,25 @@ router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+router.get("/confirm/:token", (req, res, next)=>{
+  let activeUser = req.user
+  const token = req.params.token
+  // console.log(req.params)
+  if(activeUser.confirmationCode === token){
+    console.log("son iguales")
+    activeUser.status = "Active"
+    User.findByIdAndUpdate(activeUser._id, activeUser)
+    .then (updated =>{
+      res.render('confirm', {token, message: 'Confirmado correctamente'})
+    })
+    .catch(err =>next(err))
+    
+  } else {
+    console.log("lo sentimos no es el mismo")
+  res.render("confirm", {token, message: 'Incorrecto'})
+}
+
+})
 
 module.exports = router;
