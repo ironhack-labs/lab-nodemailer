@@ -4,7 +4,6 @@ const passportLocalMongoose = require('passport-local-mongoose')
 
 const userSchema = new Schema({
   username: String,
-  password: String,
   status:{
     type:String,
     enum:["Pending Confirmation", "Active"],
