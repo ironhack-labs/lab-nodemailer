@@ -4,20 +4,17 @@ const passportLocalMongoose = require("passport-local-mongoose");
 
 const userSchema = new Schema(
     {
-        username: String,
-        email: String,
-        facebookId: String,
-        role: {
+        username  : String,
+        email     : String,
+        confirmationCode: {
             type: String,
-            enum: ["Boss","Developer","TA"],
-            default: "TA"
+            unique: true
         },
-        courses:[
-            {
-                type:Schema.Types.ObjectId,
-                ref:'Course'
-            }
-        ]
+        status: {
+            type   : String,
+            enum   : ['Pending Confirmation','Active'],
+            default: 'Active'
+        }
     },
     {
         timestamps: {
