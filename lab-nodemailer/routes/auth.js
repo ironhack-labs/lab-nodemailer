@@ -8,6 +8,23 @@ const {welcomeMail} = require('../helpers/mailer')
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
+router.get('/confirm/:confirmationCode', (req, res, next)=>{
+  const {confirmationCode} = req.params
+  User.findOne({confirmationCode})
+  .then(user=>{
+    User.findByIdAndUpdate(user._id,{$set: {status: "Active"}})
+    .then(u=>{
+      res.render('confirmation',u)
+    })
+    .catch(e=>{
+      res.render('error')
+    })
+  })
+  .catch(e=>{
+    res.render('error')
+  })
+})
+
 
 router.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
