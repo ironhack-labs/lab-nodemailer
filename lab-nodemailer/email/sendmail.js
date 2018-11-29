@@ -7,7 +7,8 @@ const sendMail = (to, subject, message) => {
       to, 
       subject, 
       text: subject,
-      html: `<a href="/auth/confirm/${message}">confirm your email<a>`
+      html: `<a href="localhost:3000/auth/confirm/${message}">confirm your email<a>
+      <p>or copy this url in your navigator localhost:3000/auth/confirm/${message}</p> `
     })
     .then(info => console.log(info)).catch(e=>console.log(e))
   }
