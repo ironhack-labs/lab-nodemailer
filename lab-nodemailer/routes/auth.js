@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
+const nodemailer= require('../helpers/mailer')
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -40,6 +41,7 @@ router.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
+    let characters='asdasdasdasdasdasdasdasdasd';
     let token = '';
     for (let i = 0; i < 25; i++) {
     token += characters[Math.floor(Math.random() * characters.length )];
@@ -51,9 +53,12 @@ router.post("/signup", (req, res, next) => {
       confirmationCode:token
     });
 
+    nodemailer.welcomeMail(newUser.email,newUser.username,newUser.confirmationCode)
     newUser.save()
     .then(() => {
       res.redirect("/");
+
+
     })
     .catch(err => {
       res.render("auth/signup", { message: "Something went wrong" });

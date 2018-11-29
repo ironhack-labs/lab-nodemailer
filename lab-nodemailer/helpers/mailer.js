@@ -8,7 +8,7 @@ const transport = nodemailer.createTransport({
   }
 })
 
-function welcomeMail(email, name){
+function welcomeMail(email, name,code){
   transport.sendMail({
     bcc:email,
     subject:"Bienvenido a mi daily",
@@ -16,6 +16,7 @@ function welcomeMail(email, name){
     html:`
     <h1>Bienvenido ${name}!</h1>
     <p>Estamos felices de tenerte!</p>
+    <a href="http://localhost/3000/${code}"> Activa tu cuenta aquí </a>
     `
 
   })
