@@ -1,0 +1,10 @@
+
+<h2>Statut du compte</h2>
+
+{{#if user}}
+<h1> Hello {{ user.username}} </h1>
+{{else}}
+<h1> Sorry, it doesn't work </h1>
+{{/if}}
+
+<a href="/auth/profile/{{user._id}}"> Voir mon profil </a>
