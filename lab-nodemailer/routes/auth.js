@@ -121,4 +121,8 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+router.get("/confirm/:confirmationCode", (req, res, next) => {
+  
+})
+
 module.exports = router;
