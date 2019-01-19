@@ -1,7 +1,16 @@
 const express = require("express");
 const passport = require('passport');
 const router = express.Router();
+const nodemailer = require("nodemailer");
 const User = require("../models/User");
+
+let transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: 'lazoneenpersonne75@gmail.com',
+    pass: 'lazone2019' 
+  }
+});
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -16,7 +25,7 @@ router.post("/login", passport.authenticate("local", {
   successRedirect: "/",
   failureRedirect: "/auth/login",
   failureFlash: true,
-  passReqToCallback: true
+  passReqToCallback: true 
 }));
 
 router.get("/signup", (req, res, next) => {
@@ -27,14 +36,16 @@ router.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
+  const status = "Pending";
   const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let token = '';
   for (let i = 0; i < 25; i++) {
     token += characters[Math.floor(Math.random() * characters.length )];
   };
-  console.log(token);
   const confirmationCode = token;
-  console.log(confirmationCode);
+  const baseURL = "http://localhost:3000/auth/confirm/"
+  const confirmationURL = baseURL.concat(confirmationCode);
+  console.log(confirmationURL);
   if (username === "" || password === ""|| email === "") {
     res.render("auth/signup", { message: "Indicate username and password and email" });
     return;
@@ -48,15 +59,25 @@ router.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
-
+     
     const newUser = new User({
       username,
       password: hashPass,
       email,
-      confirmationCode
+      confirmationCode,
+      status
     });
 
     newUser.save()
+    transporter.sendMail({
+      from: '"La Zone" <lazoneenpersonne75@gmail.com>',
+      to: email, 
+      subject: "thank you for signing up!", 
+      text: confirmationURL,
+      html: `<b>${confirmationURL}</b>`
+    })
+    .then(info => console.log(info))
+    .catch(error => console.log(error))
     .then(() => {
       res.redirect("/");
     })
@@ -69,6 +90,15 @@ router.post("/signup", (req, res, next) => {
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
+});
+
+router.get('/confirm/:confirmCode', (req, res) => {
+User.findOneAndUpdate({ confirmationCode: req.params.confirmCode }, {$set: {status:"active"}})
+.then(user => {
+  console.log(user.confirmationCode);
+  console.log(user.status);
+  res.render("auth/confirmation")
+})
 });
 
 module.exports = router;

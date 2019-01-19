@@ -4,10 +4,7 @@ const Schema   = mongoose.Schema;
 const userSchema = new Schema({
   username: String,
   password: String,
-  // status: {
-  //   pendingConfirmation: 'Pending Confirmation',
-  //   active: 'Active',
-  // },
+  status: String,
   confirmationCode: String,
   email: String,
 }, {
