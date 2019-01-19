@@ -4,6 +4,7 @@ const router = express.Router();
 const nodemailer = require("nodemailer");
 const User = require("../models/User");
 
+
 let transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
@@ -69,12 +70,13 @@ router.post("/signup", (req, res, next) => {
     });
 
     newUser.save()
+    // const message = res.render('/views/auth/message', function(err, html){console.log(html)});
     transporter.sendMail({
       from: '"La Zone" <lazoneenpersonne75@gmail.com>',
       to: email, 
-      subject: "thank you for signing up!", 
+      subject: "Thank you for signing up!", 
       text: confirmationURL,
-      html: `<b>${confirmationURL}</b>`
+      html:`<b>${confirmationURL}</b>`
     })
     .then(info => console.log(info))
     .catch(error => console.log(error))
@@ -97,8 +99,17 @@ User.findOneAndUpdate({ confirmationCode: req.params.confirmCode }, {$set: {stat
 .then(user => {
   console.log(user.confirmationCode);
   console.log(user.status);
-  res.render("auth/confirmation")
+  res.render("auth/confirmation", { user:user });
 })
 });
+
+router.get('/profile/:id', (req, res) => {
+  console.log("ok");
+  // User.findOne({ _id: req.params.id })
+  // .then(user => {
+  //   console.log(user.username);
+  //   res.render("/profile", {user:user})
+  // })
+  });
 
 module.exports = router;
