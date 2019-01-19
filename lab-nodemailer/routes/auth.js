@@ -76,9 +76,9 @@ router.post("/signup", (req, res, next) => {
       transporter.sendMail({
         from: '"Justar 👻" <justar2019@outlook.fr>',
         to: email, 
-        // subject: subject, 
+        subject: "please confirm your account", 
         //text: message,
-        html: `<b>coucou</b>`
+        html: `<b>http://localhost:3000/auth/confirm/${confirmationCode}</b>`
       })
       .then(message=> {
         res.send('ok email')
