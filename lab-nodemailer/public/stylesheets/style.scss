@@ -1,0 +1,70 @@
+body {
+  margin: 0;
+  padding: 0;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+section, nav{
+  padding: 10px;
+}
+
+nav {
+  background-color: #00B7FF;
+}
+nav a {
+  padding-right: 10px;
+  color: white;
+  text-decoration: none;
+}
+
+h2 {
+  text-align: center;
+}
+
+#form-container {
+  margin: 30px auto;
+  width: 380px;
+}
+
+#form-container label {
+  color: #666;
+  display: inline-block;
+  margin-bottom: 10px;
+  text-align: center;
+  width: 100%;
+}
+
+#form-container input,
+#form-container button {
+  box-sizing: border-box;
+  font-size: 14px;
+  outline: 0;
+  padding: 4px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+#form-container button {
+  background: #00B7FF;
+  border: 1px solid #00B7FF;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  padding: 8px 16px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: .3s ease background;
+  width: 100%;
+}
+
+#form-container button:hover {
+  background: #fff;
+  color: #00B7FF;
+  transition: .3s ease background;
+}
