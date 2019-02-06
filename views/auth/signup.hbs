@@ -27,21 +27,3 @@
     <a href="/auth/login">Login</a>
   </p>
 </form>
-<script>
-  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let token = '';
-  for (let i = 0; i < 25; i++) {
-    token += characters[Math.floor(Math.random() * characters.length)];
-  }
-  document.querySelector("#myButton").onclick = e => {
-    e.preventDefault();
-    axios.post("/auth/signup", {
-      username: document.getElementById("username").value,
-      password: document.querySelector("#password").value,
-      email: document.querySelector("#email").value,
-      token: token
-    })
-      .then(() => {
-      })
-  }
-</script>
