@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require("express");
 const passport = require("passport");
 const router = express.Router();
@@ -11,8 +13,8 @@ const bcryptSalt = 10;
 let transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-    user: 'XXXXXX',
-    pass: 'XXXXXX' 
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASS 
   }
 });
 
@@ -78,6 +80,20 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+router.get("/confirm/:confirmCode", (req, res) => {
+  const cCode = req.params.confirmCode;
+  User.findOne({confirmationCode : cCode})
+  .then(user => {
+    user.status = "Active";
+    user.save()
+
+    res.render("auth/confirmation", {user: user})
+  })
+  .catch(err =>{
+    res.redirect("auth/signup");
+  })
+})
+
 function getConfirmationCode() {
   const characters =
     "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -93,8 +109,8 @@ function sendEmail (user){
     from: '"My Awesome Project" <myawesome@project.com>',
     to: user.email, 
     subject: `Welcome ${user.username}`, 
-    text: `Confirm your account. Click here http://localhost:3000/auth/confirm/${user.confirmationCode}`,
-    html: `<b>Confirm your account</b>.<br><br><a href="http://localhost:3000/auth/confirm/${user.confirmationCode}">Click here</a>`
+    text: `Ironhack Confirmation Email. Thanks to join our community! Please confirm your account clicking on the following link http://localhost:3000/auth/confirm/${user.confirmationCode}`,
+    html: `<b>Ironhack Confirmation Email</b>.<br><br>Thanks to join our community! Please confirm your account clicking on the following <a href="http://localhost:3000/auth/confirm/${user.confirmationCode}">link</a>`
   })
   .then(info => console.log(info))
   .catch(error => console.log(error))

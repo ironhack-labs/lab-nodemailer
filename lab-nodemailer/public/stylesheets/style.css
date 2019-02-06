@@ -17,7 +17,10 @@ nav a {
   color: white;
   text-decoration: none; }
 
-h2 {
+h1 {
+  font-size: 3em; }
+
+h2, h1, p {
   text-align: center; }
 
 #form-container {
