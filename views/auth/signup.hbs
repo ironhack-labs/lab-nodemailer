@@ -1,0 +1,47 @@
+<h2>Signup</h2>
+
+<form id="form-container">
+  <label for="username">Username</label>
+  <input id="username" type="text" name="username" placeholder="JonSnow">
+
+  <br><br>
+
+  <label for="password">Password</label>
+  <input id="password" type="password" name="password" placeholder="Your password">
+
+  <br><br>
+
+  <label for="email">Email</label>
+  <input id="email" type="email" name="email" placeholder="Your email">
+  <br>
+  {{#if message }}
+  <div class="error-message">{{ message }}</div>
+  {{/if}}
+
+  <br><br>
+
+  <button id="myButton">Create account</button>
+
+  <p class="account-message">
+    Do you already have an account?
+    <a href="/auth/login">Login</a>
+  </p>
+</form>
+<script>
+  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let token = '';
+  for (let i = 0; i < 25; i++) {
+    token += characters[Math.floor(Math.random() * characters.length)];
+  }
+  document.querySelector("#myButton").onclick = e => {
+    e.preventDefault();
+    axios.post("/auth/signup", {
+      username: document.getElementById("username").value,
+      password: document.querySelector("#password").value,
+      email: document.querySelector("#email").value,
+      token: token
+    })
+      .then(() => {
+      })
+  }
+</script>
