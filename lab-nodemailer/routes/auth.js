@@ -21,6 +21,11 @@ router.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
 });
 
+router.get("/profile", (req, res, next) => {
+  console.log(req.user)
+  res.render("auth/profile", {user: req.user});
+});
+
 router.post("/login", passport.authenticate("local", {
   successRedirect: "/",
   failureRedirect: "/auth/login",
@@ -83,8 +88,12 @@ router.get("/confirm/:confirmCode", (req, res, next) => {
   let code = req.params.confirmCode;
   User.findOne({"confirmationCode": code})
   .then((user) => {
-    user.status = "active";
-    res.render("auth/confirmation", {user, result: "success"});
+    User.findByIdAndUpdate(user._id, {status: "active"})
+    .then(user => {
+      res.render("auth/confirmation", {user, result: "success"});
+    })
+    .catch(err => console.log(err));
+    // user.status = "active";
   })
   .catch(err => {
     res.render("auth/confirmation", {result: "error"});
