@@ -10,7 +10,7 @@ const userSchema = new Schema({
     default: "Pending Confirmation" 
   },
   confirmationCode: { type: String, unique: true },
-  email: { type: String, unique: true }
+  email: { type: String, unique: true, required: true }
 }, {
   timestamps: {
     createdAt: 'created_at',
