@@ -30,8 +30,8 @@ router.post('/auth/signup', (req, res) => {
       const transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
-          user: 'abarbierijunior@gmail.com',
-          pass: 'KALUZINHA2332'
+          user: 'email',
+          pass: 'password'
         }
       });
       transporter.sendMail({
