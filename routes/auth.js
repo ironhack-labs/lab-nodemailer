@@ -22,7 +22,7 @@ let generateToken = () =>{
 
 
 router.get("/confirm/:confirmCode", (req, res, next) => {
-  let confirmCode = req.query.confirmCode
+  let confirmCode = req.params.confirmCode
   User.findOneAndUpdate({confirmationCode:confirmCode},{status:Active})
   .then(r=>res.render("auth/confirmation"))
   .catch(e=>res.send("Something went wrong "+ e))
