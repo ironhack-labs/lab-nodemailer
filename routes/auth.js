@@ -98,6 +98,7 @@ router.get("/confirm/:token", (req, res) => {
         .then(user => {
             res.render("/")
         })
+        .catch(err => "Los sentimos " + err)
 
 })
 
@@ -115,5 +116,3 @@ router.get("/logout", (req, res) => {
 
 
 module.exports = router;
-
-//
