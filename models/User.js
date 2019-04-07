@@ -12,7 +12,7 @@ const userSchema = new Schema(
       type: String,
       required: true
     },
-    confirmation: {
+    confirmationCode: {
       type: String,
       unique: true
     },
