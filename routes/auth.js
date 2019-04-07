@@ -16,7 +16,7 @@ router.get("/login", (req, res, next) => {
 router.post(
   "/login",
   passport.authenticate("local", {
-    successRedirect: "/",
+    successRedirect: "/private",
     failureRedirect: "/auth/login",
     failureFlash: true,
     passReqToCallback: true
@@ -60,6 +60,7 @@ router.post("/signup", (req, res, next) => {
         let options = {
           email: formParams.email,
           subject: "Lab Nodemailer - Email verification",
+          user: formParams.username,
           confirmationUrl: `http://localhost:${
             process.env.PORT
           }/auth/confirm/${randomToken}`
@@ -88,6 +89,21 @@ router.post("/signup", (req, res, next) => {
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
+});
+
+router.get("/confirm/:code", (req, res) => {
+  let { code } = req.params;
+  User.findOne({ confirmationCode: code })
+    .then(user => {
+      let { _id } = user;
+      User.findByIdAndUpdate(_id, { $set: { status: "Active" } }).then(user => {
+        res.render("auth/confirmed");
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.render("auth/signup", { message: "Something went wrong" });
+    });
 });
 
 module.exports = router;
