@@ -5,6 +5,7 @@ const User = require("../models/User");
 
 // email
 const nodemailer = require('nodemailer');
+const templates = require('../templates/template.js')
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -112,8 +113,7 @@ function sendConfirmationEmail(email, confirmationCode) {
     to: email,
     subject: 'Confirm your e-mailaddress',
     text: `Please confirm your e-mail: http://localhost:3000/auth/confirm/${confirmationCode}`,
-    html: `<h2>Welcome to our platform!</h2><br />
-          Please <a href="http://localhost:3000/auth/confirm/${confirmationCode}">confirm</a> your e-mail`
+    html: templates.templateConfirmation(confirmationCode)
   }
 
   // send email
