@@ -6,4 +6,8 @@ router.get('/', (req, res, next) => {
   res.render('index');
 });
 
+router.get('/login', (req, res, next) => {
+  res.redirect('auth/login');
+});
+
 module.exports = router;
