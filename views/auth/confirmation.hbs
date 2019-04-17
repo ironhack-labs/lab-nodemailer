@@ -1,0 +1,7 @@
+{{#if activated}}
+  <h1>Your account has been activated</h1>
+  <a href="/auth/login">You can login now</a>
+{{/if}}
+{{#unless activated}}
+  <h1>Your account is currently activated or an error happened</h1>
+{{/unless}}
