@@ -80,6 +80,20 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+router.get('/confirm/:confirmCode', (req,res) =>{
+  User.findById(req.user._id)
+    .then(user => {
+      if (req.user.confirmationCode === req.params.confirmCode){
+        User.findByIdAndUpdate(req.user._id, {status: 'Active'})
+          .then(res.render('confirm'), {message: 'Your account has been activated. Thank you.'})
+          .catch(err=> res.render('confirm'), {message: `This account doesn't match the code you are providing`})
+      }
+    })
+    .catch(err=> res.render('confirm'), err)
+});
 
-
+router.get('/profile', (req,res)=>{
+  User.findById(req.user._id)
+    .then(user => res.render('auth/profile'), user)
+})
 module.exports = router;
