@@ -16,17 +16,14 @@
   <input id="email" type="email" name="email" placeholder="name@example.com">
   
   <br>
-  
-  <label for="confirmationCode">Confirmation Code</label>
-  <input id="confirmationCode" type="text" name="confirmationCode">
-  
-  <br>
+  {{confirmationCode}}
+  <input id="confirmationCode" type="hidden" name="confirmationCode" value="{{confirmationCode}}">
 
   {{#if message }}
     <div class="error-message">{{ message }}</div>
   {{/if}}
 
-  <br><br>
+  <br>
 
   <button>Create account</button>
 
