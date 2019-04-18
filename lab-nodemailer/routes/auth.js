@@ -83,15 +83,15 @@ router.post("/signup", (req, res, next) => {
   let transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-      user: `${process.env.MAIL}`,
-      pass: `${process.env.CONTRASEÑA}`
+      user: `madwebmar19@gmail.com`,
+      pass: `iron2019`
     }
   });
   transporter.sendMail({
-    from: '"My Awesome Project 👻" <myawesome@project.com>',
+    from: '"De mi para tu 👻" <myawesome@project.com>',
     to: email,
     subject: `Confirmacion de cuenta de ${username}`,
-    html: `<a href="http://localhost:3000/auth/confirmado/${confirmationCode}">Link</a>`
+    html: `<p>Este es el link de confirmacion</p><a href="http://localhost:3000/auth/confirmado/${confirmationCode}">Link</a>`
   })
 
 });
@@ -117,8 +117,8 @@ router.post('/perfil', (req, res, next) => {
   let transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-      user: `${process.env.MAIL}`,
-      pass: `${process.env.CONTRASEÑA}`
+      user: 'madwebmar19@gmail.com',
+      pass: 'iron2019'
     }
   });
   transporter.sendMail({
@@ -128,13 +128,9 @@ router.post('/perfil', (req, res, next) => {
     text: message,
     html: `<b>${message}</b>`
   })
-  .then(info => res.render('rafa/mandado', {email, subject, message, info}))
+  .then(info => res.render('message', {email, subject, message, info}))
   .catch(error => console.log(error));
 });
-
-router.get("/mail-mandado", (req, res, next) => {
-  res.render("rafa/mandado")
-})
 
 router.get("/logout", (req, res) => {
   req.logout();

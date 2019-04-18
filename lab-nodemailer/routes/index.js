@@ -8,6 +8,9 @@ router.get('/', (req, res, next) => {
 });
 
 
+router.get('/send-email', (req, res, next) => {
+  res.render('message');
+});
 
 
 module.exports = router;
