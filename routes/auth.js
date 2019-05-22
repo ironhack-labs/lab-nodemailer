@@ -22,12 +22,12 @@ router.post("/login", passport.authenticate("local", {
 router.get("/signup", (req, res, next) => {
   res.render("auth/signup");
 });
+let confirmationCode = ""
 
 router.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email
-  let confirmationCode = ""
 
 
   if (username === "" || password === "" || email === "") {
@@ -58,8 +58,9 @@ router.post("/signup", (req, res, next) => {
 
     newUser.save()
       .then((user) => {
+        const url = `http://localhost:3000/auth/confirm/${confirmationCode}&${username}`
         const subject = "Your verification code"
-        const message = `this is your confirmation code: ${confirmationCode}`
+        const message = `this is your confirmation code: ${confirmationCode}<br><a href="${url}">verifica tu cuenta aqui</a>`
         sendMail(user.email, subject, message)
         res.redirect("/");
       })
@@ -74,5 +75,15 @@ router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+
+router.get("/confirm/:confirmCode", (req, res) => {
+  console.log("el param es", req.param)
+
+  console.log("YAY!")
+  res.render("auth/confirm");
+
+
+})
 
 module.exports = router;
