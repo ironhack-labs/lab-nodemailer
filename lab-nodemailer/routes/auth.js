@@ -2,14 +2,19 @@ const express = require("express");
 const passport = require("passport");
 const router = express.Router();
 const User = require("../models/User");
-
+const checkPopino = require("../middleware/authentification ");
+const sendMail = require("../email/sendMail");
 // Bcrypt to encrypt passwords
+const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
 router.get("/login", (req, res, next) => {
   res.render("auth/login", { message: req.flash("error") });
 });
+router.get("/welcome", checkPopino("/auth/login"), (req, res) =>
+  res.render("auth/welcome")
+);
 
 router.post(
   "/login",
@@ -71,6 +76,7 @@ router.post("/signup", (req, res, next) => {
         res.redirect("/");
       })
       .catch(err => {
+        console.log(err);
         res.render("auth/signup", { message: "Something went wrong" });
       });
   });
@@ -79,6 +85,23 @@ router.post("/signup", (req, res, next) => {
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
+});
+
+router.get("/confirm/:code", (req, res, next) => {
+  const pepe = req.params.code;
+  User.findOneAndUpdate(
+    { confirmationCode: pepe },
+    { $set: { status: "Active" } },
+    { new: true }
+  )
+    .then(x => res.redirect("/auth/welcome"))
+    .catch(err => console.log(err));
+
+  // User.findOneAndUpdate(req.params.code) == req.params.code;
+});
+
+router.get("/private", checkPopino("/auth/login"), (req, res) => {
+  res.render("/auth/private");
 });
 
 module.exports = router;

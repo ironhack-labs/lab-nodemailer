@@ -12,7 +12,8 @@ const sendMail = (username, email, code) =>
       subject: "Confirmation email",
       text: `Hi${username},
       This is your confirmation code:${code}`,
-      html: `<b>Hi${username},<br>This is your confirmation code:${code}</b>`
+      html: `<b>Hi${username},<br>This is your confirmation code:${code}</b>
+      <br> <a href="http://localhost:3000/auth/confirm/${code}"`
     })
     .then(info => {
       return info.accepted;
