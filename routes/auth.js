@@ -2,7 +2,7 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
-
+const sendMail = require("../email/sendMail")
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
@@ -26,8 +26,12 @@ router.get("/signup", (req, res, next) => {
 router.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
-  if (username === "" || password === "") {
-    res.render("auth/signup", { message: "Indicate username and password" });
+  const email = req.body.email
+  let confirmationCode = ""
+
+
+  if (username === "" || password === "" || email === "") {
+    res.render("auth/signup", { message: "Indicate username,password and email" });
     return;
   }
 
@@ -37,21 +41,32 @@ router.post("/signup", (req, res, next) => {
       return;
     }
 
+    const characters = 'jfvodhidugfpu9pr70r8778pou1234sdfghjSDFGHJKPOIUYTRE'
+    for (let i = 0; i < 25; i++) {
+      confirmationCode += characters[Math.floor(Math.random() * characters.length)]
+    }
+
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
 
     const newUser = new User({
       username,
-      password: hashPass
+      password: hashPass,
+      email,
+      confirmationCode
     });
 
     newUser.save()
-    .then(() => {
-      res.redirect("/");
-    })
-    .catch(err => {
-      res.render("auth/signup", { message: "Something went wrong" });
-    })
+      .then((user) => {
+        const subject = "Your verification code"
+        const message = `this is your confirmation code: ${confirmationCode}`
+        sendMail(user.email, subject, message)
+        res.redirect("/");
+      })
+      .catch(err => {
+        res.render("auth/signup", { message: "Something went wrong" });
+      })
+
   });
 });
 

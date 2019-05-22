@@ -10,7 +10,7 @@ const userSchema = new Schema({
     default: "pending confirmation"
   },
   confirmationCode: {
-    type: Number,
+    type: String,
     unique: true,
   },
   email: {
