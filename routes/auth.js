@@ -7,6 +7,7 @@ const sendMail = require("../email/sendMail")
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
+const middlewareConfirCode = require("../middleware/confirCode");
 
 router.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
@@ -81,9 +82,18 @@ router.get("/confirm/:confirmCode", (req, res) => {
   console.log("el param es", req.param)
 
   console.log("YAY!")
-  res.render("auth/confirm");
-
+  User.findOneAndUpdate({ confirmationCode }, { status: "active" })
+    .then(user => res.render("auth/confirm"))
+    .catch(err => console.log(err))
 
 })
+
+
+
+router.get("/profile", middlewareConfirCode("/auth/login"), (req, res) => {
+  const logUser = req.user;
+  res.render("auth/profile", { logUser })
+}
+)
 
 module.exports = router;
