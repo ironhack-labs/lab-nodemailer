@@ -11,9 +11,9 @@ const userSchema = new Schema({
   },
   confirmationCode: { type: String, unique: true },
   email: {
-    tpye: String,
+    type: String,
     validate: {
-      validator: v => /^[a-zA-Z0-9.!#$%&‘*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(v),
+      validator: mailValidate,
       message: props => `${props.value} No es un email correcto`
     }
   }
@@ -26,3 +26,8 @@ const userSchema = new Schema({
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;
+
+
+function mailValidate(v) {
+  return /^[a-zA-Z0-9.!#$%&‘*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(v)
+}
