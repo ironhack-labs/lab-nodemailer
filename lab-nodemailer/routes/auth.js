@@ -23,7 +23,7 @@ router.get("/login", (req, res, next) => {
 });
 
 router.post("/login", passport.authenticate("local", {
-    successRedirect: "/",
+    successRedirect: "/auth/profile",
     failureRedirect: "/auth/login",
     failureFlash: true,
     passReqToCallback: true
@@ -114,6 +114,10 @@ router.get("/confirm/:token", (req, res) => {
             console.log(err);
         })
 
+});
+
+router.get("/profile", (req, res) => {
+    res.render("auth/profile", { "message": req.flash("error") })
 });
 
 router.get("/logout", (req, res) => {
