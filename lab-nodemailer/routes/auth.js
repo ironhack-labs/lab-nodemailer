@@ -75,9 +75,10 @@ router.post("/signup", (req, res, next) => {
 router.get('/confirm/:confirmationCode', (req, res, next) => {
   const confirmationCode = req.params.confirmationCode
 
-  User.findOne({ confirmationCode })
+  User.findOneAndUpdate({ confirmationCode }, {status:"ACTIVE"}, {new: true})
   .then(user => {
-    user.status = 'ACTIVE'
+    //user.status = 'ACTIVE'
+    console.log(user)
     const {username, status}= user
     res.render("confirmation", {username, status})
   })
