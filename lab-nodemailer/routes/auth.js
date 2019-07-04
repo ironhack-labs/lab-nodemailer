@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
+const { sendConfirmationCode } = require('../config/nodemailer')
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -24,10 +25,19 @@ router.get("/signup", (req, res, next) => {
 });
 
 router.post("/signup", (req, res, next) => {
+
+  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let token = '';
+  for (let i = 0; i < 25; i++) {
+    token += characters[Math.floor(Math.random() * characters.length)];
+  }
   const username = req.body.username;
   const password = req.body.password;
-  if (username === "" || password === "") {
-    res.render("auth/signup", { message: "Indicate username and password" });
+  const email = req.body.email
+  const confirmationCode = token
+
+  if (username === "" || password === "" || email === "") {
+    res.render("auth/signup", { message: "Fill data" });
     return;
   }
 
@@ -42,22 +52,57 @@ router.post("/signup", (req, res, next) => {
 
     const newUser = new User({
       username,
-      password: hashPass
+      password: hashPass,
+      email,
+      confirmationCode
     });
 
     newUser.save()
-    .then(() => {
-      res.redirect("/");
-    })
-    .catch(err => {
-      res.render("auth/signup", { message: "Something went wrong" });
-    })
+      .then(() => {
+        sendConfirmationCode(
+          email, 
+          `
+          <div>
+            <h1>Ironhack confirmation Email</h1>
+            <h3>Hello ${username}</h3>
+            <p>Thanks to join our community! Please confirm your account clicking on the following link</p>
+            <a href="http://localhost:3000/auth/confirm/${confirmationCode}" target="_blank">Confirm</a>
+          </div>
+          `,
+          username)
+          .then(() => res.render('auth/mail'))
+          .catch(err => res.render('auth/mail'))
+      })
+      .catch(err => {
+        res.render("auth/signup", { message: "Something went wrong" });
+      })
   });
+});
+
+router.get("/confirm/:confirmCode", (req, res) => {
+  const { confirmCode } = req.params  
+  User.findOneAndUpdate({ confirmationCode: confirmCode }, { $set: { status: "Active" }} ,{ new: true })
+    .then((data) => {
+      res.render('auth/confirmation', data)
+    })
+    .catch(err => res.send(err))
 });
 
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
+});
+
+router.get("/profile/:id", (req, res, next) => {
+  const {id} = req.params
+  
+  User.findById(id)
+    .then(user => {
+      res.render("auth/profile", user);
+    })
+    .catch(err => {
+      res.render("auth/profile", err);
+    });
 });
 
 module.exports = router;
