@@ -60,14 +60,19 @@ router.post("/signup", (req, res, next) => {
     newUser.save()
       .then(() => {
         sendConfirmationCode(
-          email, 
+          email,
           `
-          <div>
-            <h1>Ironhack confirmation Email</h1>
-            <h3>Hello ${username}</h3>
-            <p>Thanks to join our community! Please confirm your account clicking on the following link</p>
-            <a href="http://localhost:3000/auth/confirm/${confirmationCode}" target="_blank">Confirm</a>
-          </div>
+          <div style="
+          text-align: center;
+          background: white;
+          color: #585858;
+          font-family: helvetica;">
+            <img src="https://course_report_production.s3.amazonaws.com/rich/rich_files/rich_files/4017/s200/logo-ironhack-blue.png" alt="Logo Ironhack">
+              <h1>Ironhack Confirmation Email</h1>
+              <h3>Hello ${username}</h3>
+              <p>Thanks to join our community! Please confirm your account clicking on the following link</p>
+              <a href="http://localhost:3000/auth/confirm/${confirmationCode}" target="_blank">Confirm</a>
+            </div>
           `,
           username)
           .then(() => res.render('auth/mail'))
@@ -80,8 +85,8 @@ router.post("/signup", (req, res, next) => {
 });
 
 router.get("/confirm/:confirmCode", (req, res) => {
-  const { confirmCode } = req.params  
-  User.findOneAndUpdate({ confirmationCode: confirmCode }, { $set: { status: "Active" }} ,{ new: true })
+  const { confirmCode } = req.params
+  User.findOneAndUpdate({ confirmationCode: confirmCode }, { $set: { status: "Active" } }, { new: true })
     .then((data) => {
       res.render('auth/confirmation', data)
     })
@@ -94,8 +99,8 @@ router.get("/logout", (req, res) => {
 });
 
 router.get("/profile/:id", (req, res, next) => {
-  const {id} = req.params
-  
+  const { id } = req.params
+
   User.findById(id)
     .then(user => {
       res.render("auth/profile", user);
