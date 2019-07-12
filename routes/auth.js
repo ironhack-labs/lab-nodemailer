@@ -60,8 +60,8 @@ router.post("/signup", (req, res, next) => {
       host: "smtp.mailtrap.io",
       port: 2525,
       auth: {
-        user: "087fd164ba55ab",
-        pass: "daa4349bbc3417"
+        user: process.env.MAILTRAP_USER,
+        pass: process.env.MAILTRAP_PASS
       }
     });
 
