@@ -116,15 +116,17 @@ router.get("/logout", (req, res) => {
 
 })
 
-router.get("/confirm/:confirmCode", (req, res, next) => {
-const token=req.params.confirmCode
-console.log(token)
-  // User.findOne({ username }, "username", (err, user) => {
-  //   if (true) {
-  //     res.render("auth/signup", { message: "The username already exists" });
-  //     return;
-  //   }
-  // })
-  res.render("auth/confirmation");
-    })
+router.get("/confirm/:confirmationCode", (req, res, next) => {
+  const confirmationCode=req.params.confirmationCode
+  console.log(confirmationCode)
+  User.findOne({ confirmationCode }, "confirmationCode", (err, elm) => {
+    if (elm!=null) {
+     res.render("auth/confirmation");
+     return
+    }
+    // })
+    res.render("auth/confirmation");
+      })
+  
+  })
 module.exports = router;
