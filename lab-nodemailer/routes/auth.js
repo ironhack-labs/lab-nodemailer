@@ -27,8 +27,10 @@ router.get("/signup", (req, res, next) => {
 router.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
-  const correo = req.body.email;
-  if (username === "" || password === "" || correo === "") {
+  const email = req.body.email;
+
+
+  if (username === "" || password === "" || email === "") {
     res.render("auth/signup", { message: "Rellena todos los campos" });
     return;
   }
@@ -40,11 +42,13 @@ router.post("/signup", (req, res, next) => {
     }
 
 
-    User.findOne({ correo }, "email", (err, cor) => {
+    User.findOne({ email }, "email", (err, cor) => {
       if (cor !== null) {
         res.render("auth/signup", { message: "The email already exists" });
         return;
       }
+
+      
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
@@ -55,11 +59,13 @@ router.post("/signup", (req, res, next) => {
        token += characters[Math.floor(Math.random() * characters.length )];
       }
 
+
+      
     const newUser = new User({
       username,
       password: hashPass,
       confirmationCode: token,
-      email: correo
+      email: email
     });
 
 let message=`<a href="http://localhost:3000/auth/confirm/${token}">Pincha aquí</a>`
@@ -79,12 +85,12 @@ let subject="Virus"
   
     transporter.sendMail({
       from: '"Ironhacker Email 👻" <myawesome@project.com>',
-      to: correo,
+      to: email,
       subject: subject,
       text: message,
       html: `<b>${message}</b>`
     })
-      .then(info => res.render('message', { correo, subject, message, info }))
+      .then(info => res.render('message', { email, subject, message, info }))
       .catch(error => console.log(error));
 
 
@@ -105,5 +111,20 @@ router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+
+
 })
+
+router.get("/confirm/:confirmCode", (req, res, next) => {
+const token=req.params.confirmCode
+console.log(token)
+  // User.findOne({ username }, "username", (err, user) => {
+  //   if (true) {
+  //     res.render("auth/signup", { message: "The username already exists" });
+  //     return;
+  //   }
+  // })
+  res.render("auth/confirmation");
+    })
 module.exports = router;
