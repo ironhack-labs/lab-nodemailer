@@ -1,0 +1,12 @@
+<div class="container">
+  <h2>{{username}}</h2>
+  <div>
+    <p><b>Email:</b> {{email}}</p>
+    <p><b>Status: </b>{{status}}</p>
+  </div>
+  {{#if confirmationCode}}
+  <div>
+    <p>Didn't recived a verification email? <a href="/user/reset-code">Send again</a></p>
+  </div>
+  {{/if}}
+</div>
