@@ -2,8 +2,8 @@ const express = require('express')
 const passport = require('passport')
 const router = express.Router()
 const User = require('../models/User')
+const nodemailer = require('nodemailer')
 
-// Bcrypt to encrypt passwords
 const bcrypt = require('bcrypt')
 const bcryptSalt = 10
 
@@ -25,13 +25,36 @@ router.get('/signup', (req, res, next) => {
   res.render('auth/signup')
 })
 
-router.post('/signup', (req, res, next) => {
+router.post('/signup', async (req, res, next) => {
   const username = req.body.username
   const password = req.body.password
+  const email = req.body.email
+
+  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  let token = ''
+  for (let i = 0; i < 25; i++) {
+    token += characters[Math.floor(Math.random() * characters.length)]
+  }
+  const confirmationCode = token
+
   if (username === '' || password === '') {
     res.render('auth/signup', { message: 'Indicate username and password' })
     return
   }
+
+  const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD
+    }
+  })
+  const info = await transporter.sendMail({
+    from: '"Ivan " <${process.env.EMAIL}>',
+    to: email,
+    subject: 'Your friends at localhost',
+    html: `<b>Your confirmation code: http://localhost:3000/auth/confirm/${confirmationCode}</b>`
+  })
 
   User.findOne({ username }, 'username', (err, user) => {
     if (user !== null) {
@@ -44,7 +67,9 @@ router.post('/signup', (req, res, next) => {
 
     const newUser = new User({
       username,
-      password: hashPass
+      password: hashPass,
+      email,
+      confirmationCode
     })
 
     newUser
@@ -61,6 +86,16 @@ router.post('/signup', (req, res, next) => {
 router.get('/logout', (req, res) => {
   req.logout()
   res.redirect('/')
+})
+
+router.get('/confirm/:confirmCode', async (req, res) => {
+  const user = await User.find({ confirmationCode: req.params.confirmCode })
+
+  if (user.length >= 1) {
+    res.render('auth/confirmation')
+  } else {
+    res.render('auth/fake.hbs')
+  }
 })
 
 module.exports = router
