@@ -1,0 +1,8 @@
+<h2>{{#if validation}}Account verified{{else}}There was a problem :({{/if}}</h2>
+<p>
+  {{#if validation}}
+  Your account has been verified, congrats! Now you can login <a href="/auth/login">here</a>
+  {{else}}
+  There was a problem with your verification code, please check again and come back :(
+  {{/if}}
+</p>
