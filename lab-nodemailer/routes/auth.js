@@ -65,24 +65,44 @@ router.post("/signup", (req, res, next) => {
   });
 
   //Send Email
-  // const {email, subject, message} = req.body;
-  // const transporter = nodemailer.createTransport({
-  //   service: 'Gmail',
-  //   auth: {
-  //     user: process.env.EMAIL,
-  //     pass: process.env.PASSWORD
-  //   }
-  // });
-  // transporter.sendMail({
-  //   from: `Elisa <${process.env.EMAIL}>`,
-  //   to: email,
-  //   subject,
-  //   text: message,
-  //   html:`<p>${message}</p>`
-  // })
-  // .then(info => res.render ('message', {email, subject, message}))
-  // .catch(error => console.log(error))
+  const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD
+    }
+  });
+  transporter.sendMail({
+    from: `Elisa <${process.env.EMAIL}>`,
+    to: email,
+    subject: 'Confirm your email address',
+    text: `Confirma tu correo en: http://localhost:3000/auth/confirm/${token}`,
+    html:`<p>Confirma tu correo en http://localhost:3000/auth/confirm/${token}</p>`
+  })
+  .then(info => console.log('Email sent success'))
+  .catch(error => console.log(error))
 });
+
+router.get('/confirm/:confirmCode',  (req, res) => {
+  const {confirmCode} = req.params
+  User.findOneAndUpdate({ confirmationCode: confirmCode }, { $set: { status: "Active" } }, { new: true })
+  .then((data) => {
+    res.render('auth/confirmation', data)
+  })
+  .catch(err => res.send(err))
+});
+
+router.get("/profile/:id", (req, res, next) => {
+  const { id } = req.params
+  User.findById(id)
+    .then(user => {
+      res.render("auth/profile", user);
+    })
+    .catch(err => {
+      res.render("auth/profile", err);
+    });
+});
+
 
 router.get("/logout", (req, res) => {
   req.logout();
