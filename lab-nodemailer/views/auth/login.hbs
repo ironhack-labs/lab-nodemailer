@@ -1,26 +1,27 @@
 <div class="columns is-centered">
   <div class="column is-6">
-    <h2>Login</h2>
+    <h2 class="title is-2">Login</h2>
     <hr>
     <div class="box">
-
       <form action="/auth/login" method="POST" id="form-container">
-        <label for="username">Username</label>
-        <input id="username" type="text" name="username" placeholder="JonSnow">
+        <div class="field">
+          <label for="username">Username</label>
+          <input class="input" id="username" type="text" name="username" placeholder="JonSnow">
+        </div>
 
-        <br><br>
+        <hr>
 
-        <label for="password">Password</label>
-        <input id="password" type="password" name="password" placeholder="Your password">
+        <div class="field">
+          <label for="password">Password</label>
+          <input class="input" id="password" type="password" name="password" placeholder="Your password">
+        </div>
         <br>
         {{#if message }}
         <div class="error-message">{{ message }}</div>
         {{/if}}
 
-        <br><br>
-
-        <button>Login</button>
-
+        <button class="button is-primary is-fullwidth">Login</button>
+        <hr>
         <p class="account-message">
           Don't have an account yet?
           <a href="/auth/signup">Signup</a>

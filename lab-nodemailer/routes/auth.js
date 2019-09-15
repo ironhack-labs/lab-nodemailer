@@ -59,8 +59,8 @@ router.post("/signup", (req, res, next) => {
 
     const bodyMail = `
     Please verify your account:
-    <a href="http://localhost:${process.env.PORT}/user/verify/${confirmationCode}">
-      http://localhost:${process.env.PORT}/user/verify/${confirmationCode}
+    <a href="http://localhost:${process.env.PORT}/auth/confirmation/${confirmationCode}">
+    Confirmacion
     </a>`
 
     newUser.save()
@@ -75,8 +75,25 @@ router.post("/signup", (req, res, next) => {
     .catch(err => {
       res.render("auth/signup", { message: "Something went wrong" });
     })
-  });
-});
+  })
+})
+
+router.get('/confirmation/:confirmationCode', (req, res) => {
+  User.find({ confirmationCode: req.params.confirmationCode }).then(user => {
+    let id = user[0]._id
+
+    console.log('confirmationCode',req.params);
+    
+    User.findByIdAndUpdate(id, { status: 'Active' }, function(err, result) {
+      if (err) {
+        console.log(err)
+      }
+      let userEmail = user[0].email
+      let userId = user[0]._id
+      res.render('auth/confirmation', { userEmail, userId })
+    })
+  })
+})
 
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
@@ -86,9 +103,11 @@ const transporter = nodemailer.createTransport({
   }
 })
 
-router.get("/verify/:confirmationCode", (req,res) => {
-  res.render('verify/:confirmationCode')
-})
+router.get('/profile', (req, res, next) => {
+  const user = req.session.currentUser
+  console.log('some', user)
+  res.render('auth/profile', user);
+});
 
 router.get("/logout", (req, res) => {
   req.logout();
