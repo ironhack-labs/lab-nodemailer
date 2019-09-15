@@ -2,20 +2,11 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
-
-function generateCode() {
-  const characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let token = "";
-  for (let i=0; i< 25; i++) {
-    token += characters[Math.floor(Math.random() * characters.length)];
-  }
-  return token
-}
 
 
 router.get("/login", (req, res, next) => {
@@ -34,10 +25,14 @@ router.get("/signup", (req, res, next) => {
 });
 
 router.post("/signup", (req, res, next) => {
+  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let token = '';
+  for (let i = 0; i < 25; i++) {
+      token += characters[Math.floor(Math.random() * characters.length )];
+  }
   const username = req.body.username;
   const password = req.body.password;
-  const email = req.body.email
-  const generateCode = generateCode()
+  const email = req.body.email;
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
@@ -56,8 +51,7 @@ router.post("/signup", (req, res, next) => {
       username,
       password: hashPass,
       email,
-      status,
-      confirmationCode
+      confirmationCode : token
     });
 
     newUser.save()
@@ -67,42 +61,48 @@ router.post("/signup", (req, res, next) => {
     .catch(err => {
       res.render("auth/signup", { message: "Something went wrong" });
     })
+    console.log(newUser)
   });
+
+  //Send Email
+  const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD
+    }
+  });
+  transporter.sendMail({
+    from: `Elisa <${process.env.EMAIL}>`,
+    to: email,
+    subject: 'Confirm your email address',
+    text: `Confirma tu correo en: http://localhost:3000/auth/confirm/${token}`,
+    html:`<p>Confirma tu correo en http://localhost:3000/auth/confirm/${token}</p>`
+  })
+  .then(info => console.log('Email sent success'))
+  .catch(error => console.log(error))
 });
 
-let transporter = nodemailer.createTransport({
-  service: "Gmail",
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.PASSWORD
-  }
+router.get('/confirm/:confirmCode',  (req, res) => {
+  const {confirmCode} = req.params
+  User.findOneAndUpdate({ confirmationCode: confirmCode }, { $set: { status: "Active" } }, { new: true })
+  .then((data) => {
+    res.render('auth/confirmation', data)
+  })
+  .catch(err => res.send(err))
 });
 
-let { subject, message } = req.body
+router.get("/profile/:id", (req, res, next) => {
+  const { id } = req.params
+  User.findById(id)
+    .then(user => {
+      res.render("auth/profile", user);
+    })
+    .catch(err => {
+      res.render("auth/profile", err);
+    });
+});
 
-message = `htttp://localhost:${PORT}/auth/confirm/${confirmationCode}`
-transporter.sendMail({
-  from: `"Ediehacker Email" <ironhacker@project.com>`,
-  to: email,
-  subject: subject,
-  text: message,
-  html: `<b>${message}</b>`
-})
-
-.then(info => res.render("message", { email, subject, message, info}))
-.catch(error => console.log(error));
-
-})
-
-router.get("/confirm/:confirmCode", (req, res, next) =>{
-const codeId = req.params.confirmCode
-User.find({confirmationCode: codeId})
-  .then(user => {  
-    user.status = "Active"
-  res.render('auth/confirmation', {user})})
-  .catch(err => console.log("Hubo un error", err))
-
-})
 
 router.get("/logout", (req, res) => {
   req.logout();
