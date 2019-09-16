@@ -1,0 +1,32 @@
+<div class="container">
+  <h1>{{title}}</h1>
+  <form action="{{action}}" method="POST">
+    <div class="i-group">
+      <label for="email">Email</label>
+      <br>
+      <input id="email" type="email" name="email">
+      <br>
+    </div>
+    {{#if isSignup}}
+    <div class="i-group">
+      <label for="username">Username</label>
+      <br>
+      <input id="username" type="text" name="username">
+      <br>
+    </div>
+    {{/if}}
+    <div class="i-group">
+      <label for="password">Password</label>
+      <br>
+      <input id="password" type="password" name="password">
+      <br>
+    </div>
+    <div class="submit-c">
+      <input type="submit" value="{{title}}">
+      <br>
+    </div>
+  </form>
+  <div>
+    {{{redirection}}}
+  </div>
+</div>
