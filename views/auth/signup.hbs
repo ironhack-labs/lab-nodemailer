@@ -1,6 +1,10 @@
 <h2>Signup</h2>
 
 <form action="/auth/signup" method="POST" id="form-container">
+  <label for="email">Email</label>
+  <input id="email" type="email" name="email" placeholder="jonsnow@mail.com">
+
+  <br><br>
   <label for="username">Username</label>
   <input id="username" type="text" name="username" placeholder="JonSnow">
 
@@ -15,7 +19,7 @@
 
   <br><br>
 
-  <button>Create account</button>
+  <button type="submit">Create account</button>
 
   <p class="account-message">
     Do you already have an account?

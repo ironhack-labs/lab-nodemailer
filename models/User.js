@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const Schema   = mongoose.Schema;
 
 const userSchema = new Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  status: { enum: ['Pending Confirmation', 'Active'] },
-  confirmationCode: { type: String, unique: true },
-  email: { type: String, required: true, unique: true }
+  email: { type: String },
+  username: { type: String },
+  password: { type: String },
+  status: { type: String, enum: ['Pending Confirmation', 'Active'] },
+  confirmationCode: { type: String, unique: true }
 }, {
   timestamps: {
     createdAt: 'created_at',
