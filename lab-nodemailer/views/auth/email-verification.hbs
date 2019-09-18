@@ -1,0 +1,17 @@
+<div class="flex-column height">
+  <h2>
+    {{#if validation}}
+      Account verified
+      {{else}}
+      There was a problem :(
+    {{/if}}
+  </h2>
+
+  <p>
+    {{#if validation}}
+      Congrats! Your user is active, you can login now.
+      {{else}}
+      No verification found, please check your mail box or sign up again.
+    {{/if}}
+  </p>
+</div>

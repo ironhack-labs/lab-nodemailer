@@ -1,0 +1,27 @@
+<div class="flex-column height comment">
+
+  <h2>Signup</h2>
+
+  <form action="/auth/signup" method="POST" id="form-container" class="flex-column">
+    <label for="username">Username</label>
+    <input id="username" type="text" name="username" placeholder="JonSnow">
+
+    <label for="password">Password</label>
+    <input id="password" type="password" name="password" placeholder="Clever password">
+    
+    {{#if message }}
+      <div class="error-message">{{ message }}</div>
+    {{/if}}
+
+    <label for="email">Email</label>
+    <input id="email" type="text" name="email" placeholder="JonSnow@winterfell.stark">
+
+    <button>Sign up</button>
+
+    <p class="account-message">
+      Do you already have an account?
+      <a href="/auth/login">Log in</a>
+    </p>
+  </form>
+
+</div>

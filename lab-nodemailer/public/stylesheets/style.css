@@ -1,0 +1,117 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: 0; }
+
+body {
+  font: 18px Helvetica, Arial, sans-serif;
+  padding-top: 75px;
+  background: gray url(https://subtlepatterns.com/patterns/geometry2.png) repeat 0 0;
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  height: 300px;
+  padding-top: 120px;
+  box-sizing: border-box;
+  -webkit-animation: slide 20s linear infinite; }
+
+@-webkit-keyframes slide {
+  from {
+    background-position: 0 0; }
+  to {
+    background-position: -400px 0; } }
+
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; }
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; }
+
+.height {
+  height: 75vh; }
+
+h2 {
+  font-weight: bold;
+  font-size: 36px;
+  color: #1180cb;
+  margin: 20px; }
+
+p {
+  font-size: 24px;
+  color: #0c8848; }
+
+nav {
+  position: fixed;
+  left: 0;
+  top: 0; }
+
+nav .flex {
+  justify-content: space-between;
+  width: 100vw;
+  padding: 15px 10px;
+  background-color: #334ea7; }
+
+nav a {
+  margin: 10px 20px;
+  border-radius: 3px;
+  border: none;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.35);
+  background-color: #f0eaea;
+  text-decoration: none;
+  padding: 5px 10px;
+  color: #334ea7;
+  font-weight: bold; }
+
+nav .right {
+  justify-content: flex-end;
+  margin-right: 20px; }
+
+.index {
+  height: 80vh; }
+
+.index img {
+  width: 50vw;
+  margin-top: 100px; }
+
+.index h1 {
+  font-size: 72px;
+  color: #1180cb; }
+
+.index p {
+  font-weight: bold;
+  font-size: 36px;
+  color: #0c8848; }
+
+label, input {
+  width: 260px;
+  padding: 10px 0;
+  margin-bottom: 10px;
+  padding-left: 15px;
+  font-size: 18px; }
+
+label {
+  background-color: #242424;
+  color: whitesmoke; }
+
+button {
+  margin: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  color: #f0e6e6;
+  background-color: #1180cb; }
+
+.comment a {
+  text-decoration: none; }
+
+.comment p {
+  margin-top: 20px;
+  font-size: 16px; }
+
+/*# sourceMappingURL=style.css.map */

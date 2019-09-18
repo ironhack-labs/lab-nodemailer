@@ -1,0 +1,19 @@
+{{#if username}}
+
+<div class="flex-column height">
+  <div class="flex-column height">
+    <h2>CONGRATS!</h2>  
+    <p>You finally got here!</p>
+    <p>Username: {{username}}</p>
+    <p>Status: {{status}}</p>
+  </div>
+  
+  {{else}}
+  
+  <div class="flex-column height">
+    <h2>Stop!</h2>
+    <p>If you want to see your profile, please log in or sign up.</p>
+  </div>
+</div>
+
+{{/if}}

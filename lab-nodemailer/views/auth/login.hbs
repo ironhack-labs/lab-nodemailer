@@ -1,0 +1,24 @@
+<div class="flex-column height comment">
+
+  <h2>Login</h2>
+
+  <form action="/auth/login" method="POST" id="form-container" class="flex-column">
+    <label for="username">Username</label>
+    <input id="username" type="text" name="username" placeholder="JonSnow">
+
+    <label for="password">Password</label>
+    <input id="password" type="password" name="password" placeholder="Clever password">
+   
+    {{#if message }}
+      <div class="error-message">{{ message }}</div>
+    {{/if}}
+
+    <button>Log in</button>
+
+    <p class="account-message">
+      Or
+      <a href="/auth/signup">Sign up</a>
+    </p>
+  </form>
+
+</div>
