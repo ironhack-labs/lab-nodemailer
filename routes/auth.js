@@ -5,7 +5,6 @@ const User = require("../models/User");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const ensureLogin = require("connect-ensure-login");
-
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
@@ -90,7 +89,7 @@ router.post("/signup", (req, res, next) => {
             to: `${newUser.email}`,
             subject: `${newUser.username}, welcome to My Awsome Project`,
             text: "Awesome Message",
-            html: `<b><a href="http://localhost:3000/auth/confirm/${newUser.confirmationCode}">Click here to validate your account</a></b>`
+            html: `<a href="http://localhost:3000/auth/confirm/${newUser.confirmationCode}">Click here to activate your account</a>`
           })
           .then(info => console.log(info))
           .catch(error => console.log(error));
