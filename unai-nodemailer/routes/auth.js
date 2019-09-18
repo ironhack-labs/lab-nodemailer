@@ -3,17 +3,23 @@ const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
 
+const transporter = require('../configs/nodemailer.config')
+
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
+router.post('/send-email', (req, res, next) => {
+  let { email, subject, message } = req.body;
+  res.render('message', { email, subject, message })
+});
 
 router.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
 });
 
 router.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
+  successRedirect: "/profile",
   failureRedirect: "/auth/login",
   failureFlash: true,
   passReqToCallback: true
@@ -39,10 +45,18 @@ router.post("/signup", (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
+    const characters ="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let token = "";
+    for (let i = 0; i < 25; i++) {
+      token += characters[Math.floor(Math.random() * characters.length)];
+    }
+
 
     const newUser = new User({
       username,
       password: hashPass
+      confirmationCode: token,
+      email:email
     });
 
     newUser.save()
