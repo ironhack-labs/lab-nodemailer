@@ -1,0 +1,16 @@
+{{#if error}}
+<h2>Sorry, we haven't been able to find your account</h2>
+<h2>Please, try again</h2>
+
+<img src="/images/sadGif.gif" alt="Sad gif">
+
+{{/if}}
+
+{{#if ok}}
+<h2>Congratulations {{user.username}}, your account has been activated!</h2>
+
+<img src="/images/giphy.gif" alt="Happy gif">
+
+{{/if}}
+
+

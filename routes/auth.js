@@ -4,6 +4,7 @@ const router = express.Router();
 const User = require("../models/User");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const ensureLogin = require("connect-ensure-login");
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -24,16 +25,34 @@ router.get("/login", (req, res, next) => {
 router.post(
   "/login",
   passport.authenticate("local", {
-    successRedirect: "/",
+    successRedirect: "/auth/profile",
     failureRedirect: "/auth/login",
     failureFlash: true,
     passReqToCallback: true
   })
 );
 
+router.get("/login", (req, res, next) => {
+  res.render("auth/login", { message: req.flash("error") });
+});
+
+
 router.get("/signup", (req, res, next) => {
   res.render("auth/signup");
 });
+
+// router.get("/profile", (req, res, next) => {
+//   User.findById(req.user.id)
+//   res.render("auth/profile");
+// });
+
+router.get(
+  "/profile",
+  ensureLogin.ensureLoggedIn(),
+  (req, res) => {
+    res.render("auth/profile", { user: req.user });
+  }
+);
 
 router.post("/signup", (req, res, next) => {
   const username = req.body.username;
@@ -86,6 +105,24 @@ router.post("/signup", (req, res, next) => {
 router.post("/send-email", (req, res, next) => {
   let { email, subject, message } = req.body;
   res.render("message", { email, subject, message });
+});
+
+router.get("/confirm/:confirmCode", (req, res, next) => {
+  const code = req.params.confirmCode;
+  User.findOneAndUpdate(
+    { confirmationCode: code },
+    { $set: { status: "Active" } },
+    { new: true }
+  )
+    .then(user => {
+      if (user === null) {
+        res.render("auth/activation", { user, error: true });
+      }
+      res.render("auth/activation", { user, ok: true });
+    })
+    .catch(() => {
+      console.log(error);
+    });
 });
 
 router.get("/logout", (req, res) => {
