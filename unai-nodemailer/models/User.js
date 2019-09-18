@@ -13,7 +13,7 @@ const userSchema = new Schema({
     type: String,
     unique: true
   },
-  email:
+  email: String
 }, {
   timestamps: {
     createdAt: 'created_at',
