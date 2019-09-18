@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const randToken = require("rand-token");
 
 const userSchema = new Schema(
   {
@@ -8,16 +7,19 @@ const userSchema = new Schema(
     password: String,
     status: {
       type: String,
-      enum: ["Pending Confirmation", "Active"]
+      enum: ["Pending Confirmation", "Active"],
+      default: "Pending Confirmation"
     },
     confirmationCode: {
       type: String,
-      unique: true,
-      default: randToken.generate(25)
+      unique: true
     },
     email: {
       type: String,
       unique: true
+    },
+    profileImage: {
+      type: String
     }
   },
   {

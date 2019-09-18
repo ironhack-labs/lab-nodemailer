@@ -12,8 +12,6 @@ const path         = require('path');
 const session    = require("express-session");
 const MongoStore = require('connect-mongo')(session);
 const flash      = require("connect-flash");
-
-const randToken = require ("rand-token")
     
 
 mongoose

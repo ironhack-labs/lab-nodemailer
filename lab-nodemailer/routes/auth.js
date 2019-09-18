@@ -1,23 +1,30 @@
 const express = require("express");
-const passport = require('passport');
+const passport = require("passport");
 const router = express.Router();
 const User = require("../models/User");
+const nodemailer = require("nodemailer");
+const transporter = require("./../configs/nodemailer.config");
+const loginMid = require("./../middlewares/login.mid");
+
+const randToken = require("rand-token");
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
-
 router.get("/login", (req, res, next) => {
-  res.render("auth/login", { "message": req.flash("error") });
+  res.render("auth/login", { message: req.flash("error") });
 });
 
-router.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/auth/login",
-  failureFlash: true,
-  passReqToCallback: true
-}));
+router.post("/login", [
+  loginMid.loginWithPendingAccount,
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/auth/login",
+    failureFlash: true,
+    passReqToCallback: true
+  })
+]);
 
 router.get("/signup", (req, res, next) => {
   res.render("auth/signup");
@@ -26,7 +33,9 @@ router.get("/signup", (req, res, next) => {
 router.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
-  if (username === "" || password === "") {
+  const email = req.body.email;
+
+  if (username === "" || password === "" || email === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
   }
@@ -40,20 +49,66 @@ router.post("/signup", (req, res, next) => {
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
 
+    const confirmationCode = randToken.generate(64);
+
     const newUser = new User({
       username,
-      password: hashPass
+      password: hashPass,
+      confirmationCode,
+      email
     });
 
-    newUser.save()
-    .then(() => {
-      res.redirect("/");
-    })
-    .catch(err => {
-      res.render("auth/signup", { message: "Something went wrong" });
-    })
+    newUser
+      .save()
+      .then(() => {
+        transporter
+          .sendMail({
+            from: "My project 💻",
+            to: email,
+            subject: "Subject test",
+            text: "Text test",
+            html: `
+            <h1>My first nodemailer mail</h1>
+            <p>EEEEEEEEEEEOOOOOOOOOOOOOO 👨🏻</p>
+            <a href="http://localhost:3000/auth/confirm/${confirmationCode}">Confirm your account</a>
+            `
+          })
+          .then(emailSent => {
+            res.redirect("/");
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      })
+      .catch(err => {
+        res.render("auth/signup", { message: "Something went wrong" });
+      });
   });
 });
+
+router.get("/confirm/:token", loginMid.accountActivated, (req, res, next) => {
+  console.log("Let's update");
+  User.updateOne(
+    { confirmationCode: req.params.token },
+    { status: "Active" },
+    { new: true }
+  ).then(accountActivated => {
+    res.redirect("/auth/account-activated");
+    return;
+  });
+});
+
+router.get("/account-activated", (req, res, next) => {
+  res.render("auth/account-activated");
+});
+
+router.get("/account-already-activated", (req, res, next) => {
+  res.render("auth/account-already-activated");
+});
+
+router.get("/confirm-your-email", (req, res, next) => {
+  res.render("auth/confirm-your-email")
+})
 
 router.get("/logout", (req, res) => {
   req.logout();

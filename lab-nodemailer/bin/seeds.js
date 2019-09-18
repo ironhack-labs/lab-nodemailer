@@ -17,15 +17,17 @@ mongoose
   .catch(err => {
     console.error('Error connecting to mongo', err)
   });
-
+  
 let users = [
   {
     username: "alice",
     password: bcrypt.hashSync("alice", bcrypt.genSaltSync(bcryptSalt)),
+    email: "emailde@prueba.com"
   },
   {
     username: "bob",
     password: bcrypt.hashSync("bob", bcrypt.genSaltSync(bcryptSalt)),
+    email: "email.de.prueba@prueba.com"
   }
 ]
 
