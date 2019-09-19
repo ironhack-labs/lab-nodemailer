@@ -1,0 +1,12 @@
+<h2>Este es el perfil de '<em>{{profile.username}}'</em></h2>
+<h3>{{profile.email}}</h3>
+
+
+
+{{#if logged}}
+  Usuario logueado: <a href="/{{logged.username}}">{{logged.username}}</a>
+{{/if}}
+
+{{#if yourProfile}}
+  <em>(Estás en tu perfil)</em>
+{{/if}}
