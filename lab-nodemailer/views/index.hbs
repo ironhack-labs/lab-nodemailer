@@ -3,33 +3,38 @@
 {{#if username}}
 <div class="profile">
   <h2 class="title">Your profile<a href="/auth/logout">Log out</a></h2>
-    <img src="{{username.profileImage}}" alt="{{username.name}}" class="profile-image">
+  <img src="{{username.profileImage}}" alt="{{username.name}}"
+    class="profile-image">
   <form action="/profile/update" method="post" class="form signup-form">
-    <input type="hidden" name="_id" value="{{username._id}}">
-    <input id="username" class="input" type="text" name="username"
-      placeholder="Username" value="{{username.username}}">
-    <input id="email" class="input" type="mail" name="email"
+    <input autocomplete="off" type="hidden" name="_id" value="{{username._id}}">
+    <input autocomplete="off" id="username" class="input" type="text"
+      name="username" placeholder="Username" value="{{username.username}}">
+    <input autocomplete="off" id="email" class="input" type="mail" name="email"
       placeholder="Email" value="{{username.email}}">
     <input type="submit" value="Update" class="button primary-button">
   </form>
 </div>
 {{else}}
-<form action="/auth/login" method="post" class="form login-form">
-  <input id="username" type="text" class="input" name="username"
-    placeholder="Username">
-  <input id="password" type="password" class="input" name="password"
-    placeholder="Your password">
+<form action="/" method="post" class="form login-form">
+  <input autocomplete="off" id="username" type="text" class="input"
+    name="username" placeholder="Username">
+  <input autocomplete="off" id="password" type="password" class="input"
+    name="password" placeholder="Your password">
   <input type="submit" value="Login" class="button primary-button">
 </form>
+{{#if message }}
+<div class="error-message">{{ message }}</div>
+{{/if}}
 
 <p class="or">OR</p>
 
 <form action="/auth/signup" method="post" class="form signup-form">
-  <input id="username" class="input" type="text" name="username"
-    placeholder="Username">
-  <input id="password" class="input" type="password" name="password"
-    placeholder="Password">
-  <input id="email" class="input" type="mail" name="email" placeholder="Email">
+  <input autocomplete="off" id="username" class="input" type="text"
+    name="username" placeholder="Username">
+  <input autocomplete="off" id="password" class="input" type="password"
+    name="password" placeholder="Password">
+  <input autocomplete="off" id="email" class="input" type="mail" name="email"
+    placeholder="Email">
   <input type="submit" value="Signup" class="button primary-button">
 </form>
 {{/if}}

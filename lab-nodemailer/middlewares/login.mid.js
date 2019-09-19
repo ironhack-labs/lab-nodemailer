@@ -20,8 +20,6 @@ module.exports.accountActivated = (req, res, next) => {
 module.exports.loginWithPendingAccount = (req, res, next) => {
   let {username} = req.body
 
-  console.log("Usernameee", username)
-
   User.findOne({username, status: "Pending Confirmation"}).then(userFound => {
     console.log(userFound)
     if (userFound) {

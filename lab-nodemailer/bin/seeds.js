@@ -22,12 +22,16 @@ let users = [
   {
     username: "alice",
     password: bcrypt.hashSync("alice", bcrypt.genSaltSync(bcryptSalt)),
-    email: "emailde@prueba.com"
+    email: "emailde@prueba.com",
+    status: "Active",
+    profileImage: "https://randomuser.me/api/portraits/women/9.jpg"
   },
   {
     username: "bob",
     password: bcrypt.hashSync("bob", bcrypt.genSaltSync(bcryptSalt)),
-    email: "email.de.prueba@prueba.com"
+    email: "email.de.prueba@prueba.com",
+    status: "Pending Confirmation",
+    profileImage: "https://randomuser.me/api/portraits/men/61.jpg"
   }
 ]
 
