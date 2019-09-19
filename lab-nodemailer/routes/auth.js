@@ -104,7 +104,7 @@ router.post("/signup", async (req, res, next) => {
               `
           })
           .then(emailSent => {
-            res.redirect("/");
+            res.redirect("/auth/account-created");
           })
           .catch(err => {
             console.log(err);
@@ -115,6 +115,10 @@ router.post("/signup", async (req, res, next) => {
       });
   });
 });
+
+router.get("/account-created", (req, res, next) => {
+  res.render("auth/account-created")
+})
 
 router.get("/confirm/:token", loginMid.accountActivated, (req, res, next) => {
   console.log("Let's update");
