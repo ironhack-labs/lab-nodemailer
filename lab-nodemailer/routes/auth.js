@@ -4,6 +4,7 @@ const router = express.Router();
 const User = require("../models/User");
 const randToken = require("rand-token");
 const nodemailer = require("nodemailer");
+const confirmationEmail = require('../templates/template')
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -57,7 +58,6 @@ router.post("/signup", (req, res, next) => {
       return;
     }
     
-
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
     const confirmationCode = randToken.generate(30);
@@ -68,16 +68,18 @@ router.post("/signup", (req, res, next) => {
       confirmationCode,
       
     });
-    console.log(process.env.EMAIL, process.env.PASSWORD)
+
     
     newUser.save()
     .then((user) => {
+      console.log(user.confirmationCode, user)
       transporter.sendMail({
         from: '"My Awesome Project 👻" <myawesome@project.com>',
         to: `${email}`, 
         subject: 'Awesome Subject', 
         text: 'Awesome Message',
-        html: `<b>Awesome Message</b><a href="localhost:3000/auth/confirmation/${confirmationCode}">Confirm your account</a>`
+        html: confirmationEmail(user.username, `http://localhost:3000/auth/confirmation/${user.confirmationCode}`),
+        // html: `<b>Awesome Message</b><a href="localhost:3000/auth/confirmation/${confirmationCode}">Confirm your account</a>`
       })
       .then(info => console.log(info))
       .catch(error => console.log(error))
