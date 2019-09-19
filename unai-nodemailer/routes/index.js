@@ -1,8 +1,8 @@
 const express = require('express');
 const router  = express.Router();
-
-
-const check = require('../middlewares/activeMid')
+const authRoutes = require('./auth');
+const profileRoutes = require('./profile');
+// const check = require('../middlewares/activeMid')
 
 /* GET home page */
 router.get('/', (req, res, next) => {
@@ -18,5 +18,9 @@ router.get("/profile", check.checkActive, (req, res, next) => {
   const user = req.user
   res.render("profile", {user});
 });
+
+
+// router.use('/auth', authRoutes);
+// router.use('/profile', profileRoutes)
 
 module.exports = router;

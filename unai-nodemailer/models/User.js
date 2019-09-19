@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema   = mongoose.Schema;
 
 const userSchema = new Schema({
+  email: String,
   username: String,
   password: String,
   status: {
@@ -11,9 +12,9 @@ const userSchema = new Schema({
   },
   confirmationCode: {
     type: String,
+    required: true,
     unique: true
   },
-  email: String
 }, {
   timestamps: {
     createdAt: 'created_at',
