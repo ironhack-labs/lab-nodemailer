@@ -3,13 +3,13 @@ const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
 const secure = require('../middlewares/secure.mid');
-const randToken = require('rand-token')
-const transporter = require('../configs/modemailer.config')
+const randToken = require('rand-token');
+const transporter = require('../configs/nodemailer.config');
+const mailText = require('../templates/mailText');
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
-
 
 router.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
@@ -60,11 +60,11 @@ router.post("/signup", (req, res, next) => {
         from: '"TULIPÁN" <jesusfakerking@gmail.com>',
         to: email, 
         subject: "Confirmation mail", 
-        text: "Confirm",
-        html: mailText(token)
+        text: "Llega o no llega?",
+        html: mailText(confirmationCode)
       })
-      .then(info => console.log(info))
-      .catch(error => console.log(error));
+      .then(() => console.log("Correo enviado"))
+      .catch(error => console.log("PETE" + error));
     
       res.redirect("/");
     })
@@ -74,6 +74,14 @@ router.post("/signup", (req, res, next) => {
     })
   });
 });
+
+router.get("/confirm/:confirmationCode", (req, res, next) => {
+  const confirmationCode = req.params.confirmationCode;
+  User.findOneAndUpdate({confirmationCode}, {status: "Active"})
+  .then( () => res.render("auth/confirmation"))
+  .catch( (err) => console.log(err));
+})
+
 
 router.get("/private", secure.checkLogin, (req, res, next) => {
   res.render('auth/private', { user: req.user });
