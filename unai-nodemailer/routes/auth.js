@@ -9,10 +9,6 @@ const transporter = require('../configs/nodemailer.config')
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
-router.post('/send-email', (req, res, next) => {
-  let { email, subject, message } = req.body;
-  res.render('message', { email, subject, message })
-});
 
 router.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
@@ -24,6 +20,8 @@ router.post("/login", passport.authenticate("local", {
   failureFlash: true,
   passReqToCallback: true
 }));
+
+
 
 router.get("/signup", (req, res, next) => {
   res.render("auth/signup");
@@ -50,11 +48,15 @@ router.post("/signup", (req, res, next) => {
     for (let i = 0; i < 25; i++) {
       token += characters[Math.floor(Math.random() * characters.length)];
     }
-
+    
+    router.post('/send-email', (req, res, next) => {
+      let { email, subject, message } = req.body;
+      res.render('message', { email, subject, message })
+    });
 
     const newUser = new User({
       username,
-      password: hashPass
+      password: hashPass,
       confirmationCode: token,
       email:email
     });
@@ -68,6 +70,16 @@ router.post("/signup", (req, res, next) => {
     })
   });
 });
+
+router.get("/confirm/:confirmCode", (req, res) => {
+  User.findOneAndUpdate({confirmationCode:req.params.confirmCode},{$set:{active:true}},{new: true})
+  .then((user)=>{
+    res.render("auth/activation",{user})
+  }).catch(()=>{
+    console.log("A ocurrido un error de activacion")
+  })  
+})
+
 
 router.get("/logout", (req, res) => {
   req.logout();
