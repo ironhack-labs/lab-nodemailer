@@ -70,7 +70,7 @@ app.use(flash());
 require('./passport')(app);
 
 // default value for title local
-app.locals.title = 'Express - Generated with IronGenerator';
+app.locals.title = 'Appmailer';
 app.use((req, res, next) => {
   res.locals.username = req.user
   next()

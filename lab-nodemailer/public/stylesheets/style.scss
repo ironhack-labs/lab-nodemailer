@@ -1,8 +1,170 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Arima+Madurai:200,500,700&display=swap');
+
+// Variables
+
+$background: #232323;
+$on-background: #EEEEEECC;
+
+$surface: #454545;
+$on-surface: #EEEEEECC;
+
+$primary: #ff0000CC;
+$on-primary: #FFFFFF;
+
+$container-width: 960px;
+
+$main-font: 'Arima Madurai', cursive;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: $main-font;
+}
+
+// Base
+
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: $background;
 }
 
 a {
-  color: #00B7FF;
+  text-decoration: none;
+}
+
+input[type="submit"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+// Utils
+
+.container {
+  max-width: $container-width;
+  margin: auto;
+}
+
+.or {
+  margin: 2rem 0;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: $on-background;
+  font-size: 2rem;
+}
+
+// Components
+
+.main-title {
+  font-size: 8rem;
+  font-weight: 200;
+  text-align: center;
+  color: $on-background;
+
+  span {
+    color: $primary;
+  }
+}
+
+.title {
+  text-align: center;
+  color: lighten($primary, 10);
+  font-size: 2.5rem;
+  font-weight: 500;
+  margin-bottom: 4rem;
+
+  a {
+    display: block;
+    width: max-content;
+    margin: 1rem auto;
+    font-size: 1.2rem;
+    color: $on-background;
+    padding: 0.25rem 1rem;
+    border: 2px solid $on-surface;
+    transition: color .2s, border-color .2s;
+    border-radius: 3px;
+
+    &:hover {
+      border-color: #FFFFFF;
+      color: #FFFFFF;
+    }
+  }
+}
+
+.nav {
+  background-color: $surface;
+  margin-bottom: 2rem;
+}
+
+.menu {
+  max-width: $container-width;
+  margin: auto;
+  display: flex;
+  justify-content: flex-end;
+  list-style-type: none;
+  padding: 1rem;
+}
+
+.menu-item {  
+
+  &:not(:last-child) {
+    margin-right: 1rem;
+  }
+}
+
+.menu-link {
+  color: $on-surface;
+  display: inline-block;
+}
+
+.form {
+  background-color: #FFFFFF;
+  padding: 1rem;
+  border-radius: 3px;
+  box-shadow: 0 0 3px 6px rgba(0, 0, 0, .25);
+  display: flex;
+  flex-wrap: wrap;
+  
+  .input {
+    flex-grow: 1;
+    margin-right: 1rem;
+  }
+}
+
+.input {
+  border: 1px solid #DDDDDD;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.button {
+  font-size: 1rem;
+  display: inline-block;
+  padding: .5rem 1rem;
+  border: 1px solid #DDDDDD;
+  border-radius: 4px;
+  min-width: 85px;
+}
+
+.primary-button {
+  background-color: $primary;
+  border: none;
+  color: $on-primary;
+  box-shadow: 0 3px 6px $primary;
+}
+
+.profile {
+  padding: 2rem;
+  background-color: $surface;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, .25);
+}
+
+.profile-image {
+  margin: 0 auto 2rem;
+  display: block;
+  border-radius: 50%;
+  border: 2px solid $on-surface;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, .25);
 }

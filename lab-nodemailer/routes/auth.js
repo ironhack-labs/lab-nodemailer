@@ -5,6 +5,7 @@ const User = require("../models/User");
 const nodemailer = require("nodemailer");
 const transporter = require("./../configs/nodemailer.config");
 const loginMid = require("./../middlewares/login.mid");
+const userProfilePictures = require ("./../data/picture-profiles.data")
 // const nodemailerTemplate = require("./../templates/confirm.nodemailer")
 
 const randToken = require("rand-token");
@@ -31,7 +32,7 @@ router.get("/signup", (req, res, next) => {
   res.render("auth/signup");
 });
 
-router.post("/signup", (req, res, next) => {
+router.post("/signup", async (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
@@ -52,11 +53,14 @@ router.post("/signup", (req, res, next) => {
 
     const confirmationCode = randToken.generate(64);
 
+    const profileImage = userProfilePictures[Math.floor(Math.random() * userProfilePictures.length)]
+
     const newUser = new User({
       username,
       password: hashPass,
       confirmationCode,
-      email
+      email,
+      profileImage
     });
 
     newUser
@@ -69,35 +73,35 @@ router.post("/signup", (req, res, next) => {
             subject: "Subject test",
             text: "Text test",
             html: `
-          
-            <div style="max-width: 400px;
-              margin: 2rem auto;
-              padding: 2rem;
-              background-color: #F8F8F8;
-              font-family: sans-serif;
-              box-shadow: 0 3px 6px rgba(0, 0, 0, .15)">
-
-              <h1 style="color: crimson;
-                margin-bottom: 32px;">Verify your user</h1>
-
-              <p style="color: #888888;
+            
+              <div style="max-width: 400px;
+                margin: 2rem auto;
+                padding: 2rem;
+                background-color: #F8F8F8;
                 font-family: sans-serif;
-                font-size: 16px;
-                line-height: 1.5;
-                margin-bottom: 1rem;">We need you to verify your account so you can log in in our website.</p>
-
-              <a style="display: inline-block;
-                font-family: sans-serif;
-                padding: .5rem 1rem;
-                border-radius: 3px;
-                box-shadow: 0 3px 6px crimson;
-                background-color: crimson;
-                color: #FFFFFF;
-                text-decoration: none;
-                text-transform: uppercase;
-                font-size: 14px;" href="http://localhost:3000/auth/confirm/${confirmationCode}">Activate account</a>
-            </div>
-            `
+                box-shadow: 0 3px 6px rgba(0, 0, 0, .15)">
+  
+                <h1 style="color: crimson;
+                  margin-bottom: 32px;">Verify your user</h1>
+  
+                <p style="color: #888888;
+                  font-family: sans-serif;
+                  font-size: 16px;
+                  line-height: 1.5;
+                  margin-bottom: 1rem;">We need you to verify your account so you can log in in our website.</p>
+  
+                <a style="display: inline-block;
+                  font-family: sans-serif;
+                  padding: .5rem 1rem;
+                  border-radius: 3px;
+                  box-shadow: 0 3px 6px crimson;
+                  background-color: crimson;
+                  color: #FFFFFF;
+                  text-decoration: none;
+                  text-transform: uppercase;
+                  font-size: 14px;" href="http://localhost:3000/auth/confirm/${confirmationCode}">Activate account</a>
+              </div>
+              `
           })
           .then(emailSent => {
             res.redirect("/");
