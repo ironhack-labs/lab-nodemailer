@@ -42,6 +42,11 @@ router.post("/signup", (req, res, next) => {
       return;
     }
 
+    // if (email === req.params.email) {
+    //   res.render("auth/signup", { message: "This email already exists." });
+    //   return;
+    // }
+
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
 
@@ -82,6 +87,9 @@ router.get("/confirm/:confirmationCode", (req, res, next) => {
   .catch( (err) => console.log(err));
 })
 
+router.get("/email", (req, res, next) => {
+  res.render("auth/email", { "message": req.flash("error") });
+});
 
 router.get("/private", secure.checkLogin, (req, res, next) => {
   res.render('auth/private', { user: req.user });
@@ -89,7 +97,7 @@ router.get("/private", secure.checkLogin, (req, res, next) => {
 
 router.get("/logout", (req, res) => {
   req.logout();
-  res.redirect("/");
+  res.redirect("/index");
 });
 
 module.exports = router;

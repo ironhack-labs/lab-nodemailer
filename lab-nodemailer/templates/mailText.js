@@ -45,18 +45,12 @@ module.exports = (confirmationCode) => {
       </style>
     </head>
     <body>
-      <img
-        alt="header image"
-        height="auto"
-        src="https://media3.giphy.com/media/3o6MbiM0MzgvxRxrI4/giphy.gif?cid=790b761122153b1fcfa9781798971b57f99ce466c6c362c8&rid=giphy.gif"
-        style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;"
-      />
       <a
         href="${process.env.URL_01}${confirmationCode}"
         style="background: #dbdbdb; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; line-height: 120%; Margin: 0; text-transform: none; text-decoration: none; color: inherit;"
         target="_blank"
       >
-        DEJADME ENTRAR!!!
+        CLICK THE LINK!!!
       </a>
     </body>
   </html>    
