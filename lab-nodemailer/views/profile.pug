@@ -1,0 +1,8 @@
+extends layout
+block content
+
+  h1 Profile
+  if user.status === "Pending Confirmation"
+    p Your email confirmation is pending
+  if user.status === "Active"
+    p You are confirmed  
