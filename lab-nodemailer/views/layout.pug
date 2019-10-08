@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(http-equiv="X-UA-Compatible", content="ie=edge")
+    title=title
+    link(rel="stylesheet", href="/stylesheets/style.css")
+  body
+    nav
+      a(href="/") Home
+      a(href="/auth/login") Login
+      a(href="/auth/signup") Signup
+      if user
+        a(href="/profile") Profile
+      a(href="/auth/logout") Logut
+
+    block content
+    script(src="/javascripts/script.js")
+
+
+

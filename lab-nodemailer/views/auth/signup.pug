@@ -1,0 +1,50 @@
+extends ../layout
+block content
+
+  h2 Signup
+
+  form(action="/auth/signup" method="POST" id="form-container")
+
+    label(for="email") Email
+    input(id="email" type="email" name="email" placeholder="jonsnow@gmail.com")
+    br
+    label(for="username") Username
+    input(id="username" type="text" name="username" placeholder="JonSnow")
+    br
+    label(for="password") Password
+    input(id="password" type="password" name="password" placeholder="Your password")
+    br
+    if message
+      div(class="error-message") #{message}
+    br
+    button Create account
+    p(class="account-message") Do you already have an account?
+      a(href="/auth/login") Login
+
+
+
+
+//- <h2>Signup</h2>
+
+//- <form action="/auth/signup" method="POST" id="form-container">
+//-   <label for="username">Username</label>
+//-   <input id="username" type="text" name="username" placeholder="JonSnow">
+
+//-   <br><br>
+
+//-   <label for="password">Password</label>
+//-   <input id="password" type="password" name="password" placeholder="Your password">
+//-   <br>
+//-   {{#if message }}
+//-     <div class="error-message">{{ message }}</div>
+//-   {{/if}}
+
+//-   <br><br>
+
+//-   <button>Create account</button>
+
+//-   <p class="account-message">
+//-     Do you already have an account?
+//-     <a href="/auth/login">Login</a>
+//-   </p>
+//- </form>
