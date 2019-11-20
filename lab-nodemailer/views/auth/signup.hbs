@@ -15,6 +15,15 @@
 
   <br><br>
 
+   <label for="email">Email</label>
+  <input id="email" type="email" name="email" placeholder="Your email">
+  <br>
+  {{#if message }}
+    <div class="error-message">{{ message }}</div>
+  {{/if}}
+
+  <br><br>
+
   <button>Create account</button>
 
   <p class="account-message">
