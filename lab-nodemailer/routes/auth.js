@@ -96,14 +96,14 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
-router.get("/confirm/:confirmCode", (req, res) => {
+router.get("/confirm/:confirmationCode", (req, res) => {
   let code = req.params.confirmationCode;
-  console.log(code)
-
   User.find({ confirmationCode: code })
     .then(user => {
-      // user[0].status = "Active";
-      res.render("confirmation", user[0]);
+      return User.findByIdAndUpdate(user[0]._id, { status: "Active" });
+    })
+    .then(() => {
+      res.render("confirmation");
     })
     .catch(err => {
       console.log(err);
