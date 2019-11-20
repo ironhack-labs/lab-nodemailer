@@ -27,53 +27,66 @@ router.get("/signup", (req, res, next) => {
 });
 
 router.post("/signup", (req, res, next) => {
-const username = req.body.username;
-const email = req.body.email;
-const password = req.body.password;
-const confirmationCode = Math.random().toString(36).slice(2);
+  const username = req.body.username;
+  const email = req.body.email;
+  const password = req.body.password;
+  const confirmationCode = Math.random().toString(36).slice(2);
 
 
-if (username === "" || password === "" || email === "") {
-  res.render("auth/signup", {
-    message: "Indicate all fields"
-  });
-  return;
-}
-
-User.findOne({
-    username
-  }, "username", (err, user) => {
-    if (user !== null) {
-      res.render("auth/signup", {
-        message: "The username already exists"
-      });
-      return;
-    }
-    const bcryptSalt = 3;
-    const salt = bcrypt.genSaltSync(bcryptSalt);
-    const hashPass = bcrypt.hashSync(password, salt);
-    const hashConf = bcrypt.hashSync(confirmationCode, salt);
-
-    const newUser = new User({
-      username,
-      email,
-      password: hashPass,
-      confirmationCode: hashConf
+  if (username === "" || password === "" || email === "") {
+    res.render("auth/signup", {
+      message: "Indicate all fields"
     });
+    return;
+  }
 
-    newUser.save()
-      .then(() => {
-        transporter.sendMail({
-          from: '"My Nodemailer Project" <myawesome@project.com>',
-          to: email,
-          subject: 'Welcome buddy!',
-          text: `Hello ${username}, please confirm your account here: http://localhost:3000/auth/confirm/${confirmationCode}`,
-          html: `<b>${message}</b>`
-        })
+  User.findOne({
+      username
+    }, "username", (err, user) => {
+      if (user !== null) {
+        res.render("auth/signup", {
+          message: "The username already exists"
+        });
+        return;
+      }
+      const bcryptSalt = 3;
+      const salt = bcrypt.genSaltSync(bcryptSalt);
+      const hashPass = bcrypt.hashSync(password, salt);
+      // const hashConf = bcrypt.hashSync(confirmationCode, salt);
+
+      const newUser = new User({
+        username,
+        email,
+        password: hashPass,
+        confirmationCode,
       });
 
-    res.redirect("/");
-  })
+      newUser.save()
+        .then(() => {
+          transporter.sendMail({
+            from: '"My Nodemailer Project" <myawesome@project.com>',
+            to: email,
+            subject: 'Welcome buddy!',
+            text: `Hello ${username}, please confirm your account here: http://localhost:3000/auth/confirm/${confirmationCode}`,
+            html: `<b>Hello ${username}, please confirm your account here: http://localhost:3000/auth/confirm/${confirmationCode}</b>`
+          })
+        });
+
+      res.redirect("/");
+    })
+    .catch(err => {
+      res.render("auth/signup", {
+        message: "Something went wrong"
+      });
+    })
+});
+
+router.get("/confirm/:confirmCode", (req, res) => {
+  User.updateOne({
+      confirmationCode: req.params.confirmCode
+  }, {
+    status: "Active"
+  }).then(() => res.render("auth/confirmation"))
   .catch(err => {
     res.render("auth/signup", {
       message: "Something went wrong"
