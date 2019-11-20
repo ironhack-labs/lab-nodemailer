@@ -2,6 +2,8 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
+const nodemailer = require('nodemailer');
+
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -15,6 +17,19 @@ function createToken() {
   }
   return token
 }
+
+router.post('/send-email', (req, res, next) => {
+  let {
+    email,
+    subject,
+    message
+  } = req.body;
+  res.render('auth/message', {
+    email,
+    subject,
+    message
+  })
+})
 
 router.get("/login", (req, res, next) => {
   res.render("auth/login", {
@@ -62,12 +77,33 @@ router.post("/signup", (req, res, next) => {
       password: hashPass,
       confirmationCode: token
     });
+    
+    let message = '<a href="http://localhost:3000/auth/confirm/THE-CONFIRMATION-CODE-OF-THE-USER">Confirm Here</a>'
 
     newUser.save()
-      .then(() => {
-        res.redirect("/");
+      .then(() => {        
+        let transporter = nodemailer.createTransport({
+          service: 'Gmail',
+          auth: {
+            user: 'nodemaileriron@gmail.com',
+            pass: 'SoniaAlfredo'
+          }
+        });
+        let info = transporter.sendMail({
+          from: '"Nodemailer Iron Message " <nodemaileriron@project.com>',
+          to: req.body.email,
+          subject: "Confirmation email",
+          text: "This is the message",
+          html: `<b>${message}</b>`
+        })
+        return info
+      })
+      .then((info) => {
+        console.log({info, message})
+        res.render('auth/message', {info, message})
       })
       .catch(err => {
+        console.log(err)
         res.render("auth/signup", {
           message: "Something went wrong"
         });
