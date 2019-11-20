@@ -26,23 +26,38 @@ router.get("/signup", (req, res, next) => {
 router.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
+  const email = req.body.email;
+
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
   }
-
+  if (!isValidEmail(email)){
+    res.render("auth/signup", { message: "Incorrect E-mail" });
+    return;
+  }
+  function isValidEmail(mail) { 
+    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(mail); 
+  }
   User.findOne({ username }, "username", (err, user) => {
     if (user !== null) {
       res.render("auth/signup", { message: "The username already exists" });
       return;
     }
-
+    
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
 
+    const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let token = '';
+    for (let i = 0; i < 25; i++) {
+        token += characters[Math.floor(Math.random() * characters.length )];
+    }
     const newUser = new User({
       username,
-      password: hashPass
+      password: hashPass,
+      email,
+      confirmationCode:token
     });
 
     newUser.save()
