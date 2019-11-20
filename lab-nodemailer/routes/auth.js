@@ -3,10 +3,11 @@ const passport = require('passport');
 const router = express.Router();
 const transporter = require('../config/nodemailer.config')
 const User = require("../models/User");
+const ensureLogin = require("connect-ensure-login");
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
-const bcryptSalt = 10;
+const bcryptSalt = 3;
 
 
 router.get("/login", (req, res, next) => {
@@ -16,7 +17,7 @@ router.get("/login", (req, res, next) => {
 });
 
 router.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
+  successRedirect: "/auth/profile",
   failureRedirect: "/auth/login",
   failureFlash: true,
   passReqToCallback: true
@@ -49,7 +50,6 @@ router.post("/signup", (req, res, next) => {
         });
         return;
       }
-      const bcryptSalt = 3;
       const salt = bcrypt.genSaltSync(bcryptSalt);
       const hashPass = bcrypt.hashSync(password, salt);
       // const hashConf = bcrypt.hashSync(confirmationCode, salt);
@@ -84,14 +84,23 @@ router.post("/signup", (req, res, next) => {
 router.get("/confirm/:confirmCode", (req, res) => {
   User.updateOne({
       confirmationCode: req.params.confirmCode
-  }, {
-    status: "Active"
-  }).then(() => res.render("auth/confirmation"))
-  .catch(err => {
-    res.render("auth/signup", {
-      message: "Something went wrong"
-    });
-  })
+    }, {
+      status: "Active"
+    }).then((user) =>
+      // res.json(user))
+      res.render("auth/confirmation", user))
+    .catch(err => {
+      res.render("error", {
+        message: "Something went wrong"
+      });
+    })
+})
+
+router.get("/profile", ensureLogin.ensureLoggedIn(), (req, res, next) => {
+  user=req.user
+  // res.json({user})
+  res.render("auth/profile", {user
+  });
 });
 
 router.get("/logout", (req, res) => {
