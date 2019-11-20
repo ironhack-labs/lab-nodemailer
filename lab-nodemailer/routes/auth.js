@@ -1,6 +1,7 @@
 const express = require("express");
 const passport = require('passport');
 const router = express.Router();
+const transporter = require('../config/nodemailer.config')
 const User = require("../models/User");
 
 // Bcrypt to encrypt passwords
@@ -9,7 +10,9 @@ const bcryptSalt = 10;
 
 
 router.get("/login", (req, res, next) => {
-  res.render("auth/login", { "message": req.flash("error") });
+  res.render("auth/login", {
+    "message": req.flash("error")
+  });
 });
 
 router.post("/login", passport.authenticate("local", {
@@ -24,35 +27,58 @@ router.get("/signup", (req, res, next) => {
 });
 
 router.post("/signup", (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  if (username === "" || password === "") {
-    res.render("auth/signup", { message: "Indicate username and password" });
-    return;
-  }
+const username = req.body.username;
+const email = req.body.email;
+const password = req.body.password;
+const confirmationCode = Math.random().toString(36).slice(2);
 
-  User.findOne({ username }, "username", (err, user) => {
+
+if (username === "" || password === "" || email === "") {
+  res.render("auth/signup", {
+    message: "Indicate all fields"
+  });
+  return;
+}
+
+User.findOne({
+    username
+  }, "username", (err, user) => {
     if (user !== null) {
-      res.render("auth/signup", { message: "The username already exists" });
+      res.render("auth/signup", {
+        message: "The username already exists"
+      });
       return;
     }
-
+    const bcryptSalt = 3;
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
+    const hashConf = bcrypt.hashSync(confirmationCode, salt);
 
     const newUser = new User({
       username,
-      password: hashPass
+      email,
+      password: hashPass,
+      confirmationCode: hashConf
     });
 
     newUser.save()
-    .then(() => {
-      res.redirect("/");
-    })
-    .catch(err => {
-      res.render("auth/signup", { message: "Something went wrong" });
-    })
-  });
+      .then(() => {
+        transporter.sendMail({
+          from: '"My Nodemailer Project" <myawesome@project.com>',
+          to: email,
+          subject: 'Welcome buddy!',
+          text: `Hello ${username}, please confirm your account here: http://localhost:3000/auth/confirm/${confirmationCode}`,
+          html: `<b>${message}</b>`
+        })
+      });
+
+    res.redirect("/");
+  })
+  .catch(err => {
+    res.render("auth/signup", {
+      message: "Something went wrong"
+    });
+  })
 });
 
 router.get("/logout", (req, res) => {
