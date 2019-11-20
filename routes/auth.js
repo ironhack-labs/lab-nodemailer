@@ -78,7 +78,7 @@ router.post("/signup", (req, res, next) => {
       confirmationCode: token
     });
     
-    let message = '<a href="http://localhost:3000/auth/confirm/THE-CONFIRMATION-CODE-OF-THE-USER">Confirm Here</a>'
+    let message = `<a href="http://localhost:3000/auth/confirm/${newUser.confirmationCode}">Confirm Here</a>`
 
     newUser.save()
       .then(() => {        
@@ -115,5 +115,15 @@ router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+router.get('/confirm/:confirmCode', (req, res, next) => {
+  User.findOneAndUpdate({confirmationCode: req.params.confirmCode}, {status: 'Active'})
+    .then(() => {
+      res.render('auth/confirmation')
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
 
 module.exports = router;
