@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const passport = require('passport');
 const router = express.Router();
@@ -62,7 +63,10 @@ router.post("/signup", (req, res, next) => {
 
     newUser.save()
     .then(() => {
-      res.redirect("/");
+      res.redirect("/send-email");
+    })
+    .then(()=>{
+      res.redirect("/")
     })
     .catch(err => {
       res.render("auth/signup", { message: "Something went wrong" });
@@ -73,6 +77,26 @@ router.post("/signup", (req, res, next) => {
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
+});
+
+router.post('/send-email', (req, res, next) => {
+  let { email, subject, message } = req.body;
+  let transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: `${process.env.EMAIL_USE}`,
+      pass: `${process.env.PASS_EMAIL_USE}`
+    }
+  });
+  transporter.sendMail({
+    from: `${process.env.EMAIL_USE}`,
+    to: email, 
+    subject: subject, 
+    text: message,
+    html: `<b>${message}</b>`
+  })
+  .then(info => res.render('message', {email, subject, message, info}))
+  .catch(error => console.log(error));
 });
 
 module.exports = router;
