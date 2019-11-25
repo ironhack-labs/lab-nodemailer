@@ -1,13 +1,14 @@
 {
-  "name": "lab-nodemailer",
+  "name": "google-maps",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "DEBUG=lab-nodemailer:* nodemon ./bin/www",
+    "dev": "DEBUG=google-maps:* nodemon ./bin/www",
     "dev-windows": "nodemon ./bin/www"
   },
   "dependencies": {
+    "airports": "^1.0.0",
     "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
     "connect-ensure-login": "^0.1.1",
