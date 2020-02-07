@@ -13,8 +13,8 @@ exports.signupPost = async (req,res,next) => {
   const { username, email, password } = req.body
 
       let user = await User.register({ username, email, confirmationCode:token}, password)
-      console.log("creausuario")
-      console.log(user)
+      // console.log("creausuario")
+    
       let endpoint=`http://localhost:3000/auth/confirm/${token}`
  await confirmAccount(email,
      endpoint
@@ -25,6 +25,8 @@ exports.signupPost = async (req,res,next) => {
 
 exports.loginGet=(req,res,next) => res.render("auth/login")
 
+
+
 exports.confirmGet = async ( req, res, next)=> {
   const {confirmationCode} = req.params
   const user = await User.findOneAndUpdate({confirmationCode}, { status: "Active"}, {new: true})
@@ -34,3 +36,10 @@ exports.confirmGet = async ( req, res, next)=> {
 exports.confirmPageGet=(req,res,next)=>{
   res.render("auth/confirmation")
 }
+
+exports.profileGet = (req, res, next) => {
+  const { user } = req
+  console.log("login",req.user)
+  res.render('auth/profile', user)
+}
+
