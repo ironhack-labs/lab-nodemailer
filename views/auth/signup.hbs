@@ -1,0 +1,13 @@
+<h2>Signup</h2>
+
+  <form action="/auth/signup" method="POST">
+  <label>Nombre</label>
+  <input type="text" name="name" placeholder="Alejandra" required>
+  <label>E-mail</label>
+  <input type="text" name="email" placeholder="alejandra@och.com" required>
+  <label>Contraseña</label>
+  <input type="text" name="password" placeholder="contraseña">
+  <input type="submit" value="Signup">
+  <p class="msg">{{msg}}</p>
+  <p class="err">{{err}}</p>
+  </form>
