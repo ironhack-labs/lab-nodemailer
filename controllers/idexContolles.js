@@ -6,13 +6,12 @@ exports.indexGet = (req, res, next) => res.render('index')
 
 exports.signupPost = async (req, res, next) => {
   const { name, email, password } = req.body
-  console.log('hola');
   const user = await User.register({ name, email }, password)
  
   
   await confirmAccount(
     email,
-    `http://localhost:3000/auth/confirm/${user.confirmationCode}`
+    `http://localhost:3000/auth/confirm/${tok}`
   )
   console.log( 'adios');
   

@@ -5,9 +5,9 @@ const path = require('path')
 const hbs = require('hbs')
 const nodemailer = require('nodemailer')
 
-//const welcomeTemplate = hbs.compile(
-//  fs.readFileSync((__dirname, '.'), 'utf8')
-//)
+const welcomeTemplate = hbs.compile(
+  fs.readFileSync((__dirname, './views/template-email.hbs'), 'utf8')
+)
 
 const transporter = nodemailer.createTransport({
   service: 'SendGrid',
@@ -17,11 +17,11 @@ const transporter = nodemailer.createTransport({
   }
 })
 
-exports.confirmAccount = async (to) => {
+exports.confirmAccount = async (to, endpoint) => {
   return await transporter.sendMail({
     from: "'Ironhack' <ironhack@prueba.com>",
     to,
     subject: 'Confirm your account',
-    text: 'confimar email'
+    html: welcomeTemplate({ endpoint })
   })
 }

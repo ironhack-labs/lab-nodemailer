@@ -5,6 +5,10 @@ const User = require("../models/User");
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
+const { confirmAccount } = require ('../config/nodemailer')
+
+exports.indexGet = (req, res, next) => res.render('index')
+
 
 const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 let token = '';
@@ -27,22 +31,24 @@ router.get("/signup", (req, res, next) => {
   res.render("auth/signup");
 });
 
-router.post("/signup", (req, res, next) => {
-  console.log("entra")
-  const username = req.body.username;
+router.post("/signup", async(req, res, next) => {
+   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
+  console.log('sign up')
  // const confirmationCode =req.body.confirmationCode;
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
   }
-
-  User.findOne({ username }, "username", (err, user) => {
+  console.log( 'adios');
+  
+  await User.findOne({ username }, "username", async (err, user) => {
     if (user !== null) {
       res.render("auth/signup", { message: "The username already exists" });
       return;
     }
+console.log('valida');
 
     const salt = bcrypt.genSaltSync(bcryptSalt);
     const hashPass = bcrypt.hashSync(password, salt);
@@ -53,9 +59,23 @@ router.post("/signup", (req, res, next) => {
       email,
       confirmationCode: token,
     });
-
+    console.log('crea');
     newUser.save()
     .then(() => {
+
+
+       confirmAccount(
+        email,
+        `http://localhost:3000/auth/confirm/${token}`
+      )
+
+
+
+
+
+
+
+
       res.redirect("/");
     })
     .catch(err => {
@@ -63,6 +83,19 @@ router.post("/signup", (req, res, next) => {
     })
   });
 });
+console.log('correo');
+
+exports.signupPost = async (req, res, next) => {
+  const { name, email, password } = req.body
+  console.log('hola');
+  const user = await User.register({ name, email }, password)
+ 
+  
+  
+  console.log( 'envia');
+  
+  res.render('index', { msg: 'User registered' })
+}
 
 router.get("/logout", (req, res) => {
   req.logout();
