@@ -7,8 +7,8 @@ passport.use(new LocalStrategy({
     usernameField: 'username',
     passwordField: 'password'
   }, 
-  (username, password, done) => {
-    User.findOne({ username })
+  async(username, password, done) => {
+   await User.findOne({ username })
     .then(foundUser => {
       if (!foundUser) {
         done(null, false, { message: 'Incorrect username' });

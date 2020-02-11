@@ -71,7 +71,9 @@ app.use(session({
   saveUninitialized: true,
   store: new MongoStore( { mongooseConnection: mongoose.connection })
 }))
+
 app.use(flash());
+
 require('./passport')(app);
     
 
