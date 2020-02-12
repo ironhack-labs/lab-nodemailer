@@ -108,12 +108,21 @@ router.get("/confirm/:confirmationCode", (req, res) => {
     }, {
       new: true
     })
-    .then(() => res.render("auth/confirmation", {
-      message: "Todo correcto"
-    }))
-    .catch(() => res.render("auth/confirmation", {
-      message: "Todo MAAAAAL"
-    }))
+    .then((user) => {
+      if (user === null) {
+
+        res.render("auth/confirmation", {
+          message: "Todo MAAAAAL"
+
+        })
+      } else {
+        res.render("auth/confirmation", {
+          message: "Todo correcto "
+        })
+      }
+    })
+    .catch(err => console.log(err))
+
 })
 
 
