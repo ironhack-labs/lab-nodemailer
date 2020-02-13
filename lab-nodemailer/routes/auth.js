@@ -8,9 +8,6 @@ const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
-
- 
-
 router.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
 });
@@ -21,15 +18,6 @@ router.post("/login", passport.authenticate("local", {
   failureFlash: true,
   passReqToCallback: true
 }));
-
-// router.get("/profile", (req, res, next) => {
-//   let user = req.user
-//   if(user){
-//     res.render("auth/profile", {user});
-//   } else {
-//     res.redirect('auth/login')
-//   }
-// });
 
 router.get("/signup", (req, res, next) => {
   res.render("auth/signup");
@@ -73,8 +61,8 @@ router.post("/signup", (req, res, next) => {
       let transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
-          user: 'iron123hack@gmail.com',
-          pass: 'iron12345'
+          user: 'ironhack@gmail.com',
+          pass: '12345'
         }
       });
       transporter.sendMail({
@@ -97,6 +85,7 @@ router.post("/signup", (req, res, next) => {
     })
   });
 });
+
 
 
 router.post('/send-email', (req, res, next) => {
