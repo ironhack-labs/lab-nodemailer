@@ -63,23 +63,21 @@ token += characters[Math.floor(Math.random() * characters.length )];
     .catch(err => {
       res.render("auth/signup", { message: "Something went wrong" });
     })
-  });
-});
 
 let transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-  user: 'daniel.ronhack@gmail.com',
+  user: 'daniel.ronhacker@gmail.com',
   pass: 'Almeria15'
-  }
+    }
   });
 
 transporter.sendMail({
     from: "My Awesome Project ",
-    to: 'daniel.ronhack@gmail.com',
+    to: 'daniel.ronhacker@gmail.com',
     subject: `lab-nodemailer`,
     text: `esto es Nodemailer`,
-    html: ` <a href=http://localhost:3000/auth/confirm/${confirmationCode}></a>`
+    html: `<a href="http://localhost:3000/auth/confirm/${confirmationCode}">Esta es Nodemailer</a>`
   })
   .then(info => res.render('message', {
     email,
@@ -88,7 +86,9 @@ transporter.sendMail({
     info
   }))
   .catch(error => console.log(error));
- 
+  });
+});
+
 router.get('/confirm/:confirmCode', (req, res, next) => {
 let cCode = req.params.confirmCode
 User.findOneAndUpdate({ confirmationCode: cCode }, { status: 'Active' })
@@ -96,6 +96,7 @@ User.findOneAndUpdate({ confirmationCode: cCode }, { status: 'Active' })
 res.render('auth/confirmation')
   })
 })
+
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
