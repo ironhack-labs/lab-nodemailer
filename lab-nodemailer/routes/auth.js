@@ -62,8 +62,8 @@ router.post("/signup", (req, res, next) => {
       let transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
-          user: 'ironhack.test.no.reply@gmail.com',
-          pass: 'codingisawesome'
+          user: process.env.EMAIL,
+          pass: process.env.EMAIL_PASS
         }
       });
       transporter.sendMail({
