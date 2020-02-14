@@ -111,7 +111,7 @@ router.get("/confirm/:confirmationCode", (req, res) => {
       confirmationCode: confirmation
     },
     {
-      status: "active"
+      status: "Active"
     },
     {
       new: true
