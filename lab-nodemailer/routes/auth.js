@@ -55,8 +55,8 @@ router.post("/signup", (req, res, next) => {
     const newUser = new User({
       username,
       password: hashPass,
-      email
-      // confirmationCode
+      email,
+      confirmationCode
     });
 
     newUser
@@ -82,7 +82,7 @@ router.post("/signup", (req, res, next) => {
         to: email,
         subject: "Nodemailer Test",
         text: "Awesome Message",
-        html: `<b>Awesome Message http://localhost:3000/auth/confirm/</b>`
+        html: `<a href="http://localhost:3000/auth/confirm/${confirmationCode}">Verify your email</a>`
       })
       .then(() => {
         res.redirect("/");
@@ -91,6 +91,10 @@ router.post("/signup", (req, res, next) => {
         console.log(`Error occured while sending an email: ${err}`)
       );
   });
+});
+
+router.get('/confirm/:confirmationCode', (req, res, next) => {
+  
 });
 
 router.get("/logout", (req, res) => {
