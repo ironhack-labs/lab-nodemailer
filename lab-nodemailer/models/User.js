@@ -9,12 +9,12 @@ const userSchema = new Schema({
     enum: ["Pending Confirmation", "Active"],
     default: "Pending Confirmation",
   },
+  email: {
+    type: String
+  },
   confirmationCode: {
     type: Number,
     unique: true
-  },
-  email: {
-    type: String
   }
 }, {
   timestamps: {
