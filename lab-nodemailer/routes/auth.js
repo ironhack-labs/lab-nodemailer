@@ -73,19 +73,24 @@ router.post("/signup", (req, res, next) => {
       service: "Hotmail",
       auth: {
         user: "kmedinakm@hotmail.com",
-        pass: "Dohcvtec18!"
+        pass: process.env.PASSWORD
       }
     });
     transporter
       .sendMail({
-        from: '"My awesome project" <kmedinakm@hotmail.com>',
+        from: '"My awesome project" <myawesome@project.com>',
         to: email,
         subject: "Nodemailer Test",
         text: "Awesome Message",
-        html: `<a href="http://localhost:3000/auth/confirm/${confirmationCode}">Verify your email</a>`
+        html: `
+        Ironhack Confirmation Email <br>
+        Hello ${username}! <br>
+        Please confirm your account by clicking on the following link: <br>
+        <a href="http://localhost:3000/auth/confirm/${confirmationCode}">Verify your email</a>
+        `
       })
       .then(() => {
-        res.redirect("/");
+        res.redirect('/');
       })
       .catch(err =>
         console.log(`Error occured while sending an email: ${err}`)
@@ -93,8 +98,14 @@ router.post("/signup", (req, res, next) => {
   });
 });
 
-router.get('/confirm/:confirmationCode', (req, res, next) => {
-  
+router.get("/confirm/:confirmationCode", (req, res, next) => {
+  let confirmCode = req.params.confirmationCode;
+  User.findOneAndUpdate(
+    { confirmationCode: confirmCode },
+    { status: "Active" }
+  ).then(() => {
+    res.render("profile");
+  });
 });
 
 router.get("/logout", (req, res) => {
