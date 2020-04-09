@@ -4,9 +4,7 @@ const User = require("../models/User");
 
 /* GET home page */
 router.get('/', (req, res, next) => {
-  console.log(req.user)
-  const { _id } = req.user
-  res.render('index', { _id });
+  res.render('index');
 });
 
 router.get('/profile/:id', (req, res, next) => {

@@ -80,9 +80,11 @@ router.post("/signup", uploadCloud.single('photo'), (req, res, next) => {
       transporter.sendMail({
         from: '"From Lab Nodemailer" <noreply@ironhack.com>',
         to: user.email, 
-        subject: 'Welcome to LPApp', 
+        subject: 'Welcome to Lab Nodemailer', 
         text: `http://localhost:3000/auth/confirm/${user.confirmationCode}`,
-        html: `<a href="http://localhost:3000/auth/confirm/${user.confirmationCode}">Link</a>`
+        html: `
+        <h1>Hello, ${user.username}!</h1>
+        <a href="http://localhost:3000/auth/confirm/${user.confirmationCode}">Confirm your email</a>`
       })
       res.redirect("/");
     })
