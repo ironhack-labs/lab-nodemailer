@@ -1,6 +1,6 @@
 <h2>Signup</h2>
 
-<form action="/auth/signup" method="POST" id="form-container">
+<form action="/auth/signup" method="POST" id="form-container" enctype="multipart/form-data">
   <label for="username">Username</label>
   <input id="username" type="text" name="username" placeholder="JonSnow">
 
@@ -19,7 +19,13 @@
 
   <br><br>
 
-  <button>Create account</button>
+  <label for="photo">Profile Photo</label>
+  <input type="file" name="photo" id="photo">
+  <br><br>
+   <div class="g-recaptcha" data-callback="recaptchaCallback" data-sitekey="6LfrTOgUAAAAAAnb0lKzCjHcJ-DZcRU5yp_hd8km"></div>
+
+  <br><br>
+  <button class="submitBtn" disabled>Create account</button>
 
   <p class="account-message">
     Do you already have an account?

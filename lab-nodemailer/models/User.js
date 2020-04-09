@@ -10,7 +10,9 @@ const userSchema = new Schema({
     default: 'Pending confirmation'
   },
   email: String,
-  confirmationCode: String
+  confirmationCode: String, 
+  path: String, 
+  originalName: String
 }, {
   timestamps: {
     createdAt: 'created_at',

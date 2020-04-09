@@ -9,6 +9,10 @@ const nodemailer = require('nodemailer');
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
+//CLOUDINARYFILE - MULTER
+const multer = require('multer');
+const uploadCloud = require('../config/cloudinary');
+
 
 const transport = nodemailer.createTransport({
   host: "smtp.mailtrap.io",
@@ -34,7 +38,7 @@ router.get("/signup", (req, res, next) => {
   res.render("auth/signup");
 });
 
-router.post("/signup", (req, res, next) => {
+router.post("/signup", uploadCloud.single('photo'), (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
@@ -67,6 +71,8 @@ router.post("/signup", (req, res, next) => {
       email,
       password: hashPass, 
       confirmationCode,
+      path: req.file.url,
+      originalName: req.file.originalname
     });
 
     newUser.save()
@@ -98,10 +104,10 @@ router.get('/confirm/:confirmCode', (req, res, next) => {
     confirmCode
   } = req.params
 
-  User.findOneAndUpdate({confirmationCode: confirmCode}, {$set: {status: 'Active'}})
+  User.findOneAndUpdate({confirmationCode: confirmCode}, {$set: {status: 'Active'}}, {new: true})
       .then(user => {
         console.log(user);
-        user.status = "Active"; 
+        //NEW UPDATES OBJECT - DONT FORGET THIS!
         res.render('confirmation', {user})
       })
       .catch(error => console.log(error))
