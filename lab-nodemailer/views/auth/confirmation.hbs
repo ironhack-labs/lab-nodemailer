@@ -1,0 +1,12 @@
+<h1>Email Confirmation</h1>
+
+{{#if user}}
+  <h2>Congrats, {{user.username}}</h2>
+  <p>Email {{user.email}} confirmed successufully!</p>
+  <a href="/profile/{{user._id}}"/>Go to your profile</a>
+{{/if}}
+
+{{#if message}}
+  <h2>Ops...</h2>
+  <p>{{message}}</p>
+{{/if}}
