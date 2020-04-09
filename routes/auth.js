@@ -4,6 +4,7 @@ const router = express.Router();
 const User = require("../models/User");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+// const query = require('querystring');
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -79,7 +80,7 @@ router.post("/signup", (req, res, next) => {
         text:"Click on the link to confirm your register",
         html:`<a href="http://localhost:3000/auth/confirm/${token}">Click here</a>`
       })
-      res.redirect("/");
+      res.redirect("/auth/login");
     })
     .catch(err => {
       res.render("auth/signup", { message: "Something went wrong" });
@@ -92,20 +93,47 @@ router.get('/confirm/:token', (req, res) => {
 
   User.findOneAndUpdate({ confirmationCode: token }, { status: 'Active'})
   .then( response => {
-    console.log(response);
-    res.redirect('/');
+    console.log(response._id);
+    res.redirect('/auth/private' + '?id=' + response._id);
   })
   .catch( error => {
     console.log(error);
-    res.redirect('/signup');
+    res.redirect('/auth/signup');
   })
-})
+});
+
+
+
+// GET private
+router.get('/private', (req, res, next) => {
+  let { id } = req.query;
+  console.log(id);
+  res.render('private', {id});
+});
+
+
+router.get('/profile', (req, res, next) => {
+  let { id } = req.query;
+
+  User.find({_id: id})
+    .then( response => {
+      console.log(response);
+      let data = response[0];
+      console.log(data);
+      res.render('profile', { data });
+    })
+    .catch( error => console.log(error))
+});
+
+
 
 
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+
 
 
 
