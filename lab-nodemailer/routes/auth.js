@@ -117,7 +117,7 @@ router.get('/confirm/:confirmationCode', (req, res) => {
   User.findOneAndUpdate({ confirmationCode: confirmationCode }, { $set: { status: 'Active' } }, { new: true })
     .then(response => { 
       console.log(response)
-    res.render("auth/login", {response});
+    res.render("confirmation", {response});
   })
     .catch(error => console.log(error));
 })
@@ -129,10 +129,10 @@ router.get('/profile', ensureLogin.ensureLoggedIn(),(req, res) => {
   res.render('profile', {user: req.user});
 });
 
-//verifyemail
+//confirmation
 
-router.get('/verifyemail',(req, res) => {
-  res.render('verifyemail');
+router.get('/confirmation',(req, res) => {
+  res.render('confirmation');
 });
 
 
