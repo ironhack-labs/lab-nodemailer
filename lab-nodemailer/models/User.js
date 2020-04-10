@@ -11,6 +11,8 @@ const userSchema = new Schema({
   },
   confirmationCode: String,
   email: String,
+  path: String, 
+  originalName: String
 },
   {
   timestamps: {

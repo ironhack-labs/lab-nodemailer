@@ -2,14 +2,19 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
-
+const ensureLogin = require("connect-ensure-login");
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
 //nodemailer
 const nodemailer = require('nodemailer');
-// console.log(process.env.MAILTRAP_PASS, '<--------')
+
+//Cloudinary 
+// const multer = require('multer');
+const uploadCloud = require('../config/cloudinary');
+
+
 const transport = nodemailer.createTransport({
   host: "smtp.mailtrap.io",
   port: 2525,
@@ -24,7 +29,7 @@ router.get("/login", (req, res, next) => {
 });
 
 router.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
+  successRedirect: "/auth/profile",
   failureRedirect: "/auth/login",
   failureFlash: true,
   passReqToCallback: true
@@ -34,10 +39,22 @@ router.get("/signup", (req, res, next) => {
   res.render("auth/signup");
 });
 
-router.post("/signup", (req, res, next) => {
+router.post("/signup",uploadCloud.single('photo'), (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
+  const path = req.file.url;
+  const originalName = req.file.originalname;
+
+  function generateConfirmationCode(){
+    const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let token = '';
+  for (let i = 0; i < 25; i++) {
+      token += characters[Math.floor(Math.random() * characters.length )];
+  }
+    return token;
+  }
+
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
@@ -56,26 +73,28 @@ router.post("/signup", (req, res, next) => {
       username,
       email,
       password: hashPass,
-      confirmationCode:generateConfirmationCode()
-    })
+      path,
+      originalName,
+      confirmationCode: generateConfirmationCode()
+    });
+
     newUser.save()
       .then(user => {
-        
+      const linkVerify = `http://localhost:3000/auth/confirm/${user.confirmationCode}`
       console.log(user);
   //firing the email
       transport.sendMail({
         from: '"Jon Snow App" <noreply@got.com>',
         to: user.email,
         subject: 'Welcome to GoTApp',
-        text:'Welcome,confirm your account here http://localhost:3000/auth/confirm/',
-         html: `http://localhost:3000/auth/confirm/${user.confirmationCode}`,
-        // html: '<b>Welcome Message</b>'
+        text:`Welcome ${username}`,
+        //  html: `Welcome!, confirm your account here http://localhost:3000/auth/confirm/${user.confirmationCode}`,
+        html: `<a href='${linkVerify}'>Click here to confirm your account </a>`,
       })
         .then(info => {
           console.log(sendMail)
-          console.log('OIIIII')
           console.log(info)
-          res.redirect('auth/login');
+          res.render('auth/verifyemail');
         })
         .catch(error => res.render('auth/signup', {
           errorMessage: error
@@ -87,41 +106,44 @@ router.post("/signup", (req, res, next) => {
       errorMessage: err.errmsg
     }));
 
-  //   newUser.save()
-  //   .then(() => {
-  //     res.redirect("/");
-  //   })
-  //   .catch(err => {
-  //     res.render("auth/signup", { message: "Something went wrong" });
-  //   })
   });
 });
+
+
+router.get('/confirm/:confirmationCode', (req, res) => {
+  const { confirmationCode } = req.params;
+
+
+  User.findOneAndUpdate({ confirmationCode: confirmationCode }, { $set: { status: 'Active' } }, { new: true })
+    .then(response => { 
+      console.log(response)
+    res.render("auth/login", {response});
+  })
+    .catch(error => console.log(error));
+})
+
+
+//profile route
+
+router.get('/profile', ensureLogin.ensureLoggedIn(),(req, res) => {
+  res.render('profile', {user: req.user});
+});
+
+//verifyemail
+
+router.get('/verifyemail',(req, res) => {
+  res.render('verifyemail');
+});
+
 
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
 
-router.get('/confirm/:confirmationCode', (req, res) => {
-  const { confirmationCode } = req.params;
-
-
-  User.findOneAndUpdate({confirmationCode: confirmationCode}, {status:'Active'}
-  
-  
-  ).then(response => { 
-    res.redirect("/");
-  })
-    .catch(error => console.log(error));
-})
 
 module.exports = router;
 
-function generateConfirmationCode(){
-  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-let token = '';
-for (let i = 0; i < 25; i++) {
-    token += characters[Math.floor(Math.random() * characters.length )];
-}
-  return token;
-}
+
+
+

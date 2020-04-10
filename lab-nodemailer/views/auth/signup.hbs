@@ -1,6 +1,6 @@
 <h2>Signup</h2>
 
-<form action="/auth/signup" method="POST" id="form-container">
+<form action="/auth/signup" method="POST" id="form-container" enctype="multipart/form-data">
   <label for="username">Username</label>
   <input id="username" type="text" name="username" placeholder="JonSnow">
 
@@ -19,7 +19,9 @@
   {{/if}}
 
   <br><br>
-
+  <label for="photo">Profile Photo</label>
+  <input type="file" name="photo" id="photo">
+  <br><br> 
   <button>Create account</button>
 
   <p class="account-message">

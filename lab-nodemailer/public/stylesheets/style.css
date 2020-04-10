@@ -5,4 +5,8 @@ body {
 a {
   color: #00B7FF; }
 
+#photoProfile {
+  width: 270px;
+  height: 400px; }
+
 /*# sourceMappingURL=style.css.map */
