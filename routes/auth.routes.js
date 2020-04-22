@@ -50,9 +50,7 @@ router.post("/signup", (req, res, next) => {
                         text: message,
                         html: template.template(confirmationCode)
                     })
-                    //.then(info => res.render('email-sent', { username, password, email, confirmationCode }))
-                    //.catch(error => console.log(error));
-                    res.redirect("/")
+                    res.redirect("/profile")
                 })
                 .catch((err) => {
                     console.log(err)
@@ -66,7 +64,7 @@ router.post("/signup", (req, res, next) => {
 // User login
 router.get('/login', (req, res) => res.render('auth/login', { "errorMsg": req.flash("error") }))
 router.post('/login', passport.authenticate("local", {
-    successRedirect: "/",
+    successRedirect: "/profile",
     failureRedirect: "/login",
     failureFlash: true,
     passReqToCallback: true,
@@ -89,5 +87,10 @@ router.get('/auth/confirm/:confirmCode', (req, res, next) => {
         .catch(err => next(err))
 
 })
+
+const ensureLoggedIn = (req, res, next) => req.isAuthenticated() ? next() : res.redirect('/login')
+
+router.get('/profile', ensureLoggedIn, (req, res) => res.render('profile', req.user))
+
 
 module.exports = router
