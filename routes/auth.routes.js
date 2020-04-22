@@ -2,6 +2,15 @@ const express = require("express")
 const router = express.Router()
 const passport = require("passport")
 
+const nodemailer = require('nodemailer')
+let transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: 'hector.ironhack@gmail.com',
+        pass: 'iron-hack3r'
+    }
+})
+
 const User = require("../models/user.model")
 
 const bcrypt = require("bcrypt")
@@ -12,10 +21,10 @@ const bcryptSalt = 10
 router.get("/signup", (req, res) => res.render("auth/signup"))
 router.post("/signup", (req, res, next) => {
 
-    const { username, password } = req.body
+    const { username, password, email } = req.body
 
-    if (!username || !password) {
-        res.render("auth/signup", { errorMsg: "Rellena el usuario y la contraseña" })
+    if (!username || !email || !password) {
+        res.render("auth/signup", { errorMsg: "Rellena todos los campos" })
         return
     }
 
@@ -28,9 +37,27 @@ router.post("/signup", (req, res, next) => {
             const salt = bcrypt.genSaltSync(bcryptSalt)
             const hashPass = bcrypt.hashSync(password, salt)
 
-            User.create({ username, password: hashPass })
+            //TOKEN
+            const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let token = '';
+            for (let i = 0; i < 25; i++) {
+                token += characters[Math.floor(Math.random() * characters.length)];
+            }
+
+            User.create({ username, password: hashPass, email, confirmationCode: token })
                 .then(() => res.redirect("/"))
                 .catch(() => res.render("auth/signup", { errorMsg: "No se pudo crear el usuario" }))
+
+            //ENVÍO DE EMAIL
+            const message = `Pinche en el siguiente enlace para confirmar el registro: http://localhost:3000/auth/confirm/${token}`
+
+            transporter.sendMail({
+                from: '"Bienvenido a la BBDD del lab" <hector.ironhack@gmail.com>',
+                to: email,
+                subject: 'Confirmation code',
+                text: message,
+                html: `<b>${message}</b>`
+            })
         })
         .catch(error => next(error))
 })
@@ -52,5 +79,15 @@ router.get("/logout", (req, res) => {
     req.logout()
     res.redirect("/login")
 })
+
+router.get('/auth/confirm/:confirmationCode', (req, res, next) => {
+    User.findOneAndUpdate({ confirmationCode: req.params.confirmationCode }, { status: 'Active' }, { new: true })
+        .then(updatedUser => {
+            console.log(updatedUser);
+            res.render('confirmation', { user: updatedUser })
+        })
+        .catch()
+})
+
 
 module.exports = router
