@@ -78,6 +78,22 @@ router.post('/signup', (req, res, next) => {
     .catch((error) => next(error))
 })
 
+//User confirmation
+
+router.get('/confirm/:confirmCode', (req, res, next) => {
+  User.findOneAndUpdate(
+    { confirmationCode: req.params.confirmCode },
+    { status: 'Active' }
+  )
+    .then(() => {
+      res.redirect('/')
+    })
+    .catch((err) => {
+      console.log(err)
+      next(err)
+    })
+})
+
 // User login
 router.get('/login', (req, res) =>
   res.render('auth/login', { errorMsg: req.flash('error') })
