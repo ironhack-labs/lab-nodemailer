@@ -8,16 +8,13 @@ const User = require("../models/user.model")
 const bcrypt = require("bcrypt")
 const bcryptSalt = 10
 
-const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-let token = '';
-for (let i = 0; i < 25; i++) {
-    token += characters[Math.floor(Math.random() * characters.length)];
-}
-
+const randomToken = require('random-token')
 
 // User signup
 router.get("/signup", (req, res) => res.render("auth/signup"))
 router.post("/signup", (req, res, next) => {
+    
+    let token = randomToken(25)
 
     const { username, password, email } = req.body
 
