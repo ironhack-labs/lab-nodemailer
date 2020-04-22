@@ -7,6 +7,8 @@ const User = require("../models/user.model")
 const bcrypt = require("bcrypt")
 const bcryptSalt = 10
 
+const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 
 // User signup
 router.get("/signup", (req, res) => res.render("auth/signup"))
@@ -28,7 +30,12 @@ router.post("/signup", (req, res, next) => {
             const salt = bcrypt.genSaltSync(bcryptSalt)
             const hashPass = bcrypt.hashSync(password, salt)
 
-            User.create({ username, password: hashPass })
+            let token = '';
+            for (let i = 0; i < process.env.CONFIRMATIONCODELENGTH; i++) {
+                token += characters[Math.floor(Math.random() * characters.length )];
+            }
+
+            User.create({ username, password: hashPass, confirmationCode: token })
                 .then(() => res.redirect("/"))
                 .catch(() => res.render("auth/signup", { errorMsg: "No se pudo crear el usuario" }))
         })
