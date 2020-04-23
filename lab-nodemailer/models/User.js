@@ -1,12 +1,12 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const userSchema = new Schema(
   {
     username: String,
     password: String,
     status: { type: String, enum: ['Pending Confirmation', 'Active'] },
-    confimationCode: {
+    confirmationCode: {
       type: String,
       unique: true,
     },
@@ -18,7 +18,7 @@ const userSchema = new Schema(
       updatedAt: 'updated_at',
     },
   }
-);
+)
 
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+const User = mongoose.model('User', userSchema)
+module.exports = User
