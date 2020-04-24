@@ -90,6 +90,14 @@ router.post('/signup', (req, res, next) => {
     .then((info) => console.log(info))
     .catch((error) => console.log(error))
 })
+router.get('/confirm/:confirmCode', (req, res, next) => {
+
+  User.findOneAndUpdate({ confirmationCode: req.params.confirmCode }, { status: 'Active' }, {new: true})
+      .then(updatedUser => res.render('auth/confirmation', {updatedUser} ))
+      .catch(err => console.log('No has hecho ná', err))
+
+})
+
 
 router.get('/logout', (req, res) => {
   req.logout()
