@@ -64,18 +64,17 @@ router.post('/signup', (req, res, next) => {
       confirmationCode: token,
     })
 
-    transporter.sendMail({
-      from: `Lab nodemailer <${process.env.MAIL}>`,
-      to: email,
-      subject: 'Lab',
-      text: `message`,
-      html: `<p>Welcome to Ironhack! Feel free to join our community. Verify your account in 
-      http://localhost:3000/auth/confirm/${token}</p>`,
-    })
-
     newUser
       .save()
       .then(() => {
+        transporter.sendMail({
+          from: `Lab nodemailer <${process.env.MAIL}>`,
+          to: email,
+          subject: 'Lab',
+          text: `message`,
+          html: `<p>Welcome to Ironhack! Feel free to join our community. Verify your account in 
+        http://localhost:3000/auth/confirm/${token}</p>`,
+        })
         res.redirect('/')
       })
       .catch((err) => {
@@ -85,11 +84,29 @@ router.post('/signup', (req, res, next) => {
 })
 
 //Confirmation route
-router.post('/auth/confirm/7ubwY7so3vciTRyoHPBnCGUw2', (req, res) => {
+router.get('/confirm/:confirmationCode', (req, res) => {
   const confirm = req.params.confirmationCode
-  console.log(confirm)
-  res.render('/', confirm)
+  // const userId = User.findOne({ confirmationCode: confirm })
+  // if (confirm === userId.confirmationCode) {
+  User.findOneAndUpdate(confirm, { status: 'Active' }, { new: true })
+    .then((user) => {
+      console.log(user)
+    })
+    .catch((err) => err)
+  // }
+
+  // Movie.findByIdAndUpdate(edit, { $set: { ...req.body } }, { new: true })
+  // console.log(userId.paths.co)
+  // console.log(confirm)
+
+  res.render('auth/confirm')
 })
+
+// router.post('/auth/confirm/7ubwY7so3vciTRyoHPBnCGUw2', (req, res) => {
+//   const confirm = req.params.confirmationCode
+//   console.log(confirm)
+//   res.render('/', confirm)
+// })
 
 //Logout Route
 router.get('/logout', (req, res) => {
