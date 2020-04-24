@@ -1,7 +1,18 @@
+require('dotenv').config()
+
 const express = require('express')
 const passport = require('passport')
 const router = express.Router()
 const User = require('../models/User')
+const nodemailer = require('nodemailer')
+
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PWD,
+  },
+})
 
 // Bcrypt to encrypt passwords
 const bcrypt = require('bcrypt')
@@ -69,6 +80,15 @@ router.post('/signup', (req, res, next) => {
         res.render('auth/signup', { message: 'Something went wrong' })
       })
   })
+  transporter
+    .sendMail({
+      from: process.env.EMAIL,
+      to: email,
+      subject: 'Confirmation Mail',
+      html: `<p>Click to Validate your account: <br> <strong>http://localhost:3000/confirm/${confirmationCode}</p></strong>`,
+    })
+    .then((info) => console.log(info))
+    .catch((error) => console.log(error))
 })
 
 router.get('/logout', (req, res) => {
