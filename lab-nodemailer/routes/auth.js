@@ -84,22 +84,19 @@ router.post('/signup', (req, res, next) => {
 })
 
 //Confirmation route
-router.get('/confirm/:confirmationCode', (req, res) => {
+router.get('/confirm/:confirmationCode', async (req, res) => {
   const confirm = req.params.confirmationCode
-  // const userId = User.findOne({ confirmationCode: confirm })
-  // if (confirm === userId.confirmationCode) {
-  User.findOneAndUpdate(confirm, { status: 'Active' }, { new: true })
-    .then((user) => {
-      console.log(user)
-    })
-    .catch((err) => err)
-  // }
-
-  // Movie.findByIdAndUpdate(edit, { $set: { ...req.body } }, { new: true })
-  // console.log(userId.paths.co)
-  // console.log(confirm)
-
-  res.render('auth/confirm')
+  const userId = await User.findOne({ confirmationCode: confirm })
+  if (confirm === userId.confirmationCode) {
+    User.findOneAndUpdate(confirm, { status: 'Active' }, { new: true })
+      .then((user) => {
+        console.log(user)
+      })
+      .catch((err) => err)
+    res.render('auth/confirm')
+  } else {
+    res.render('error')
+  }
 })
 
 // router.post('/auth/confirm/7ubwY7so3vciTRyoHPBnCGUw2', (req, res) => {
@@ -107,6 +104,13 @@ router.get('/confirm/:confirmationCode', (req, res) => {
 //   console.log(confirm)
 //   res.render('/', confirm)
 // })
+
+//Profile Route
+router.get('/profile/:id', async (req, res) => {
+  const userProfile = req.params.id
+  const userId = await User.findById(userProfile)
+  res.render('auth/profile', userId)
+})
 
 //Logout Route
 router.get('/logout', (req, res) => {
