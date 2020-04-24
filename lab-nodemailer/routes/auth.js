@@ -105,9 +105,18 @@ router.get('/logout', (req, res) => {
   res.redirect('/')
 })
 
-router.get('/profile', (req, res) => {
-  //const requser = req.user
-  res.render('auth/profile', req.user)
-})
+router.get(
+  '/profile',
+  passport.authenticate('local', {
+    successRedirect: '/auth/profile',
+    failureRedirect: '/auth/login',
+    failureFlash: true,
+    passReqToCallback: true,
+  }),
+  (req, res) => {
+    //const requser = req.user
+    res.render('auth/profile', req.user)
+  }
+)
 
 module.exports = router
