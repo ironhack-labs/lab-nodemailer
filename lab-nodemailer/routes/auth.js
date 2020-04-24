@@ -67,6 +67,7 @@ router.post('/signup', (req, res, next) => {
     const newUser = new User({
       username,
       password: hashPass,
+      status: 'Pending Confirmation',
       email,
       confirmationCode,
     })
@@ -82,26 +83,31 @@ router.post('/signup', (req, res, next) => {
   })
   transporter
     .sendMail({
-      from: process.env.EMAIL,
+      from: `'Super App' <process.env.EMAIL>`,
       to: email,
       subject: 'Confirmation Mail',
-      html: `<p>Click to Validate your account: <br> <strong>http://localhost:3000/confirm/${confirmationCode}</p></strong>`,
+      html: `<p>Click to Validate your account: <br> <strong><a href='http://localhost:3000/auth/confirm/${confirmationCode}'>Here</a></p></strong>`,
     })
     .then((info) => console.log(info))
     .catch((error) => console.log(error))
 })
-router.get('/confirm/:confirmCode', (req, res, next) => {
 
-  User.findOneAndUpdate({ confirmationCode: req.params.confirmCode }, { status: 'Active' }, {new: true})
-      .then(updatedUser => res.render('auth/confirmation', {updatedUser} ))
-      .catch(err => console.log('No has hecho ná', err))
-
+router.get('/confirm/:confirmationCode', (req, res) => {
+  User.findOneAndUpdate(req.params, { status: 'Active' }, { new: true })
+    .then((updatedUser) => {
+      res.render('auth/confirmation', { updatedUser })
+    })
+    .catch((err) => console.log('Thre was an error:', err))
 })
-
 
 router.get('/logout', (req, res) => {
   req.logout()
   res.redirect('/')
+})
+
+router.get('/profile', (req, res) => {
+  //const requser = req.user
+  res.render('auth/profile', req.user)
 })
 
 module.exports = router
