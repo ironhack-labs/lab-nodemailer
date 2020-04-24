@@ -14,6 +14,9 @@ const confirmationCodeGen = () => {
   }
   return token;
 };
+function ensureLogin(req, res, next) {
+  return req.isAuthenticated() ? next() : res.redirect('/login');
+}
 
 // Bcrypt to encrypt passwords
 const bcrypt = require('bcrypt');
@@ -87,12 +90,15 @@ router.post('/signup', (req, res, next) => {
   });
 });
 
-router.get('/profile', (req, res, next) => {
-  console.log("hola")
-  res.render('auth/profile');
+
+router.get('/profile',ensureLogin, async (req, res, next) => {
+  const {user} = req.session.passport
+   const usr = await User.findById(user)
+  console.log(usr)
+  res.render('auth/profile', usr);
 });
 
-router.get('/logout', (req, res) => {
+router.get('/logout',ensureLogin, (req, res) => {
   req.logout();
   res.redirect('/');
 });
