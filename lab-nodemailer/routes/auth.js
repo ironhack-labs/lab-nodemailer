@@ -12,21 +12,28 @@ router.get('/login', (req, res, next) => {
   res.render('auth/login', { message: req.flash('error') })
 })
 
-// router.post(
-//   '/login',
+// router.post('/login', (req, res, next) => {
+//   const username = req.body.username
+//   const status = req.body.status
 //   passport.authenticate('local', {
-//     successRedirect: '/auth/home',
+//     successRedirect: '/auth/profile',
 //     failureRedirect: '/auth/login',
 //     failureFlash: true,
-//     passReqToCallback: true
+//     passReqToCallback: true,
+//     username,
+//     status
 //   })
-// )
+// })
 
 router.post('/login', (req, res, next) => {
   const username = req.body.username
-  User.findOne({ username }, 'username', (err, user) => {
+
+  User.findOne({ username }, 'status', (err, user) => {
     if (user.status === 'Active') {
-      res.render('auth/home', { message: 'Enjoy our site' })
+      res.render('auth/profile', {
+        status: user.status,
+        username
+      })
       return
     } else {
       res.render('auth/login', { message: 'Please activate your account' })
