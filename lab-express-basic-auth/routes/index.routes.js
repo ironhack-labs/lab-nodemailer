@@ -24,7 +24,7 @@ router.get('/confirm/:confirmationCode', (req, res, next) => {
          if (user){
             user.status = "active"
             user.save()
-                .then(() => res.render('login', { message : "You can log in now"}))
+                .then(() => res.render('index', { message : "You can log in now"}))
                 .catch(() => res.render('signup', { message : "Impossible to validate "}))
             }
        })

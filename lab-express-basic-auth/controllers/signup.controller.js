@@ -16,8 +16,18 @@ exports.doLogin = (req, res, next) => {
         user.comparePassword(req.body.password)
           .then(match => {
             if (match) {
-              req.session.userId = user._id
-              res.redirect('/profile')
+              // if (user.status === 'active') {
+                req.session.userId = user._id
+                res.redirect('/profile')
+              // } else {
+              //   res.render('login', {
+              //   error: {
+              //     password: {
+              //       message: 'activate'
+              //     }
+              //   }
+              // })
+            //  }
             } else {
               res.render('login', {
                 error: {
