@@ -1,0 +1,18 @@
+
+
+<h1 class="text-center py-5 ">CUENTA CONFIRMADA</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-12 mx-auto text-center">
+      <img src="https://pbs.twimg.com/media/EYFoHloXQAIQTmH.jpg" alt="dandy">
+    </div>
+  </div>
+</div>
+
+{{#if message}}
+<p class="text-center py-3">{{message}}</p>
+{{/if}}
+
+{{#if error.validation}}
+<p>{{error.validation.message}}</p>
+{{/if}}
