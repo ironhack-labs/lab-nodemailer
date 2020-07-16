@@ -18,30 +18,32 @@ h5,
 h6 {
   font-weight: 700;
   margin: 3rem 0; }
+  h1 span,
+  h2 span,
+  h3 span,
+  h4 span,
+  h5 span,
+  h6 span {
+    color: #2dc5fa; }
 
 .home {
   background: rgba(255, 255, 255, 0.8);
   padding: 0;
   border-radius: 1.5rem;
   margin-top: 10%;
-  padding-bottom: 4rem;
-  border: solid 0.2rem #2d354c;
-  box-shadow: 0 0 3rem rgba(255, 255, 255, 0.8); }
+  padding-bottom: 4rem; }
   .home h1 span {
     display: block;
     font-size: 4rem; }
   .home nav {
     border-radius: 1rem 1rem 0 0;
     margin-bottom: 4rem;
-    border-bottom: solid 0.2rem #2d354c;
-    background: #2d354c; }
+    background: #fff; }
     .home nav ul {
       padding: 1rem 0;
       width: 100%;
       display: flex;
       justify-content: space-around; }
-      .home nav ul .nav-link {
-        color: #fff !important; }
   .home a {
     color: #2dc5fa; }
   .home form input {
