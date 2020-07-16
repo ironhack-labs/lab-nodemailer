@@ -1,18 +1,12 @@
+{{>menu}}
 <h2>Signup</h2>
 
 <form action="/auth/signup" method="POST" id="form-container">
-  <label for="username">Username</label>
-  <input id="username" type="text" name="username" placeholder="JonSnow">
-
+  <input id="username" type="text" name="username" placeholder="Username">
   <br><br>
-
-  <label for="email">Email</label>
-  <input id="email" type="email" name="email" placeholder="JonSnow@email.com">
-
+  <input id="email" type="email" name="email" placeholder="Email">
   <br><br>
-
-  <label for="password">Password</label>
-  <input id="password" type="password" name="password" placeholder="Your password">
+  <input id="password" type="password" name="password" placeholder="Password">
   <br>
   {{#if message }}
   <div class="error-message">{{ message }}</div>

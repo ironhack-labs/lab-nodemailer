@@ -1,8 +1,96 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+$white: #fff;
+$blue: #2dc5fa;
+$dark: #2d354c;
+
+html {
+  font-size: 10px;
 }
 
-a {
-  color: #00B7FF;
+body {
+  background: url(../images/ironhack-madrid.jpg) no-repeat center center / cover;
+  height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.2;
+  font-size: 1.6rem;
+  color: $dark;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  margin: 3rem 0;
+}
+
+.home {
+  background: rgba($white, 0.8);
+  padding: 0;
+  border-radius: 1.5rem;
+  margin-top: 10%;
+  padding-bottom: 4rem;
+  border: solid 0.2rem $dark;
+  box-shadow: 0 0 3rem rgba($white, 0.8);
+
+  h1 {
+    span {
+      display: block;
+      font-size: 4rem;
+    }
+  }
+
+  nav {
+    border-radius: 1rem 1rem 0 0;
+    margin-bottom: 4rem;
+    border-bottom: solid 0.2rem $dark;
+    background: $dark;
+
+    ul {
+      padding: 1rem 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+
+      .nav-link {
+        color: $white !important;
+      }
+    }
+  }
+
+  a {
+    color: $blue;
+  }
+
+  form {
+    input {
+      border: solid 0.2rem $dark;
+      background: transparent;
+      color: $dark;
+      padding: 1rem;
+      margin-left: 1rem;
+      border-radius: 0.5rem;
+    }
+
+    ::placeholder {
+      color: $dark;
+      opacity: 0.5;
+    }
+
+    button {
+      padding: 1rem 4rem;
+      color: $white;
+      background: $blue;
+      border-radius: 0.5rem;
+      border: 0;
+      margin-bottom: 3rem;
+    }
+  }
+
+  .error-message {
+    margin-top: 3rem;
+  }
 }

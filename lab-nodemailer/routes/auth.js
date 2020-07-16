@@ -13,26 +13,27 @@ router.get('/login', (req, res, next) => {
 })
 
 // router.post('/login', (req, res, next) => {
-//   const username = req.body.username
-//   const status = req.body.status
 //   passport.authenticate('local', {
 //     successRedirect: '/auth/profile',
 //     failureRedirect: '/auth/login',
 //     failureFlash: true,
-//     passReqToCallback: true,
-//     username,
-//     status
+//     passReqToCallback: true
 //   })
 // })
 
 router.post('/login', (req, res, next) => {
   const username = req.body.username
-
-  User.findOne({ username }, 'status', (err, user) => {
-    if (user.status === 'Active') {
+  User.findOne({ username }, username.status, (err, user) => {
+    if (!user) {
+      res.render('auth/login', {
+        message: 'Indicate a valid username and password'
+      })
+      return
+    } else if (user.status === 'Active') {
       res.render('auth/profile', {
+        message: 'Welcome',
         status: user.status,
-        username
+        username: user.username
       })
       return
     } else {
@@ -53,9 +54,16 @@ router.post('/signup', (req, res, next) => {
   const confirmationCode = req.body.confirmationCode
 
   if (username === '' || password === '') {
-    res.render('auth/signup', { message: 'Indicate username and password' })
+    res.render('auth/signup', { message: 'Indicate all fields' })
     return
   }
+
+  User.findOne({ email }, 'email', (err, user) => {
+    if (user !== null) {
+      res.render('auth/signup', { message: 'The email already exists' })
+      return
+    }
+  })
 
   User.findOne({ username }, 'username', (err, user) => {
     if (user !== null) {
