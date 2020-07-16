@@ -26,8 +26,8 @@ const userSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ["", "active"],
-        default : ""
+        enum: ["false", "active"],
+        default : "false"
       },
       confirmationCode : {
         type: String,
@@ -46,14 +46,20 @@ const userSchema = new Schema({
 })
 
 userSchema.pre('save', function(next) {
-    bcrypt.hash(this.password, 10)
-        .then ((hash) => {
-            this.password = hash
-            next()
-        })
+    if (this.status === 'false'){
+      bcrypt.hash(this.password, 10)
+          .then ((hash) => {
+              this.password = hash
+              next()
+          })
+    } else {
+      next()
+    }
 })
 
 userSchema.methods.comparePassword = function (password) {
+  console.log(password);
+  console.log(this.password);
     return bcrypt.compare(password, this.password)
 }
 

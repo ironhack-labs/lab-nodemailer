@@ -29,6 +29,6 @@ router.get('/confirm/:confirmationCode', (req, res, next) => {
             }
        })
        .catch((e) => console.log("error", e))
- });
+ })
 
 module.exports = router
