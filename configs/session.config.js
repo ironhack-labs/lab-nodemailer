@@ -1,0 +1,12 @@
+const mongoose = require('mongoose');
+const expressSession = require("express-session");
+const MongoStore = require('connect-mongo')(session);
+
+const session = (expressSession({
+    secret: 'irongenerator',
+    resave: true,
+    saveUninitialized: true,
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection
+    })
+}));
