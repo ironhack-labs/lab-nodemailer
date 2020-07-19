@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const expressSession = require("express-session");
-const MongoStore = require('connect-mongo')(session);
+const MongoStore = require('connect-mongo')(expressSession);
 
 const session = (expressSession({
     secret: 'irongenerator',

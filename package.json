@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "DEBUG=lab-nodemailer:* nodemon ./bin/www",
-    "dev-windows": "nodemon ./bin/www"
+    "dev-windows": "nodemon -e js,hbs,css ./bin/www"
   },
   "dependencies": {
     "bcrypt": "^3.0.0",

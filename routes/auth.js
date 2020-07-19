@@ -1,7 +1,7 @@
 const express = require("express");
 const passport = require('passport');
 const router = express.Router();
-const User = require("../models/User");
+const User = require("../models/User.model");
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -9,7 +9,9 @@ const bcryptSalt = 10;
 
 
 router.get("/login", (req, res, next) => {
-  res.render("auth/login", { "message": req.flash("error") });
+  res.render("auth/login", {
+    "message": req.flash("error")
+  });
 });
 
 router.post("/login", passport.authenticate("local", {
@@ -24,35 +26,13 @@ router.get("/signup", (req, res, next) => {
 });
 
 router.post("/signup", (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  if (username === "" || password === "") {
-    res.render("auth/signup", { message: "Indicate username and password" });
-    return;
-  }
+  checkForEmptyFields(req.body);
+  checkForDuplicates(req.body.username);
+  const newUser = new User(req.body);
 
-  User.findOne({ username }, "username", (err, user) => {
-    if (user !== null) {
-      res.render("auth/signup", { message: "The username already exists" });
-      return;
-    }
-
-    const salt = bcrypt.genSaltSync(bcryptSalt);
-    const hashPass = bcrypt.hashSync(password, salt);
-
-    const newUser = new User({
-      username,
-      password: hashPass
-    });
-
-    newUser.save()
-    .then(() => {
-      res.redirect("/");
-    })
-    .catch(err => {
-      res.render("auth/signup", { message: "Something went wrong" });
-    })
-  });
+  newUser.save()
+  .then(user => res.send(user))
+  .catch(e => console.error(e));
 });
 
 router.get("/logout", (req, res) => {
@@ -61,3 +41,23 @@ router.get("/logout", (req, res) => {
 });
 
 module.exports = router;
+
+function checkForEmptyFields(formData) {
+  if (!formData.username || !formData.password) {
+    res.render("auth/signup", {
+      message: "Indicate username and password"
+    });
+    return;
+  }
+}
+
+function checkForDuplicates(field) {
+  User.findOne({field}, "username", (err, user) => {
+    if (user !== null) {
+      res.render("auth/signup", {
+        message: "The username already exists"
+      });
+      return;
+    }
+  });
+}

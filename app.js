@@ -24,6 +24,8 @@ require('./passport')(app);
 
 // Express View engine setup
 require('./configs/hbs.config');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
 
 // default value for title local
 app.locals.title = 'Express - Generated with IronGenerator';
