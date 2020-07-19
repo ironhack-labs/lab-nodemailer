@@ -14,8 +14,8 @@ const bcryptSalt = 10;
 let transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-      user: user,
-      pass: pass
+    user: user,
+    pass: pass
   }
 });
 
@@ -62,27 +62,50 @@ router.post("/signup", (req, res, next) => {
     });
 
     newUser.save()
-    .then(() => {
-      transporter.sendMail({
-        from: email, // sender address
-        to: 'martaguirre91@gmail.com',
-        subject: "Hello ✔", // Subject line
-        html: `<h1>Hello its working! Hi ${newUser.username}</h1>
+      .then(() => {
+        transporter.sendMail({
+          from: 'ironhack@pruebas.com' , // sender address
+          to: newUser.email,
+          subject: "Hello ✔", // Subject line
+          html: `<h1>Hello its working! Hi ${newUser.username}</h1>
         http://localhost:3000/auth/confirm/${newUser.confirmationCode}`
-    })
-    .then(info => {
-      console.log(info)
-      res.redirect("/")
-    })
-    .catch(error => console.log(error))
-    })
-    .catch(err => {
-      res.render("auth/signup", { message: "Something went wrong" });
-    })
+        })
+          .then(info => {
+            console.log(info)
+            res.redirect("/")
+          })
+          .catch(error => console.log(error))
+      })
+      .catch(err => {
+        res.render("auth/signup", { message: "Something went wrong" });
+      })
   })
 
 
 });
+
+router.get("/confirm/:confirmationCode", (req, res, next) => {
+  console.log("entro aqui")
+  const confirmationCode = req.body.confirmationCode
+  console.log(confirmationCode);
+  
+  User.findOne({ "confirmationCode": req.params.confirmationCode })
+    .then(user => {
+      if (user) {
+        user.status = 'Active';
+        user.save()
+          .then(user => {
+            res.render('auth/confirmation')
+          })
+          .catch(e => next)
+      } else {
+        res.render('users/login')
+      }
+    })
+    .catch(e => next)
+})
+
+
 
 router.get("/logout", (req, res) => {
   req.logout();
