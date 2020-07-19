@@ -67,11 +67,11 @@ router.post("/signup", (req, res, next) => {
           }
         })
 
-        const to = 'mytestresults0@gmail.com';
+        const to = 'XXX0@gmail.com';
         const activationURL = `http://localhost:3000/auth/confirm/${token}`;
         transport.sendMail({
           to: email,
-          from: 'Me',
+          from: 'XXX',
           subject: 'Account activation',
           html: `
           <h3>Hello ${username}!</h3>
