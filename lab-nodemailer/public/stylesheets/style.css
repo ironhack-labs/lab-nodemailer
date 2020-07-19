@@ -1,0 +1,69 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+html {
+  font-size: 10px; }
+
+body {
+  background: url(../images/ironhack-madrid.jpg) no-repeat center center/cover;
+  height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.2;
+  font-size: 1.6rem;
+  color: #2d354c; }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  margin: 3rem 0; }
+  h1 span,
+  h2 span,
+  h3 span,
+  h4 span,
+  h5 span,
+  h6 span {
+    color: #2dc5fa; }
+
+.home {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0;
+  border-radius: 1.5rem;
+  margin-top: 10%;
+  padding-bottom: 4rem; }
+  .home h1 span {
+    display: block;
+    font-size: 4rem; }
+  .home nav {
+    border-radius: 1rem 1rem 0 0;
+    margin-bottom: 4rem;
+    background: #fff; }
+    .home nav ul {
+      padding: 1rem 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around; }
+  .home a {
+    color: #2dc5fa; }
+  .home form input {
+    border: solid 0.2rem #2d354c;
+    background: transparent;
+    color: #2d354c;
+    padding: 1rem;
+    margin-left: 1rem;
+    border-radius: 0.5rem; }
+  .home form ::placeholder {
+    color: #2d354c;
+    opacity: 0.5; }
+  .home form button {
+    padding: 1rem 4rem;
+    color: #fff;
+    background: #2dc5fa;
+    border-radius: 0.5rem;
+    border: 0;
+    margin-bottom: 3rem; }
+  .home .error-message {
+    margin-top: 3rem; }
+
+/*# sourceMappingURL=style.css.map */
