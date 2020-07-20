@@ -64,8 +64,10 @@ router.post("/signup", (req, res, next) => {
     newUser.save()
       .then(() => {
         transporter.sendMail({
-          from: 'ironhack@pruebas.com' , // sender address
-          to: newUser.email,
+          // from: 'ironhack@pruebas.com' , // sender address
+          // to: newUser.email,
+          from: 'martaguirre91@gmail.com',
+          to: 'martaguirre91@gmail.com',
           subject: "Hello ✔", // Subject line
           html: `<h1>Hello its working! Hi ${newUser.username}</h1>
         http://localhost:3000/auth/confirm/${newUser.confirmationCode}`
@@ -95,7 +97,8 @@ router.get("/confirm/:confirmationCode", (req, res, next) => {
         user.status = 'Active';
         user.save()
           .then(user => {
-            res.render('auth/confirmation')
+            console.log(user)
+            res.render('auth/confirmation', user )
           })
           .catch(e => next)
       } else {
@@ -105,6 +108,21 @@ router.get("/confirm/:confirmationCode", (req, res, next) => {
     .catch(e => next)
 })
 
+
+router.get("/myProfile/:username", (req, res, next) => {
+  console.log("hola")
+  User.findOne({ "user": req.params.username })
+    .then(user => {
+      if (user) {
+        user.status === 'Active' ?   res.render('myProfile', {user}) : res.send("confirm your email")
+
+      } else {
+        res.render('users/login')
+      }
+    })
+    .catch(e => next)
+  res.render('myProfile', {user})
+})
 
 
 router.get("/logout", (req, res) => {
