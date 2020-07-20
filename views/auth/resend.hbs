@@ -1,20 +1,17 @@
-
-<h2>Send Code Again</h2>
-
-<form action="/auth/resend" method="POST" id="form-container">
-  <label for="email">email</label>
-  <input id="email" type="text" name="email" placeholder="John@doe.es">
-  
-  {{#if message }}
-    <div class="error-message">{{ message }}</div>
-  {{/if}}
-
-  <br><br>
-
-  <button>Send</button>
-
-  <p class="account-message">
-    Don't have an account yet?
-    <a href="/auth/signup">Signup</a>
-  </p>
-</form>
+<div class="row">
+  <div class="col-12 col-md-6 offset-md-3">
+    <h2>Send Code Again</h2>
+    <form action="/auth/resend" method="POST" id="form-container">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input class="form-control" id="email" type="text" name="email" placeholder="Your email">
+      </div>
+      {{#if message }}
+        <div class="alert alert-warning">{{ message }}</div>
+      {{/if}}
+      <button class="btn btn-primary">
+        Send
+      </button>
+    </form>
+  </div>
+</div>
