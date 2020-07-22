@@ -2,9 +2,15 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User");
+const nodemailer = require('nodemailer');
+
+const userEnv = process.env.NM_USER;
+const pass = process.env.NM_PASS;
+
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
+const { token } = require("morgan");
 const bcryptSalt = 10;
 
 
@@ -13,7 +19,7 @@ router.get("/login", (req, res, next) => {
 });
 
 router.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
+  successRedirect: "/panel",
   failureRedirect: "/auth/login",
   failureFlash: true,
   passReqToCallback: true
@@ -26,6 +32,15 @@ router.get("/signup", (req, res, next) => {
 router.post("/signup", (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
+  const email = req.body.email
+  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  let tokenId = '';
+
+  for (let i = 0; i < 25; i++) {
+    tokenId += characters[Math.floor(Math.random() * characters.length)];
+  }
+
   if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate username and password" });
     return;
@@ -42,18 +57,90 @@ router.post("/signup", (req, res, next) => {
 
     const newUser = new User({
       username,
-      password: hashPass
+      password: hashPass,
+      email,
+      status: false,
+      confirmationCode: tokenId
     });
 
+    // console.log(newUser.token)
+
     newUser.save()
-    .then(() => {
-      res.redirect("/");
-    })
-    .catch(err => {
-      res.render("auth/signup", { message: "Something went wrong" });
-    })
+      .then(() => {
+
+        const transport = nodemailer.createTransport({
+          service: 'Gmail',
+          auth: {
+            user: userEnv,
+            pass: pass
+          }
+        });
+
+        transport.sendMail({
+          to: email,
+          from: `Ironhack nodemailer example! <jaimebaroval@gmail.com>`,
+          subject: 'We have received your feedback!',
+          html: `
+                  <h1>Hi ${username}, we have received your feedback!</h1>
+                  <p>We have received the following feedback</p>
+                  <p>Hello</p>
+                  <a href="http://localhost:3000/auth/confirm/${tokenId}" style="padding:10px; background-color:green; border-radius:10px">Confirm</a>
+                  <p>We will get back to you soon ❤️</p>
+                `
+        })
+
+        res.redirect("/");
+      })
+      .catch(err => {
+        res.render("auth/signup", { message: "Something went wrong" });
+      })
+
+
   });
+
 });
+
+// Confirmation Code
+router.get('/confirm/:id', (req, res, next) => {
+  const id = req.params.id
+
+  User.findOne({confirmationCode: id})
+    .then(user => {
+      user.status = true
+      user.save()
+      .then(() => res.render('auth/confirm', {user}))
+      .catch(next)
+      
+    })
+    .catch(next)
+  })
+
+  // GET Confirm 
+  router.get('/confirm', (req, res, next) => {
+    res.render('auth/confirm')
+  })
+
+// POST Login
+// router.post('/login', (req, res, next) => {
+//   const body = req.body
+//   User.findOne({ user: body.user })
+//       .then(user => {
+//           if (user) {
+//               user.checkPass(body.password)
+//                   .then(match => {
+//                       if (match) {
+//                           req.session.userId = user._id
+//                           res.redirect('/session')
+//                       } else {
+//                           res.send('Invalid Pass')
+//                       }
+//                   })
+//           } else {
+//               res.send('User not found')
+//           }
+//       })
+//       .catch(error => console.error(error))
+// })
 
 router.get("/logout", (req, res) => {
   req.logout();
