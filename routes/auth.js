@@ -18,12 +18,41 @@ router.get("/login", (req, res, next) => {
   res.render("auth/login", { "message": req.flash("error") });
 });
 
-router.post("/login", passport.authenticate("local", {
-  successRedirect: "/panel",
-  failureRedirect: "/auth/login",
-  failureFlash: true,
-  passReqToCallback: true
-}));
+
+//TODO: Modificar Login para poder comprobar status (user activo) 
+// router.post("/login", passport.authenticate("local", {
+//   successRedirect: "/panel",
+//   failureRedirect: "/auth/login",
+//   failureFlash: true,
+//   passReqToCallback: true
+// }));
+
+router.post('/login', (req, res, next) => {
+  const userName = req.body.username
+  const pass = req.body.password
+
+  User.findOne({username: userName})
+  .then(user => {
+    if (user) {
+      user.checkPass(pass)
+      .then(match => {
+        if(match) {
+          if(user.status) {
+            res.render('panel', { user: user })
+          } else {
+            res.redirect('login')
+          }
+        } else {
+          res.redirect('login')
+        }
+      })
+    } else {
+      res.redirect('login')
+    }
+  })
+  .catch(next)
+
+})
 
 router.get("/signup", (req, res, next) => {
   res.render("auth/signup");
