@@ -1,0 +1,14 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-image: url('https://images.pexels.com/photos/1591062/pexels-photo-1591062.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
+}
+
+a {
+  color: #00B7FF;
+}
+
+.btn-danger {
+  margin-right: 20px;
+  margin-left: 50px;
+}
