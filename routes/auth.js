@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const User = require("../models/User.model");
+const nodemailer = require('../configs/mailer.config');
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -30,9 +31,13 @@ router.post("/signup", (req, res, next) => {
   checkForDuplicates(req.body.username);
   const newUser = new User(req.body);
 
+
   newUser.save()
-  .then(user => res.send(user))
-  .catch(e => console.error(e));
+  .then(user => {
+    nodemailer.sendValidationEmail(user.email);
+    res.send('Check your mailbox');
+  })
+  .catch(next);
 });
 
 router.get("/logout", (req, res) => {
@@ -41,6 +46,9 @@ router.get("/logout", (req, res) => {
 });
 
 module.exports = router;
+
+
+
 
 function checkForEmptyFields(formData) {
   if (!formData.username || !formData.password) {
