@@ -1,11 +1,7 @@
-require('dotenv');
 const nodemailer = require('nodemailer');
 
 const host = process.env.HOST || 'http://localhost:3000';
 const user = process.env.NM_USER || 'dev';
-
-console.log('username: ' + user);
-console.log('password: ' + process.env.NM_PASS);
 
 const transport = nodemailer.createTransport({
     service: 'Gmail',
@@ -15,14 +11,13 @@ const transport = nodemailer.createTransport({
     }
 });
 
-module.exports.sendValidationEmail = (email) => {
+module.exports.sendValidationEmail = (email, activationToken) => {
     transport.sendMail({
         from: user,
         to: email,
-        subject: 'This is fine',
-        text: 'Hello world',
-        html: '<h1>Skere</h1>'
+        subject: 'Validate your email',
+        html: `<h1>Click <a href="${host}/auth/activate/${activationToken}">here</a> to validate your email</h1>`
     })
     .then(info => console.log(info))
-    .catch(next);
+    .catch(e => console.error(e));
 };
