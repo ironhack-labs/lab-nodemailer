@@ -20,7 +20,8 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(flash());
-require('./configs/session.config');
+const session = require('./configs/session.config');
+app.use(session);
 require('./passport')(app);
 
 // Express View engine setup

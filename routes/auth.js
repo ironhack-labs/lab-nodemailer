@@ -9,14 +9,14 @@ router.get("/login", (req, res, next) => res.render("auth/login"));
 
 router.post('/login', (req, res, next) => {
   checkForEmptyFields(req.body, 'auth/login', res);
-  User.findOne({email: req.body.email})
+  User.findOne({username: req.body.username})
     .then(user => {
       if (user) {
         bcrypt.compare(req.body.password, user.password)
-          .then(() => {
+          .then(match => {
             if (match) {
               req.session.userId = user._id;
-              res.render('/');
+              res.redirect('/home');
             } else {
               failAuth(res);
             }

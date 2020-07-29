@@ -9,3 +9,5 @@ const session = (expressSession({
         mongooseConnection: mongoose.connection
     })
 }));
+
+module.exports = session;
