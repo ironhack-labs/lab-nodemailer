@@ -11,7 +11,6 @@ const secure = require('../middlewares/secure.middleware')
 // home
 router.get("/", miscController.index);
 
-
 // auth_form 
 router.get("/register", secure.isNotAuthenticated, userController.register)
 router.post("/register", secure.isNotAuthenticated, userController.doRegister)
@@ -25,6 +24,9 @@ router.get('/profile', secure.isAuthenticated, userController.profile)
 
 //logout
 router.post('/logout', secure.isAuthenticated, userController.logout)
+
+//activate
+router.get("/activate/:token", secure.isNotAuthenticated, userController.activate)
 
 
 module.exports = router

@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
 const bcrypt = require('bcryptjs')
 const SALT_ROUNDS = 10
@@ -28,6 +29,16 @@ const userSchema = new Schema(
       match: [PASSWORD_PATTERN, 'Tu contraseña debe conteneral menos 1 número, 1 mayúscula, 1 minúscula y 8 caracteres'],
       required: [true, 'Password is required.'],
     },
+    active: {
+      type: Boolean,
+      default: false,
+    },
+    activationToken: {
+      type: String,
+      default: () => {
+        return uuidv4()
+      },
+    }
   }
 );
 

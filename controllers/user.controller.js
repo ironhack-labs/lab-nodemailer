@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 //require model
 const User = require("../models/User.model")
+const { sendActivationEmail } = require("../configs/mailer.config");
 
 
 //Show user signUp
@@ -25,7 +26,8 @@ module.exports.doRegister = (req, res, next) => {
           })
         } else {
           User.create(req.body)
-            .then(() => {
+            .then(user => {
+              sendActivationEmail(user.email, user.activationToken)
               res.render('index', {...req.body, message: "Registro finalizado"})
               //res.redirect('/')
             })
@@ -86,3 +88,22 @@ module.exports.logout = (req, res, next) => {
   req.session.destroy()
   res.redirect('/')
 }
+
+//activate Token
+module.exports.activate = (req, res, next) => {
+  User.findOneAndUpdate(
+    { activationToken: req.params.token, active: false },
+    { active: true, activationToken: "active" }
+  )
+    .then((u) => {
+      if (u) {
+        res.render('authentication/login_form', {
+          user: req.body,
+          message: "Felicidades, has activado tu cuenta. Ya puedes iniciar sesión",
+        });
+      } else {
+        res.redirect("/")
+      }
+    })
+    .catch((e) => next(e));
+};
