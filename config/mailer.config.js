@@ -15,7 +15,7 @@ module.exports.sendActivationEmail = (email, token)=>{
         subject: "Gracias por unirte!",
         html: `
         <h1>Por favor confirma tu cuenta</h1>
-        <a href="http://localhost:3000/auth/confirm/${token}">Haz click aquí</a>
+        <a href="http://localhost:3001/activate/${token}">Haz click aquí</a>
         `
     })
 }

@@ -11,6 +11,6 @@ router.get("/register", miscController.register)
 router.post("/register", miscController.doRegister)
 
 // Confirmation route
-//router.get("/activate/:token", miscController.activate);
+router.post("/activate/:token", miscController.activate);
 
 module.exports = router;
