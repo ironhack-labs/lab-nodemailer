@@ -10,7 +10,10 @@ router.get("/register", miscController.register)
 // Post - resgister form
 router.post("/register", miscController.doRegister)
 
-// Confirmation route
-router.post("/activate/:token", miscController.activate);
+// confirmation route
+router.get("/activate/:token", miscController.activate)
+
+// Get - User profile
+router.get("/users/:id", miscController.profile)
 
 module.exports = router;
