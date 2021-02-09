@@ -1,6 +1,7 @@
 // User model here
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
+const { v4: uuidv4 } = require('uuid'); //Import UUID to get a token
 const PASSWORD_PATTERN = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}$/;
 const EMAIL_PATTERN = /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const SALT_ROUNDS = 10
@@ -27,8 +28,21 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: 'La contraseña es requerida',
             match: [PASSWORD_PATTERN, 'Tu contraseña debe conteneral menos 1 número, 1 mayúscula, 1 minúscula y 6 caracteres']
-        }
+        },
+        active: {
+            type: Boolean,
+            default: false,
+          },
 
+        activationToken: {
+        type: String,
+        default: () => {
+            return (
+                uuidv4()
+            );
+        },
+        }
+        
     }
 )
 

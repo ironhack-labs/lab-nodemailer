@@ -31,4 +31,8 @@ router.get('/main', secure.isAuthenticated, usersController.main)
 
 router.get('/private', secure.isAuthenticated, usersController.private)
 
+//Activate 
+
+router.get('/activate/:token', secure.isNotAuthenticated, usersController.activate)
+
 module.exports = router;
