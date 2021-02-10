@@ -1,0 +1,27 @@
+
+<h2 class="py-3">Login</h2>
+{{#if message_active }}
+      <div class="alert alert-success py-3" role="alert">{{ message_active }}</div>
+  {{/if}}
+<form action="/auth/login" method="POST" id="form-container">
+  <label for="username">Username</label>
+  <input id="username" type="text" name="username" placeholder="JonSnow">
+
+  <br><br>
+
+  <label for="password">Password</label>
+  <input id="password" type="password" name="password" placeholder="Your password">
+  <br>
+  {{#if message }}
+    <div class="alert alert-danger pt-4">{{ message }}</div>
+  {{/if}}
+
+  <br>
+
+  <button class="btn btn-secondary">Login</button>
+
+  <p class="account-message pt-2">
+    Don't have an account yet?
+    <a href="/auth/signup">Signup</a>
+  </p>
+</form>
