@@ -3,8 +3,10 @@ const router = express.Router();
 const miscController = require('../controllers/misc.controller')
 const usersController = require('../controllers/users.controller')
 const secure = require('../middlewares/secure.middleware')
+
 /* GET home page */
 router.get('/', miscController.index);
+
 
 //Registration
 

@@ -35,7 +35,7 @@ module.exports.doRegister = (req, res, next) => {
             User.create(req.body)
             .then((user) => {
               sendActivationEmail(user.email, user.activationToken);
-              res.redirect('/')
+              res.render('users/checkmail')
             })
             .catch(e => { 
               if (e instanceof mongoose.Error.ValidationError) {
