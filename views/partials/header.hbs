@@ -1,0 +1,13 @@
+<div class="container-fluid header-back py-5 b-5">
+    <div class="container text-white text-center">
+    {{#if currentUser}}
+        <h1 class="display-1">Know your forests </h1>
+        <p class="lead mb-5">{{currentUser.email}} </p>
+    {{else}}
+        <h1 class="display-1">Wellcome</h1>
+        <p class="lead mb-5">Tree is an iniciative that brings together people and forests</p>
+        <a class="button-line mt-5" href="/login">Login > </a> 
+        <a class="button-line mt-3" href="/register">Register > </a>
+    {{/if}}
+    </div>
+</div>

@@ -1,0 +1,112 @@
+:root{
+  --c-beige: rgb(239, 226, 215);
+  --c-green: rgb(145, 167, 145);
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.yass-feedback {
+  color: green;
+}
+
+.header-back {
+  background-image: linear-gradient(to bottom right, rgb(99, 171, 99), var(--c-beige));
+}
+
+.in-back {
+  background-image: url(/images/screenshot.png);
+}
+
+.in-in-back {
+  background-color: var(--c-beige);
+}
+
+.text-tree {
+  color: var(--c-green);
+}
+.text-grey {
+  color: rgb(134, 141, 133);
+}
+  
+.button-line {
+  font-family: 'Open Sans', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  text-align: center;
+  font-size: 1em;
+  opacity: .8;
+  padding: 20px 40px;
+  text-decoration: none;
+  transition: all .5s ease;
+  margin: 0 auto;
+  display: block;
+  width: 200px;
+}
+
+.button-line:hover {
+  opacity: 1;
+  color: var(--c-beige);
+  border: 1px solid var(--c-beige);
+}
+
+.button-action {
+  font-family: 'Open Sans', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: var(--c-green);
+  color: #fff;
+  text-align: center;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 15px;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.button-action:hover {
+  color: white;
+  background: rgb(187, 210, 184);
+}
+
+.form-control {
+  outline: none;
+  display: flex;
+  width: 100%;
+  border: 1px solid rgb(134, 141, 133);
+  height: 40px;
+  background-color: rgba(239, 226, 215, 0.046);
+  padding: 15px;
+  color: rgb(134, 141, 133);
+  font-weight: 500;
+}
+
+.form-control:focus {
+  box-shadow: 0px 0px 10px rgb(134, 141, 133);
+  border: 1px solid rgb(167, 185, 164);
+}
+
+.tree-invalid {
+  outline: none;
+  display: flex;
+  width: 100%;
+  border: 1px solid rgba(255, 0, 0, 0.67);
+  height: 40px;
+  margin-bottom: 2%;
+  background-color: rgba(239, 226, 215, 0.046);
+  padding: 15px;
+  color: rgb(134, 141, 133);
+  font-weight: 500;
+}
+
+.footer {
+  background-color: rgba(130, 147, 127, 0.581);
+}

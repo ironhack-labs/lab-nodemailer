@@ -1,0 +1,58 @@
+<div clas="container-fluid">
+    <div class ="row d-flex justify-content-between align-items-center">
+        {{!-- Menu --}}
+        <div class="col">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <div class="container-fluid">
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                        {{#if currentUser}}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                My area
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="/in">Info</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="/logout" method="POST">
+                                        <Button class="dropdown-item" type="submit">Logout ></Button> 
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                        {{else}}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Accsess
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="/login">Login</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/register">Register</a></li>
+                            </ul>
+                        </li>
+                        {{/if}}
+                    </div>
+                </div>
+            </nav>
+        </div>
+        {{!-- Name --}}
+        <div class="col-5 p-2 text-center">
+            <div class="container position-relative">
+                <h2 class="display-6 text-tree">t r e e</h2>
+            </div>
+        </div>
+        {{!-- Logo --}}
+        <div class="col p-2">
+            <div class="container">
+                <div class="d-flex flex-row-reverse">
+                    <img src="/images/icon.png" width="45px" alt="Trees">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
