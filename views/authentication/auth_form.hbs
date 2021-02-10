@@ -1,0 +1,46 @@
+<div class="container d-flex justify-content-center">
+    <div class="row">
+        <div class="col">
+            <h2 class="mb-3 p-2">Registro</h2>
+            <form id="demo-form" action="/register" method="POST" onsubmit="return submitUserForm()">
+                <div class="form-text mb-3">No compartiremos tus datos con terceros</div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo electrónico</label>
+                    <input type="email" name="email" value="{{user.email}}" class="form-control {{#if errors.email}}is-invalid{{/if}}" id="email" required>
+                    {{#if errors.email}}
+                        <div class="invalid-feedback">
+                            {{errors.email}}
+                        </div>
+                    {{/if}}
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Nombre de usuario</label>
+                    <input type="username" name="username" class="form-control {{#if errors.username}}is-invalid{{/if}}" id="username" required>
+                    {{#if errors.username}}
+                        <div class="invalid-feedback">
+                            {{errors.username}}
+                        </div>
+                    {{/if}}
+                </div>
+                <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" name="password" class="form-control {{#if errors.password}}is-invalid{{/if}}" id="password" required>
+                {{#if errors.password}}
+                    <div class="invalid-feedback">
+                        {{errors.password}}
+                    </div>
+                {{/if}}
+                </div>
+                 <div class="col text-center">
+                    <div class="g-recaptcha" data-sitekey="6Le-E1IaAAAAABDrASNt81EbUoyo0cC1tW71eEu8" data-callback="verifyCaptcha" data-toggle="modal" data-target="#exampleModal"></div>
+                    <div id="g-recaptcha-error"></div>
+                    <input class="mt-3" type="submit" name="submit" value="Submit" data-bs-toggle="modal" data-bs-target="#register__modal"/>
+
+                    <!-- Button trigger modal -->
+                    {{!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#register__modal">Launch demo modal</button> --}}
+                    {{> modal_register}}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
