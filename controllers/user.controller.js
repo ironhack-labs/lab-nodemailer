@@ -4,10 +4,13 @@ const User = require("../models/User.model")
 const { sendActivationEmail } = require("../configs/mailer.config");
 
 
+//let register__modal = new bootstrap.Modal(document.getElementById('register__modal'), options)
+
+
 //Show user signUp
 module.exports.register = (req,res,next) => {
     res.render('authentication/auth_form')
-    $('#register__modal').modal(options)
+    //register__modal.show()
 }
 
 //Create user
