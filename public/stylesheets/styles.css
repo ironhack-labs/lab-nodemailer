@@ -1,3 +1,17 @@
+
+body,
+html {
+    height: 100%;
+}
+
+body>div {
+    height: 46rem;
+}
+
+body>.container {
+    padding-bottom: 35rem;
+}
+
 nav {
   padding-top: 5px;
   display: flex;
@@ -7,7 +21,7 @@ nav>a {
   text-decoration: none;
   color: black;
   padding: 5px 10px;
-  background-color: lightgray;
+  background-color: gainsboro;
   border-radius: 15px;
   margin: 5px;
 }
@@ -18,130 +32,19 @@ nav>a:hover {
   box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.2);
 }
 
-#posts {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.post {
-  width: 300px;
-  height: 500px;
-  overflow: hidden;
-  border: 1px solid black;
-  margin: 10px;
-  padding: 10px;
-}
-
-.post__title {
+.btn {
   text-decoration: none;
   color: black;
-}
-
-.post__author {
-  text-decoration: none;
-}
-
-.post__description {
-  max-height: 50px;
-  overflow: hidden;
-}
-
-.post__image {
-  width: 100%;
-}
-
-.post__detail__image {
-  max-height: 500px;
-}
-
-.post__tags {
-  display: flex;
-  margin-top: 5px;
-  overflow-x: scroll;
-  font-size: 10px;
-}
-
-.post__tag {
   padding: 5px 10px;
+  background-color: gainsboro;
   border-radius: 15px;
-  background-color: lightblue;
+  margin: 5px;
 }
 
-.post__tag+.post__tag {
-  margin-left: 5px;
+.developer {
+  color: white;
 }
 
-#create__post {
-  position: fixed;
-  right: 20px;
-  bottom: 10px;
-  width: 50px;
-  height: 50px;
-  font-size: 40px;
-  line-height: 40px;
-  background-color: lightblue;
-  border-radius: 50px;
-  text-decoration: none;
-  text-align: center;
-  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1);
-}
-
-#edit__post {
-  position: fixed;
-  right: 20px;
-  bottom: 10px;
-  height: 50px;
-  width: 100px;
-  font-size: 20px;
-  line-height: 50px;
-  background-color: lightblue;
-  border-radius: 50px;
-  text-decoration: none;
-  text-align: center;
-  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1);
-}
-
-#delete__post {
-  position: fixed;
-  right: 130px;
-  bottom: 10px;
-  height: 50px;
-  width: 100px;
-  font-size: 20px;
-  line-height: 50px;
-  background-color: coral;
-  border-radius: 50px;
-  text-decoration: none;
-  text-align: center;
-  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1);
-}
-
-.deleteModal__wrapper {
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.2);
-  z-index: 20;
-  position: fixed;
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.deleteModal__wrapper>.deleteModal {
-  width: 500px;
-  margin: 0 auto;
-  height: 200px;
-  background-color: white;
-  text-align: center;
-  line-height: 200px;
-  border-radius: 5px;
-}
-
-.deleteModal__wrapper>.deleteModal form,
-.deleteModal__wrapper>.deleteModal button {
-  display: inline-block;
+.developer:hover {
+  color: gray;
 }

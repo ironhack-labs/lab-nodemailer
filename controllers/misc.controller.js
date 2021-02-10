@@ -49,7 +49,6 @@ module.exports.doRegister = (req, res, next) => {
 }
 
 module.exports.activate = (req, res, next) => {
-	//res.send(req.params)
 	User.findOneAndUpdate(
 		{ confirmationCode: req.params.token, active: false },
 		{ active: true, confirmationCode: "active" }
@@ -59,16 +58,13 @@ module.exports.activate = (req, res, next) => {
 			res.render('auth/confirmation', updatedUser)
 			console.log(updatedUser)
 		} else {
-			res.send('No funciona')
+			res.redirect('/')
 		}
 	})
 	.catch(err => next(err));
 }
 
-// TO DO: Pasar el usuario a la vista de userProfile para ver su email y su status
 module.exports.profile = (req, res, next) => {
-	// console.log(req.params)
-	// res.render('userProfile')
 	User.findById(req.params.id)
     	.then(user => res.render("userProfile", user))
 		.catch(error => next(error));

@@ -10,12 +10,20 @@
 </head>
 
 <body>
-	<div class="container">
-		<nav><a href="/">Home</a> <a href="/register">Register</a></nav>
-		<a href="/users/:id">Go to your profile</a>
+	<div class="container py-4">
+		<div class="justify-content-center py-1">
+			<nav><a href="/">Inicio</a> <a href="/register">Registro</a></nav>
+		</div>
 		{{!-- {{>navbar }} --}}
 		{{{body}}}
+		{{!-- {{> footerPartial}} --}}
 	</div>
+	<footer class="navbar sticky-bottom bg-dark d-flex justify-content-center align-items-baseline">
+		<p class="text-white mx-3">Ironhack Lab - Desarrollado por <a class="developer"
+				href="https://github.com/karuvsentor" target="_blank">Carlos Martín</a> y <a
+				href="https://github.com/xavirepi" target="_blank" class="developer">Javier Repi</a></p>
+	</footer>
+
 </body>
 
 </html>
