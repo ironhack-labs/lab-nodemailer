@@ -14,6 +14,6 @@ router.post("/register", miscController.doRegister)
 router.get("/activate/:token", miscController.activate)
 
 // Get - User profile
-router.get("/users/:id", miscController.profile)
+router.get("/userProfile/:id", miscController.profile)
 
 module.exports = router;

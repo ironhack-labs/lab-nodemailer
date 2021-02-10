@@ -1,4 +1,5 @@
 const nodemailer = require ('nodemailer')
+const { generateTemplate } = require ('./mailtemplate')
 
 const transporter = nodemailer.createTransport({
     service: "Gmail",
@@ -13,9 +14,11 @@ module.exports.sendActivationEmail = (email, token)=>{
         from: `"CarlosJavier" <${process.env.NM_USER}>`,
         to: email,
         subject: "Gracias por unirte!",
-        html: `
-        <h1>Por favor confirma tu cuenta</h1>
-        <a href="http://localhost:3001/activate/${token}">Haz click aquí</a>
-        `
+        html: generateTemplate(token)
+        
+        // `
+        // <h1>Por favor confirma tu cuenta</h1>
+        // <a href="http://localhost:3001/activate/${token}">Haz click aquí</a>
+        // `
     })
 }

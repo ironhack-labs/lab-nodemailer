@@ -56,7 +56,8 @@ module.exports.activate = (req, res, next) => {
 	)
 	.then(updatedUser => {
 		if (updatedUser) {
-			res.render('auth/confirmation')
+			res.render('auth/confirmation', updatedUser)
+			console.log(updatedUser)
 		} else {
 			res.send('No funciona')
 		}
@@ -66,9 +67,9 @@ module.exports.activate = (req, res, next) => {
 
 // TO DO: Pasar el usuario a la vista de userProfile para ver su email y su status
 module.exports.profile = (req, res, next) => {
-	res.send(req.params)
-	//res.render('/userProfile')
-	// User.findById(req.params.id)
-    // 	.then(user => res.render("userProfile", user))
-	// 	.catch(error => next(error));
+	// console.log(req.params)
+	// res.render('userProfile')
+	User.findById(req.params.id)
+    	.then(user => res.render("userProfile", user))
+		.catch(error => next(error));
 };
