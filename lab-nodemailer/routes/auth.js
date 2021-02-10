@@ -8,9 +8,16 @@ const { sendMessageAck } = require("../config/mailer.config");
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
+router.get('/', (req, res, next) => {
+  res.render('index');
+});
 
 router.get("/login", (req, res, next) => {
-  res.render("auth/login", { "message": req.flash("error") });
+  if (req.user) {
+    res.redirect('./profile')
+  } else {
+    res.render("auth/login", { "message": req.flash("error") });
+  }
 });
 
 router.post("/login", passport.authenticate("local", {
@@ -22,7 +29,11 @@ router.post("/login", passport.authenticate("local", {
 
 
 router.get("/signup", (req, res, next) => {
+if (req.user) {
+    res.redirect('./profile')
+  } else {
   res.render("auth/signup");
+  }
 });
 
 router.post("/signup", (req, res, next) => {
@@ -79,7 +90,7 @@ router.get("/confirm/:id", (req, res, next) => {
 
 router.get("/profile", (req, res) => {
   if (req.user) {
-    res.render("auth/profile", {username: req.user.username, email: req.user.email});
+    res.render("auth/profile", {username: req.user.username, email: req.user.email, status: req.user.status});
   } else {
     res.redirect("./login")
   }

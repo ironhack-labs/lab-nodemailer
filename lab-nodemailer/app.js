@@ -9,9 +9,9 @@ const mongoose     = require('mongoose');
 const logger       = require('morgan');
 const path         = require('path');
 
-//const session    = require("express-session");
-const session      = require('./config/session.config');
-//const MongoStore = require('connect-mongo')(session);
+const session    = require("express-session");
+//const session      = require('./config/session.config');
+const MongoStore = require('connect-mongo')(session);
 const flash      = require("connect-flash");
     
 
@@ -64,16 +64,16 @@ hbs.registerHelper('ifUndefined', (value, options) => {
 // default value for title local
 app.locals.title = 'lab-nodemailer';
 
-
 // Enable authentication using session + passport
-/*app.use(session({
+app.use(session({
   secret: 'irongenerator',
   resave: true,
   saveUninitialized: true,
   store: new MongoStore( { mongooseConnection: mongoose.connection })
 }))
-*/
+/*
 app.use(session);
+*/
 
 app.use(flash());
 require('./passport')(app);
@@ -85,7 +85,6 @@ app.use((req, res, next) => {
         if (user) {
           req.currentUser = user
           res.locals.currentUser = user
-
           next()
         }
       })

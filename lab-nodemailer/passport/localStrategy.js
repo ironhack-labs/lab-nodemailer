@@ -15,10 +15,16 @@ passport.use(new LocalStrategy({
         return;
       }
 
+      if(foundUser.status !== 'active') {
+        done(null, false, { message: 'E-mail not verified. Check your inbox and validate it.' });
+        return;
+      }
+      
       if (!bcrypt.compareSync(password, foundUser.password)) {
         done(null, false, { message: 'Incorrect password' });
         return;
       }
+
       done(null, foundUser);
     })
     .catch(err => done(err));
