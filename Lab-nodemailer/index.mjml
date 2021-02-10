@@ -1,0 +1,45 @@
+<mjml>
+  <mj-body background-color="#d6dde5">
+    <mj-section padding-bottom="20px" padding-top="20">
+      <mj-column vertical-align="middle">
+        <mj-text align="left" color="#000000" font-family="Ubuntu, Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif" font-size="11px" padding-left="25px" padding-right="25px" padding-bottom="0px" padding-top="0"><span style="font-size: 11px">Ironhack Lab-Nodemailer</span></mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff" padding-bottom="20px" padding-top="20">
+      <mj-column width="100%" vertical-align="top">
+        <mj-image href="https://slashmobility.com/wp-content/uploads/2016/11/IronHack.png" src="https://slashmobility.com/wp-content/uploads/2016/11/IronHack.png" alt="Ironhack-logo" align="center" border="none" width="182px" padding-left="0px" padding-right="0px" padding-bottom="0px" padding-top="0"></mj-image>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff">
+      <mj-column width="100%"></mj-column>
+      <mj-column width="100%">
+        <mj-text align="center" color="#000000" font-family="Ubuntu, Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif" font-size="13px" padding-left="25px" padding-right="25px" padding-bottom="0px" padding-top="0">
+          <p><span style="color: rgb(106, 138, 162);"><span style="font-weight: bold;"><span style="font-size: 16px;">Ironhack confirmation email</span></span>
+            </span>
+          </p>
+        </mj-text>
+        <mj-text align="justify" color="#000000" font-family="Ubuntu, Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif" font-size="13px" padding-left="25px" padding-right="25px" padding-bottom="0px" padding-top="0">
+          <p><span style="color: rgb(57, 63, 76);">Thanks to join our community! Please confirm your account clicking on the following button:</span>
+        </mj-text>
+        <mj-button background-color="#c7896f" color="#FFFFFF" font-size="13px" align="center" vertical-align="middle" border="none" padding="15px 30px" border-radius="3px" href="https://mjml.io" font-family="Ubuntu, Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif"
+          padding-left="25px" padding-right="25px" padding-bottom="10px" padding-top="10">ACTIVATE MY ACCOUNT</mj-button>
+      </mj-column>
+      <mj-column width="25%" vertical-align="top"></mj-column>
+    </mj-section>
+    
+        
+    <mj-section background-color="#ffffff" padding-bottom="20px" padding-top="20">
+      <mj-column width="100%" vertical-align="top">
+        <mj-text align="center" color="#000000" font-family="Ubuntu, Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif" font-size="13px" padding-left="25px" padding-right="25px" padding-bottom="10px" padding-top="10">
+          <p>Great to see you creating awesome webpages you with us!</p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#8bafad" padding-bottom="0px" padding-top="0">
+      <mj-column width="100%" vertical-align="top">
+        <mj-text align="center" color="#000000" font-family="Ubuntu, Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif" font-size="13px" padding-left="25px" padding-right="25px" padding-bottom="10px" padding-top="10">
+          <p><a href="https://mjml.io" style="text-decoration: none; color: inherit;"><span style="color: rgb(255, 255, 255);">You are doing awesome!</span></a></p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    
