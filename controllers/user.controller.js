@@ -1,5 +1,6 @@
 const User = require('../models/User.model')
-const mongoose = require('mongoose') // vamos a utilizar funcionalidades de mongoose para detectar que el error es de validación
+const mongoose = require('mongoose')
+const { sendActivationEmail } = require('../configs/mailer.config')
 
 
 module.exports.registerView = (req, res, next) => {
@@ -14,29 +15,29 @@ module.exports.register = (req, res, next) => {
     function renderErrors(errors) {
         res.status(400).render('user/register', { 
             errors: errors,
-            user: req.body                                                     // Para que no se borre el contenido ya escrito si hay error => en la vista en value user:email
+            user: req.body
         })
     }
 
-    User.findOne({ email: req.body.email })                                    // Query para validar si ya existe en mi BD
-        .then((u) => {                                                         // podría tener mi usuario si ya existe o devolver undefined
-            if (u) {                                                           // si existe, no podemos dejar que se crea
+    User.findOne({ email: req.body.email }) 
+        .then((u) => { 
+            if (u) {                                                           
                 renderErrors({ email: 'This email is already signed in'})
             } else if (req.body.password !== req.body.passwordRepeat) {
                 renderErrors({ password: 'Please insert the same password'})
-            } else {                                                           // no lo encuentra, procedemos
+            } else {                                                           
                 User
                     .create(req.body)
                     .then((u) => {
+                        sendActivationEmail(u.email, u.activationToken)
+
                         res.redirect('/thanks')
                     })
                     .catch((e) => {
-                                                                                // levaría al middelware de errores de www. No hacerlo:
-                                                                                // ¿el e que me llega es una instancia de mongoose.error.validation error?
                         if (e instanceof mongoose.Error.ValidationError) {
-                            renderErrors(e.errors)                              //volver a mandar a la vista con la info pero con errores
+                            renderErrors(e.errors)                              
                         } else {
-                            next(e)                                             // si no es de valid, enviar al middelware de errores
+                            next(e)
                         }
                     })
             }
@@ -50,26 +51,30 @@ module.exports.loginView = (req, res, next) => {
 }
 
 module.exports.login = (req, res, next) => {
-    function renderErrors(errors) { 
+    function renderErrors(e) { 
         res.status(400).render('user/login', { 
-            errors: ['The email or the password are not correct'],
+            errors: e || 'The email or the password are not correct',
             user: req.body
         })
     }
 
-    User.findOne({ email: req.body.email })  // $or[{ email: req.body.email }, { username: req.body.username }]
+    User.findOne({ email: req.body.email })
       .then((u) => {
+          console.log(u)
           if(!u) {
               renderErrors()
           } else {
               u.checkPassword(req.body.password)
-              .then((same) => {                                         // manejo la promesa del method checkPasswodr del modelo User
-                if (!same) {
-                    renderErrors()
+              .then((same) => {                                         
+                if (same) {
+                    if(u.active) {
+                        req.session.currentId = u.id
+                        res.redirect('../in')
+                    } else {
+                        renderErrors('This account is not yet active. Check the email inbox')
+                    }
                 } else {
-                    req.session.currentId = u.id
-
-                    res.redirect('../in')
+                    renderErrors()
                 }
               })
           }
@@ -86,3 +91,21 @@ module.exports.logout = ((req, res, next) => {
     req.session.destroy()
     res.redirect('/')
 }) 
+
+module.exports.activate = ((req, res, next) => {
+    User.findOneAndUpdate(
+        { activationToken: req.params.token, active: false },
+        { active: true, activationToken: 'done' }
+    )
+    .then((u) => {
+        if (u) {
+            res.render('user/login', { 
+                user: req.body,
+                message: 'Your account is now active. Please login.'
+            })
+        } else {
+            res.render('user/login', { message: 'Register'})
+        }
+    })
+    .catch(e => next(e))
+})

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const process = require("process")
 
 mongoose
-  .connect('mongodb://localhost/express-basic-auth-dev', {
+  .connect('mongodb://localhost/mailer', {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true

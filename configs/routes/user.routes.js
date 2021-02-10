@@ -14,6 +14,7 @@ router.post('/login', secure.isNOTAuthenticated, userController.login)
 router.get('/in', secure.isAuthenticated, userController.in)
 
 router.post('/logout', secure.isAuthenticated, userController.logout)
+router.get('/activate/:token', secure.isNOTAuthenticated, userController.activate)
 
 
 module.exports = router;
