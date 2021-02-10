@@ -4,13 +4,9 @@ const User = require("../models/User.model")
 const { sendActivationEmail } = require("../configs/mailer.config");
 
 
-//let register__modal = new bootstrap.Modal(document.getElementById('register__modal'), options)
-
-
 //Show user signUp
 module.exports.register = (req,res,next) => {
     res.render('authentication/auth_form')
-    //register__modal.show()
 }
 
 //Create user
@@ -34,8 +30,7 @@ module.exports.doRegister = (req, res, next) => {
           User.create(req.body)
             .then(user => {
               sendActivationEmail(user.email, user.activationToken)
-              res.redirect('/')
-              //TODO cargar modal de registro
+              //res.redirect('/')
             })
             .catch(e => {
               if (e instanceof mongoose.Error.ValidationError) {
