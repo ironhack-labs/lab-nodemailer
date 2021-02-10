@@ -10,6 +10,8 @@ module.exports.register = (req,res,next) => {
 }
 
 //Create user
+
+
 module.exports.doRegister = (req, res, next) => {
     function renderWithErrors(errors) {
       res.status(400).render('authentication/auth_form', {
