@@ -1,0 +1,50 @@
+
+body,
+html {
+    height: 100%;
+}
+
+body>div {
+    height: 46rem;
+}
+
+body>.container {
+    padding-bottom: 35rem;
+}
+
+nav {
+  padding-top: 5px;
+  display: flex;
+}
+
+nav>a {
+  text-decoration: none;
+  color: black;
+  padding: 5px 10px;
+  background-color: gainsboro;
+  border-radius: 15px;
+  margin: 5px;
+}
+
+nav>a:hover {
+  background-color: gray;
+  color: white;
+  box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.2);
+}
+
+.btn {
+  text-decoration: none;
+  color: black;
+  padding: 5px 10px;
+  background-color: gainsboro;
+  border-radius: 15px;
+  margin: 5px;
+}
+
+.developer {
+  color: white;
+}
+
+.developer:hover {
+  color: gray;
+}
