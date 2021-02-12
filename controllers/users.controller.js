@@ -1,13 +1,15 @@
 const mongoose = require("mongoose")
 const User = require("../models/user.model")
+const { sendActivationEmail } = require("../configs/mailer.config");
+
 
 module.exports.register = (req, res, next) => {
-  res.render('users/register')
+  res.render('users/signup')
 }
 
 module.exports.doRegister = (req, res, next) => {
   function renderWithErrors(errors) {
-    res.status(400).render('users/register', {
+    res.status(400).render('users/signup', {
       errors: errors,
       user: req.body
     })
@@ -21,7 +23,8 @@ module.exports.doRegister = (req, res, next) => {
         })
       } else {
         User.create(req.body)
-          .then(() => {
+          .then((user) => {
+            sendActivationEmail(user.email, user.confirmationCode);
             res.redirect('/')
           })
           .catch(e => {
