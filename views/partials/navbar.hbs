@@ -1,0 +1,31 @@
+<nav class="navbar navbar-expand-lg navbar-light nav__bar">
+  <div class="container">
+    <a class="navbar-brand" href="/">Authentication Lab</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-md-end" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            My account
+          </a>
+          <ul class="dropdown-menu drop__box" aria-labelledby="navbarDropdownMenuLink">
+            {{#if currentUser}}
+            <li><a class="dropdown-item li__font" href="/profile">My Profile</a></li>
+            <form action="/logout" method="POST">
+              <button class="dropdown-item li__font" type="submit">Logout</button>
+            </form>
+            {{else}}
+            <li><a class="dropdown-item li__font" href="/register">Register</a></li>
+            <li><a class="dropdown-item li__font" href="/login">Login</a></li>
+            {{/if}}
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
