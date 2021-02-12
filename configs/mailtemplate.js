@@ -268,7 +268,7 @@ module.exports.generateTemplate = (token) => {
 		<div
 			 style="font-family:Ubuntu, Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif;font-size:13px;line-height:1;text-align:center;color:#000000;"
 		><p>Any questions, comments, concerns?</p>
-				<p>Contact our support staff at <a href="https://mjml.io" style="text-decoration: none; color: inherit;"><span style="font-weight: bold;">mofletesgirl95@gmail.com</span></a></p></div>
+				<p>Contact our support staff at <a href="https://.io" style="text-decoration: none; color: inherit;"><span style="font-weight: bold;">mofletesgirl95@gmail.com</span></a></p></div>
 	
 							</td>
 						</tr>

@@ -29,11 +29,12 @@ const userSchema = new mongoose.Schema(
             required: 'La contraseña es requerida',
             match: [PASSWORD_PATTERN, 'Tu contraseña debe conteneral menos 1 número, 1 mayúscula, 1 minúscula y 6 caracteres']
         },
+        //Status
         active: {
             type: Boolean,
             default: false,
           },
-
+        //Confirmation code
         activationToken: {
         type: String,
         default: () => {

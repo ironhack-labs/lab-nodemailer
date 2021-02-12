@@ -4,6 +4,11 @@
     <ul>
         <li>{{currentUser.username}}</li>
         <li>{{currentUser.email}}</li>
+        {{#if currentUser.active}}
+        <li>Account status: Active</li>
+        {{else}}
+        <li>Account status: Inactive</li>
+        {{/if}}
     </ul>
     <div>
         <a class="btn btn-primary sm-col my-3" href="/main" role="button">See a cat</a>
