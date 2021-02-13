@@ -23,9 +23,22 @@ const userSchema = new mongoose.Schema({
 
     },
     status : {
-        type:string,
+        type:String,
         enum: ['Pending confirmation','Active'],
         default: 'Pending confirmation'
+    },
+    confirmationCode : {
+        type:String,
+        default: () =>{
+            
+                const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                let token = '';
+                for (let i = 0; i < 25; i++) {
+                    token += characters[Math.floor(Math.random() * characters.length)];
+                }
+                return token;
+            
+        }
     },
     email: {
         type:String,

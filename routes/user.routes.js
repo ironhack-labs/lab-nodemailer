@@ -11,9 +11,10 @@ router.post('/register',secure.isNotAuthenticated,userControllers.doEdit)
 
 router.get('/login',secure.isNotAuthenticated,userControllers.login);
 router.post('/login',secure.isNotAuthenticated,userControllers.doLogin);
-router.get('/profile',secure.isAuthenticated,userControllers.profile)
-router.get('/logoff',secure.isAuthenticated,userControllers.logout)
-router.get('/private',secure.isNotAuthenticated,userControllers.private)
-router.get('/main',secure.isAuthenticated,userControllers.main)
+router.get('/activate/:confirmationCode',secure.isNotAuthenticated,userControllers.activate)
+router.get('/profile',secure.isAuthenticated,userControllers.profile);
+router.get('/logoff',secure.isAuthenticated,userControllers.logout);
+router.get('/private',secure.isNotAuthenticated,userControllers.private);
+router.get('/main',secure.isAuthenticated,userControllers.main);
 
 module.exports = router;

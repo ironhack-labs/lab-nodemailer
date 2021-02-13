@@ -1,5 +1,6 @@
 const User = require('../models/User.model');
-const bcrypt = require('bcrypt');
+const mailer = require('../configs/nodemailer.config')
+
 const salt = 10;
 const mongoose = require('mongoose')
 
@@ -16,6 +17,7 @@ module.exports.doEdit = (req, res, next) => {
             user: req.body
         })
     }
+ 
     console.log(req.body)
 
     User.findOne({ userName: req.body.userName })
@@ -28,11 +30,14 @@ module.exports.doEdit = (req, res, next) => {
                 //console.log (`${user} already exits`)
 
             } else {
-        
+
                 User.create(req.body)
                     .then((user) => {
-                        req.session.currentUserId = user.id
-                        res.redirect('/')}
+                       
+                        mailer.sendMail(user.email,user.confirmationCode);
+                       // req.session.currentUserId = user.id
+                        res.redirect('/')
+                    }
                     )
                     .catch((e) => {
                         if (e instanceof mongoose.Error.ValidationError) {
@@ -54,14 +59,14 @@ module.exports.doEdit = (req, res, next) => {
 module.exports.login = (req, res, next) => res.render('users/login');
 
 module.exports.doLogin = (req, res, next) => {
-    function renderWithErrors() {
+    function renderWithErrors(e) {
         console.log("error login")
         res.render('users/login', {
-          user: req.body,
-          errorMessage: 'Email or password is not correct'
+            user: req.body,
+            errorMessage: e || 'Email or password is not correct'
         })
-      }
-   
+    }
+
 
     User.findOne({ userName: req.body.userName })
         .then((user) => {
@@ -72,45 +77,71 @@ module.exports.doLogin = (req, res, next) => {
                 console.log('SESSION =====> ', req.session);
 
                 user.checkPassword(req.body.password)
-                .then(match => {
-                    console.log("req.session : ", req.session)
-                  if (match) {
-                    req.session.currentUserId = user.id
-                         res.redirect('/profile')
-                  } else {
-                  
+                    .then(match => {
+                        if (match) {
+                            console.log(user.status)
+                            if (user.status === 'Active') {
 
-                        renderWithErrors()
-                
-                    
-              }
-               })
-           //     if (bcrypt.compareSync(req.body.password, user.password)) {
-           //         console.log("req.session : ", req.session)
-           //
-           //         req.session.currentUserId = user.id
-           //         res.redirect('/profile');
-           //     }
+                            req.session.currentUserId = user.id
+                            res.redirect('/profile')
+                        } else {
+                            renderWithErrors(`Your account is not active.Check your email`)
+                        }
+
+                        } else {
+
+
+                            renderWithErrors()
+
+
+                        }
+                    })
+                //     if (bcrypt.compareSync(req.body.password, user.password)) {
+                //         console.log("req.session : ", req.session)
+                //
+                //         req.session.currentUserId = user.id
+                //         res.redirect('/profile');
+                //     }
             }
 
         })
-        .catch((e)=> next(e))   
+        .catch((e) => next(e))
 };
 
-module.exports.profile = (req,res,next) => {
-    console.log(" res:locals: ", res.locals)
+module.exports.profile = (req, res, next) => {
+ //   console.log(" res:locals: ", res.locals)
     res.render('users/logon');
 }
 
 // logout de la sesión
-module.exports.logout = (req,res,next) => {
-     req.session.destroy();
-     res.redirect('/');
+module.exports.logout = (req, res, next) => {
+    req.session.destroy();
+    res.redirect('/');
 }
 
-module.exports.private= (req,res,next) => {
+module.exports.private = (req, res, next) => {
     res.render('users/private')
 }
-module.exports.main= (req,res,next) => {
+module.exports.main = (req, res, next) => {
     res.render('users/main')
+}
+
+module.exports.activate = (req,res,next) =>{
+ User.findOneAndUpdate({confirmationCode :req.params.confirmationCode},
+    {
+        status:"Active",
+        confirmationCode : "Active"
+    })
+    .then((user)=> {
+        if (user){
+        res.render('users/login',{
+            user:req.body,
+            message:"Congrats. You can already login session"
+        })
+    } else {
+        res.redirect('/')
+    }
+
+    })
+    .catch((e) => next(e))
 }
