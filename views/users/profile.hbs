@@ -1,3 +1,12 @@
-<div class="container">
+<div class="container m-4">
+  {{#if currentUser}}
   <p>Logged as {{currentUser.username}}</p>
+  <p>Your staus is {{currentUser.status}}</p>
+  {{else}}
+  <p>You are not logged, click button lo Log in</p>
+  <form action="/login" method="GET">
+    <button class="btn btn-outline-secondary">Log in</button>
+  </form>
+  {{/if}}
+
 </div>

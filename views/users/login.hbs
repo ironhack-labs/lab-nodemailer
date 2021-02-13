@@ -10,7 +10,11 @@
     </div>
 
     {{#if error}}
-      <p class="error-message">{{error}}</p>
+    <p class="error-message">{{error}}</p>
+    {{/if}}
+
+    {{#if message}}
+    <p class="success-message">{{message}}</p>
     {{/if}}
     <button type="submit" class="btn btn-primary">Login</button>
   </form>

@@ -22,5 +22,7 @@ router.get('/profile', usersController.profile)
 router.get('/main', secure.isAuthenticated, usersController.profile)
 router.get('/private', secure.isAdmin, usersController.profile)
 
+router.get("/auth/confirm/:token", usersController.activate);
+
 
 module.exports = router;

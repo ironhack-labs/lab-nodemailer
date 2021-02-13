@@ -79,3 +79,21 @@ module.exports.logout = (req, res, next) => {
   req.session.destroy()
   res.redirect('/')
 }
+
+module.exports.activate = (req, res, next) => {
+  User.findOneAndUpdate(
+    { confirmationCode: req.params.token, status: 'Pending Confirmation' },
+    { status: 'Active' }
+  )
+    .then((u) => {
+      if (u) {
+        res.render("users/login", {
+          user: req.body,
+          message: "Congrats, your account is activated",
+        });
+      } else {
+        res.redirect("/")
+      }
+    })
+    .catch((e) => next(e));
+};
