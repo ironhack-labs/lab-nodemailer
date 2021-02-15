@@ -1,102 +1,94 @@
 ![logo_ironhack_blue 7](https://user-images.githubusercontent.com/23629340/40541063-a07a0a8a-601a-11e8-91b5-2f13e4e6b441.png)
 
-# Sign up Confirmation Email
-
+# LAB | Basic Auth
 
 ## Introduction
 
-![image](https://user-images.githubusercontent.com/23629340/37091320-032a2cb0-2208-11e8-8b73-27060f1960c3.png)
+In this lab, you are going to reinforce the knowledge on how to create basic authorization and authentication in a web app.
 
-Almost every time we register on a web app, we have to confirm our account by clicking on a link that's been sent to our email. This is a great way to avoid registering users with fake info. In this lab, we will do the same exact thing - create app that will allow users to signup but their status will be by default set to `Pending Confirmation` and after they get the email verification code to their email and respond to it, their status will be changed to `active`. We will use **Nodemailer** for this!
-
+![](https://s3-eu-west-1.amazonaws.com/ih-materials/uploads/upload_044a7b23c9b4cf082e1c4fadcd12d308.png)
 
 ## Requirements
 
 - Fork this repo
-- Then clone this repo
-
+- Clone this repo
 
 ## Submission
 
 - Upon completion, run the following commands:
-```
-$ git add .
-$ git commit -m "done"
-$ git push origin master
-```
-- Create Pull Request so your TAs can check up your work.
 
+  ```
+  git add .
+  git commit -m "done"
+  git push origin master
+  ```
+
+- Create Pull Request so your TAs can check up your work.
 
 ## Instructions
 
+_In this lab, you literally have to recreate materials your instructors went through on the class. The point is not to blindly copy-paste them, but the opposite of that: to go once again, step by step through the process of registering users and authenticating them in the web app. Try to target all the weak spots, everything you missed to grasp during the lecture time, so you can ask your instructors and assistants to push you through the learning process._
 
-### Our gift 🎁 - Auth Flag
+### Iteration 0 | Initialize the project
 
-The `irongenerator` is pretty awesome, and with this new feature, you will love it even more. When running the `irongenerate nameOfYourProject` command on the terminal, you get a pretty cool express application ready to start working, but if you add the `--auth` flag, you will get the same application with PassportJS's `signup` and `login`  already set up.
+After forking and cloning the project, you will have to install all the dependencies:
 
-So inside the folder you just cloned, go ahead and run the following command:
-
-```bash
-$ irongenerate lab-nodemailer --auth
-$ cd lab-nodemailer
+```sh
+$ cd lab-express-basic-auth
 $ npm install
 ```
 
-Awesome huh? Let's start!
+Now you are ready to start 🚀
 
+## Iteration 1 | Sign Up
 
-### Iteration 1 - User Model
+We have to create the signup feature - the goal is to enable our users to register in our application. The users have to provide the following information:
 
-First, we need to modify the `User` model. Inside the `models` folder, you will find a `user.js` file. We already have the `username` and `password` fields, so we need to add the followings:
+- **Username**: Must be unique in our application, and will identify each user.
+- **Password**: Must be encrypted (you can use the `bcryptjs` npm package).
 
-- **`status`** - will be a string, and you should add an `enum` because the only possible values are: *"Pending Confirmation"* or *"Active"*. By default, when a new user is created, it will be set to *"Pending Confirmation"*.
-- **`confirmationCode`** - here we will store a confirmation code; it will be unique for each user.
-- **`email`** - the user will complete the signup form with the email they will use to confirm the account.
+To complete this first iteration, you have to create the model as well as corresponding routes, and the views.
 
+## Iteration 2 | Login
 
-### Iteration 2 - Signup Process
+Once the user has signed up, he/she should be able to authenticate themselves. This means the user should be able to login to the application. Your assignment in this iteration is to create corresponding routes as well as the views to let them log in to the application.
 
-#### Adding the new fields
+As you know, it is not enough just to allow users to login. Users should be able to maintain their "presence" in the application (stay logged in when going from a page to a page, after the refresh), and for that, there should be the user(s) in the session. You have learned that you can use the `express-session` and `connect-mongo` npm packages to create a session.
 
-On the `auth/signup.hbs` file you need to add an `input` tag for the **email**. When the user clicks on the `signup` button, you should store the following values in the database:
+## Iteration 3 | Protected Routes
 
-- **username** - from the `req.body`;
-- **password** - after hashing the value of the `password` field from the `req.body`;
-- **email** - from the `req.body`;
-- **confirmationCode** - for creating a confirmation code, you can use any methodology, from installing the npm package for email verification to simplest `Math.random()` function on some string.
+At this point, you have implemented the basic authentication in this application. Your next assignment is to create some protected routes. Refresher: users can't visit these routes unless they are authenticated (logged in and exist in the session).
 
-Example: 
-```js
-const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-let token = '';
-for (let i = 0; i < 25; i++) {
-    token += characters[Math.floor(Math.random() * characters.length )];
-}
-```
+Let's create two different routes protected by authentication:
 
-Now, you have to store the token in the `confirmationCode` field.
+- `/main` - Add a funny picture of a cat and a link back to the home page
+- `/private` - Add your favorite `gif` and an `<h1>` denoting the page as private.
 
-#### Sending the email
+Create the views and add the middleware configuration to avoid accessing these routes without being authenticated.
 
-After creating the user, you should send the email to the address the user put on the `email` field. Remember to use **Nodemailer** for this. You should include the following URL in the email:
+## Bonus | The validation
 
-`http://localhost:3000/auth/confirm/THE-CONFIRMATION-CODE-OF-THE-USER`
+### Validation during the signup process
 
-### Iteration 3 - Confirmation Route
+You should handle validation errors when a user signs up:
 
-When the user clicks on the URL we included in the email, we should make a comparison of the `confirmationCode` on the URL and the one in the database. You should create a route: `/confirm/:confirmCode` inside the `routes/auth.js` file.
+- The fields can't be empty.
+- The username can't be repeated.
 
-Inside the route, after comparing the confirmation code, you have to set the `status` field of the user to 'Active'. Then render a `confirmation.hbs` view, letting the user know that everything went perfect, or showing the error.
+### Bonus | Validation during the login process
 
-### Iteration 4 - Profile View
+You should check if all the fields are correctly filled before authenticating the user.
 
-Finally, you have to create a `profile.hbs` view, where you have to render the `username` and the `status` of the user.
+### Frontend validation
 
+Let's add validations to our forms. Remember we have two different forms: sign up and log in.
 
-### Bonus! Styling the Email
+Remember, when a user signs up or logs in, both the username and password fields must be filled in.
 
-Sending the email that contains only the URL is super boring! Feel free to style it better.
+Check out the [documentation](https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/Data_form_validation) at MDN. See if you can find a _constraint_ that requires the user to fill a field before submission.
 
-![image](https://user-images.githubusercontent.com/23629340/37099024-ab0d7c9a-221f-11e8-9458-49f813437e2c.png)
+## Extra Resources
 
-Happy Coding! :heart:
+- [HTML5 Form Validations](http://www.the-art-of-web.com/html/html5-form-validation/)
+
+Happy coding! :heart:
