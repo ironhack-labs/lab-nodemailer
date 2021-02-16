@@ -30,7 +30,6 @@ const userSchema = new mongoose.Schema({
 
     activationToken: {
         type: String,
-        unique: true,
         default: () => {
             return (
                 Math.random().toString(36).substring(2, 15) +

@@ -12,6 +12,11 @@
       <p class="text-danger">
           {{error}}
       </p>
+    {{/if}}
+    {{#if message}}
+      <p class="text-success">
+          {{message}}
+      </p>
     {{/if}}  
   </div>
   <button type="submit" class="btn btn-primary">Log in</button>

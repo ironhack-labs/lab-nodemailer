@@ -1,5 +1,8 @@
 const User = require("../models/User.model");
 const mongoose = require("mongoose");
+const {
+  sendActivationEmail
+} = require("../configs/mailer.config")
 
 //register
 module.exports.register = (req, res, next) => {
@@ -17,8 +20,8 @@ module.exports.doRegister = (req, res, next) => {
   }
 
   User.findOne({
-    email: userProposal.email,
-  })
+      email: userProposal.email,
+    })
     .then((user) => {
       if (user) {
         renderWithError({
@@ -26,7 +29,11 @@ module.exports.doRegister = (req, res, next) => {
         });
       } else {
         User.create(userProposal)
-          .then(() => res.redirect("/"))
+          .then((user) => {
+            /* console.log(user) */
+            sendActivationEmail(user.email, user.activationToken)
+            res.redirect("/")
+          })
           .catch((e) => {
             if (e instanceof mongoose.Error.ValidationError) {
               renderWithError(e.errors);
@@ -44,14 +51,16 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.doLogin = (req, res, next) => {
-  function renderWithErrors() {
+  function renderWithErrors(e) {
     res.render("users/login", {
       user: req.body,
-      error: "The e-mail address or password is not correct.",
+      error: e || "The e-mail address or password is not correct.",
     });
   }
 
-  const { email } = req.body;
+  const {
+    email
+  } = req.body;
   User.findOne({
     email: email,
   }).then((user) => {
@@ -60,8 +69,13 @@ module.exports.doLogin = (req, res, next) => {
     } else {
       user.checkPassword(req.body.password).then((match) => {
         if (match) {
-          req.session.currentUserId = user.id;
-          res.render("users/profile", user);
+          if (user.active) {
+            req.session.currentUserId = user.id;
+            res.render("users/profile", user);
+          } else {
+            renderWithErrors("Your account is not activated")
+          }
+
         } else {
           renderWithErrors();
         }
@@ -79,3 +93,24 @@ module.exports.profile = (req, res, next) => {
   console.log(req.currentUser);
   res.render("users/profile");
 };
+
+module.exports.activate = (req, res, next) => {
+  User.findOneAndUpdate({
+      activationToken: req.params.token,
+      active: false
+    }, {
+      activationToken: "active",
+      active: true
+    })
+    .then(user => {
+      if (user) {
+        res.render("users/login", {
+          user: req.body,
+          message: "Congratulations, you have activated your account. You can now log in.",
+        });
+      } else {
+        res.redirect("/")
+      }
+    })
+    .catch(next)
+}

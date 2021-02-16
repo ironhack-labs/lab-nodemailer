@@ -10,6 +10,8 @@ router.post("/register", usersController.doRegister);
 router.get("/login", usersController.login);
 router.post("/login", usersController.doLogin);
 
+router.get("/activate/:token", usersController.activate);
+
 router.post("/logout", usersController.logout);
 
 router.get("/profile", usersController.profile);
