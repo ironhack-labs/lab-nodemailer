@@ -1,0 +1,19 @@
+{
+  "name": "lab-nodemailer",
+  "version": "1.0.0",
+  "description": "![Ironhack logo](https://i.imgur.com/1QgrNNw.png)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hannesreinsch/lab-nodemailer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hannesreinsch/lab-nodemailer/issues"
+  },
+  "homepage": "https://github.com/hannesreinsch/lab-nodemailer#readme"
+}
