@@ -1,0 +1,11 @@
+<h1 class="py-3">{{title}}</h1>
+<h5>Profile</h5>
+
+{{#if username}}
+<p>You are logged in as <strong>{{username}}</strong> ({{email}}).</p>
+<p>Your status is: <strong>{{status}}</strong></p>
+{{#else}}
+<p>You are not logged in.</p>
+{{/else}}
+{{/if}}
+
