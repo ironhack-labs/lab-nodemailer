@@ -1,0 +1,30 @@
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>{{appTitle}}</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    {{! <link rel="stylesheet" href="css/custom.css" /> }}
+  </head>
+
+  <body>
+    <a href="/signup">
+      <button class="btn btn-danger">Sign Up</button></a>
+    <a href="/login">
+      <button class="btn btn-danger">Log In</button></a>
+    <a href="/userProfile">
+      <button class="btn btn-danger">Profile</button></a>
+
+    <form action="/logout" method="POST">
+      <button type="submit">Logout</button>
+    </form>
+
+    {{{body}}}
+
+    <script src="/js/script.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+  </body>
+
+</html>
