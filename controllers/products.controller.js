@@ -15,9 +15,12 @@ module.exports.create = (req, res, next) => {
 
 module.exports.doCreate = (req, res, next) => {
   const productToCreate = req.body;
+
   if(req.file) {
     productToCreate.image = req.file.path;
   }
+
+  console.log(productToCreate)
 
   Product.create(productToCreate)
     .then((product) => {

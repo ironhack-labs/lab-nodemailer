@@ -33,7 +33,6 @@ passport.use('local-auth', new LocalStrategy(
               if (!match) {
                 next(null, false, { error: 'Invalid credentials' })
               } else {
-                next(null, user)
                 if (user.status) {
                   next(null, user)
                 } else {
