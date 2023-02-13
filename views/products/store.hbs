@@ -1,0 +1,48 @@
+<div class="container">
+  <h1 class="text-center mb-4">Store</h1>
+  <div class="row">
+    {{#if products.length}}
+      {{#each products as |product|}}
+        <div class="col-12 col-md-6 col-lg-4 mb-1 d-flex justify-content-center product" data-id="{{product._id}}">
+          <div class="card shadow bg-body rounded " style="width: 18rem;">
+            <img src={{product.image}} class="card-img-top" alt={{product.name}}>
+            <div class="card-body d-flex align-items-start flex-column">
+              <h5 class="card-title p-2">{{product.name}}</h5>
+              <p class="card-text p-2">{{product.description}}</p>
+              <h4 class="card-title p-2">${{product.price}}</h4>
+              <div class="d-flex justify-content-around mt-auto p-2">
+                <a href="/products/{{product._id}}" class="btn btn-primary">See details</a>
+                <a class="btn btn-danger remove" data-id="{{product._id}}">Remove</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {{/each}}
+    {{else}}
+      <p>Store is empty 😔 Come back later</p>
+    {{/if}}
+  </div>
+  <hr class="my-4">
+  <div class="row">
+    <div class="col col-sm-8 col-md-6 col-lg-4 mx-auto mb-4">
+      <a href="/products/create" class="btn btn-primary bg-light-green border-0 d-block w-300">Create Product</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const removeNodes = document.querySelectorAll('.remove');
+  for(let node of removeNodes) {
+    node.addEventListener('click', () => {
+      const nodeId = node.dataset.id;
+      axios.delete(`/products/${nodeId}`)
+        .then(responseFromApi => {
+          console.log('Success!', responseFromApi);
+          if(responseFromApi.status == 204) {
+            document.querySelector(`.product[data-id="${nodeId}"]`).remove();
+          }
+        })
+        .catch(error => console.log('Error!', error))
+    })
+  }
+</script>
