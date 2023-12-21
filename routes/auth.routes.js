@@ -11,9 +11,15 @@ const saltRounds = 10;
 // Require the User model in order to interact with the database
 const User = require("../models/User.model");
 
+const transporter = require("../config/transporter.config");
+
+// Import the template functions
+const templates = require("../templates/template");
+
 // Require necessary (isLoggedOut and isLiggedIn) middleware in order to control access to specific routes
 const isLoggedOut = require("../middleware/isLoggedOut");
 const isLoggedIn = require("../middleware/isLoggedIn");
+const { token } = require("morgan");
 
 // GET /auth/signup
 router.get("/signup", isLoggedOut, (req, res) => {
@@ -75,6 +81,18 @@ router.post("/signup", isLoggedOut, (req, res) => {
         confirmationCode: token,
       });
     })
+    .then((user) => {
+      console.log(user);
+      transporter.sendMail({
+        from: `"My Awesome Project 👻" <${process.env.EMAIL_ADDRESS}>`,
+        to: email,
+        subject: "Confirm your email address",
+        // text: `Hello ${username},\n\nPlease confirm your email address by clicking the link below:\n\nhttp://localhost:3000/auth/confirm\n\nIf you did not request this, please ignore this email and your password will remain unchanged.\n\nThank you for using our website.`,
+
+        html: templates.templateExample(username, user.confirmationCode),
+      });
+    })
+
     .then((user) => {
       res.redirect("/auth/login");
     })
@@ -163,6 +181,22 @@ router.get("/logout", isLoggedIn, (req, res) => {
 
     res.redirect("/");
   });
+});
+
+router.get("/confirm/:confirmCode", (req, res) => {
+  console.log("confirm code is:", req.params);
+  const { confirmCode } = req.params;
+  console.log(confirmCode);
+  User.findOne({ confirmationCode: confirmCode }).then((user) => {
+    user.status = "Active";
+    console.log(user);
+    res.render("auth/confirmation.hbs", user);
+  });
+});
+
+router.get("/profile", isLoggedIn, (req, res) => {
+  console.log("your session is", req.session.currentUser);
+  res.render("profile", req.session.currentUser)
 });
 
 module.exports = router;
